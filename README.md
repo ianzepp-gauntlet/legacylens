@@ -123,7 +123,56 @@ CARDDEMO_PATH=/path/to/carddemo/app pytest tests/ -v
 CARDDEMO_PATH=/path/to/carddemo/app LEGACYLENS_RUN_LIVE_TESTS=1 pytest tests/ -v
 ```
 
-123 tests covering parser, chunker, ingestion, vector store, chain formatting, and live retrieval quality.
+146 tests covering parser, chunker, ingestion, vector store, chain formatting, live retrieval quality, and benchmark infrastructure.
+
+## Benchmarking
+
+A performance benchmark suite compares retrieval latency and relevance across different embedding models, vector dimensions, chunking strategies, and top-k values.
+
+### Test Matrix (22 index configurations)
+
+| Model | Provider | Dimensions | Indexes |
+|---|---|---|---|
+| `text-embedding-3-small` | OpenAI | 256, 512, 1024, 1536 | 8 (× 2 chunking strategies) |
+| `text-embedding-3-large` | OpenAI | 256, 512, 1024, 1536, 3072 | 10 (× 2 chunking strategies) |
+| `multilingual-e5-large` | Pinecone integrated | 1024 | 2 (× 2 chunking strategies) |
+| `llama-text-embed-v2` | Pinecone integrated | 1024 | 2 (× 2 chunking strategies) |
+
+**Chunking strategies:** `paragraph` (syntax-aware, current default) and `fixed` (~500-token chunks with overlap).
+
+**Top-k values:** 3, 5, 10, 20, 50.
+
+Each configuration creates a separate Pinecone index named `legacylens-bench-{model}-{dims}-{chunking}`.
+
+### Query Suite
+
+10 predefined queries with expected file/chunk patterns for automated relevance scoring. Each query is run 3 times per configuration for timing stability. Metrics collected:
+
+- **Latency:** mean, p50, p95, min, max (seconds)
+- **Relevance:** fraction of expected files/chunks found in results (0.0 - 1.0)
+
+### Running Benchmarks
+
+```bash
+# 1. Ingest into all 22 indexes (or a subset)
+python benchmarks/ingest_all.py
+python benchmarks/ingest_all.py --configs small-256-paragraph,large-1024-fixed
+python benchmarks/ingest_all.py --clean  # delete and re-create indexes
+
+# 2. Run benchmark suite
+python benchmarks/run_benchmark.py
+python benchmarks/run_benchmark.py --configs small-256-paragraph --top-k 5,10
+
+# 3. Analyze results
+python benchmarks/report.py                               # latest results
+python benchmarks/report.py benchmarks/results/file.json  # specific file
+```
+
+Results are saved to `benchmarks/results/` as JSON (full detail) and CSV (summary). The report produces:
+- Overall summary table ranked by relevance then latency
+- Per-top-k breakdown
+- Model comparison (averaged across chunking strategies)
+- Chunking strategy comparison (paragraph vs fixed)
 
 ## Project Structure
 
@@ -133,13 +182,19 @@ legacylens/
 │   ├── config.py          # Pydantic settings
 │   ├── models.py          # CodeChunk, QueryResult dataclasses
 │   ├── parser.py          # COBOL structure parser (divisions, paragraphs, COPY/CALL)
-│   ├── chunker.py         # Syntax-aware chunking (COBOL/BMS/JCL/copybook)
+│   ├── chunker.py         # Syntax-aware + fixed-size chunking (COBOL/BMS/JCL/copybook)
 │   ├── embeddings.py      # OpenAI / Ollama embedding generation
 │   ├── vectorstore.py     # Pinecone index operations
 │   ├── ingest.py          # Orchestrator: discover → chunk → embed → store
 │   ├── retriever.py       # Query embedding + Pinecone search
 │   ├── chain.py           # LangChain RAG chain (context + LLM)
 │   └── cli.py             # Typer CLI (ask, search, ingest)
+├── benchmarks/
+│   ├── config.py          # Test matrix (22 configs), query suite, relevance scoring
+│   ├── ingest_all.py      # Multi-index ingestion (OpenAI + Pinecone integrated)
+│   ├── run_benchmark.py   # Benchmark runner (latency + relevance)
+│   ├── report.py          # Results analysis and summary tables
+│   └── results/           # JSON + CSV output
 ├── web/
 │   ├── app.py             # FastAPI endpoints
 │   └── templates/
@@ -152,7 +207,8 @@ legacylens/
     ├── test_ingest.py     # 14 tests
     ├── test_vectorstore.py# 8 tests
     ├── test_chain.py      # 9 tests
-    └── test_retrieval.py  # 13 tests (6 live + 7 chunking)
+    ├── test_retrieval.py  # 13 tests (6 live + 7 chunking)
+    └── test_benchmark.py  # 23 tests (configs, queries, relevance scoring, fixed chunker)
 ```
 
 ## Deployment

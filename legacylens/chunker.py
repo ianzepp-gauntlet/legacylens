@@ -19,8 +19,17 @@ from .parser import ParsedFile, parse_cobol_file
 MIN_PARAGRAPH_LINES = 5
 
 
-def chunk_file(file_path: str) -> list[CodeChunk]:
-    """Chunk a file based on its type."""
+def chunk_file(file_path: str, strategy: str = "paragraph") -> list[CodeChunk]:
+    """Chunk a file based on its type.
+
+    Args:
+        file_path: Path to the source file.
+        strategy: "paragraph" for syntax-aware chunking (default),
+                  "fixed" for fixed-size token-approximate chunks.
+    """
+    if strategy == "fixed":
+        return _chunk_fixed(file_path)
+
     path = Path(file_path)
     ext = path.suffix.lower().lstrip(".")
 
@@ -474,3 +483,69 @@ def _chunk_generic(file_path: str) -> list[CodeChunk]:
         end_line=len(lines),
         preamble=preamble,
     )]
+
+
+FIXED_CHUNK_SIZE = 500  # approximate tokens (~4 chars/token → ~2000 chars)
+FIXED_CHUNK_OVERLAP = 50  # approximate token overlap
+
+
+def _chunk_fixed(
+    file_path: str,
+    chunk_size: int = FIXED_CHUNK_SIZE,
+    overlap: int = FIXED_CHUNK_OVERLAP,
+) -> list[CodeChunk]:
+    """Split a file into fixed-size token-approximate chunks."""
+    path = Path(file_path)
+    text = path.read_text(encoding="utf-8", errors="replace")
+    lines = text.splitlines()
+    ext = path.suffix.lower().lstrip(".")
+
+    if not lines:
+        return []
+
+    char_limit = chunk_size * 4
+    overlap_chars = overlap * 4
+    chunks = []
+    chunk_start = 0  # line index
+
+    while chunk_start < len(lines):
+        char_count = 0
+        chunk_end = chunk_start
+        while chunk_end < len(lines) and char_count < char_limit:
+            char_count += len(lines[chunk_end]) + 1
+            chunk_end += 1
+
+        chunk_text = "\n".join(lines[chunk_start:chunk_end])
+        preamble = _build_preamble(
+            file_name=path.name,
+            chunk_type="Fixed Chunk",
+            name=f"{path.stem.upper()} part {len(chunks) + 1}",
+            start_line=chunk_start,
+            end_line=chunk_end,
+        )
+        chunks.append(CodeChunk(
+            content=chunk_text,
+            file_path=str(file_path),
+            file_name=path.name,
+            file_type=ext,
+            chunk_type="fixed",
+            name=f"{path.stem.upper()} part {len(chunks) + 1}",
+            start_line=chunk_start + 1,
+            end_line=chunk_end,
+            preamble=preamble,
+        ))
+
+        # Advance with overlap
+        overlap_count = 0
+        next_start = chunk_end
+        for i in range(chunk_end - 1, chunk_start, -1):
+            overlap_count += len(lines[i]) + 1
+            if overlap_count >= overlap_chars:
+                next_start = i
+                break
+
+        if next_start <= chunk_start:
+            next_start = chunk_end
+        chunk_start = next_start
+
+    return chunks
