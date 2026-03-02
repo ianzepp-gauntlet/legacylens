@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LegacyLens - COBOL Codebase Explorer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css">
+    <style>
+        :root {
+            --pico-font-size: 16px;
+        }
+        body { max-width: 900px; margin: 0 auto; padding: 1rem; }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { margin-bottom: 0.25rem; }
+        .header p { color: var(--pico-muted-color); }
+        #answer-box { display: none; margin-top: 1.5rem; }
+        #answer-content {
+            white-space: pre-wrap;
+            font-family: inherit;
+            line-height: 1.6;
+        }
+        .sources { margin-top: 1rem; }
+        .source-item {
+            padding: 0.5rem 0.75rem;
+            border-left: 3px solid var(--pico-primary);
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            background: var(--pico-card-background-color);
+            border-radius: 0 4px 4px 0;
+        }
+        .source-item:hover { opacity: 0.85; }
+        .source-meta { color: var(--pico-muted-color); font-size: 0.8rem; }
+        .source-content {
+            display: none;
+            margin-top: 0.5rem;
+            padding: 0.5rem;
+            background: var(--pico-code-background-color);
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            white-space: pre-wrap;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .source-item.expanded .source-content { display: block; }
+        .score-badge {
+            display: inline-block;
+            padding: 0.1rem 0.4rem;
+            border-radius: 3px;
+            font-size: 0.75rem;
+            background: var(--pico-primary);
+            color: var(--pico-primary-inverse);
+        }
+        .filter-row { display: flex; gap: 1rem; align-items: end; }
+        .filter-row select { max-width: 150px; }
+        #loading { display: none; text-align: center; padding: 2rem; }
+        .error { color: var(--pico-del-color); }
+    </style>
+</head>
+<body>
+    <main class="container">
+        <div class="header">
+            <h1>LegacyLens</h1>
+            <p>Ask questions about the AWS CardDemo COBOL codebase</p>
+        </div>
+
+        <form id="query-form" onsubmit="return handleSubmit(event)">
+            <div class="filter-row">
+                <input
+                    type="text"
+                    id="question"
+                    name="question"
+                    placeholder="e.g., What does the COCRDUPC program do?"
+                    required
+                    autofocus
+                >
+                <select id="file-type" name="file_type">
+                    <option value="">All files</option>
+                    <option value="cbl">COBOL (.cbl)</option>
+                    <option value="cpy">Copybooks (.cpy)</option>
+                    <option value="bms">BMS Maps (.bms)</option>
+                    <option value="jcl">JCL (.jcl)</option>
+                    <option value="ctl">Control (.ctl)</option>
+                    <option value="dcl">DB2 DCL (.dcl)</option>
+                    <option value="ddl">DDL (.ddl)</option>
+                    <option value="csd">CICS CSD (.csd)</option>
+                    <option value="dbd">IMS DBD (.dbd)</option>
+                    <option value="psb">IMS PSB (.psb)</option>
+                </select>
+                <button type="submit">Ask</button>
+            </div>
+        </form>
+
+        <div id="loading">
+            <p aria-busy="true">Searching codebase and generating answer...</p>
+        </div>
+
+        <div id="answer-box">
+            <article>
+                <header><strong>Answer</strong></header>
+                <div id="answer-content"></div>
+            </article>
+
+            <details open class="sources">
+                <summary><strong>Sources</strong> (<span id="source-count">0</span> chunks)</summary>
+                <div id="sources-list"></div>
+            </details>
+        </div>
+    </main>
+
+    <script>
+        async function handleSubmit(e) {
+            e.preventDefault();
+            const question = document.getElementById('question').value.trim();
+            const fileType = document.getElementById('file-type').value;
+            if (!question) return;
+
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('answer-box').style.display = 'none';
+
+            try {
+                const resp = await fetch('/api/ask', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ question, file_type: fileType, top_k: 10 }),
+                });
+                const data = await resp.json();
+
+                if (data.error) {
+                    document.getElementById('answer-content').innerHTML =
+                        `<span class="error">${data.error}</span>`;
+                } else {
+                    document.getElementById('answer-content').textContent = data.answer;
+                }
+
+                const sourcesList = document.getElementById('sources-list');
+                sourcesList.innerHTML = '';
+                document.getElementById('source-count').textContent = (data.sources || []).length;
+
+                (data.sources || []).forEach((s, i) => {
+                    const div = document.createElement('div');
+                    div.className = 'source-item';
+                    div.onclick = () => div.classList.toggle('expanded');
+                    const sourceBody = (s.preamble || '') + '\n\n' + (s.content || '');
+                    div.innerHTML = `
+                        <div>
+                            <span class="score-badge">${(s.score * 100).toFixed(1)}%</span>
+                            <strong>${s.file_name}:${s.start_line}-${s.end_line}</strong>
+                            - ${s.name}
+                        </div>
+                        <div class="source-meta">${s.chunk_type} | ${s.file_path || 'path unavailable'}</div>
+                        <div class="source-content"></div>
+                        <button type="button" class="secondary outline file-context-btn">Load file context</button>
+                    `;
+                    const sourceContent = div.querySelector('.source-content');
+                    sourceContent.textContent = sourceBody.trim();
+                    const contextBtn = div.querySelector('.file-context-btn');
+                    contextBtn.onclick = async (event) => {
+                        event.stopPropagation();
+                        if (!s.file_path) {
+                            sourceContent.textContent = 'File path unavailable for this source.';
+                            div.classList.add('expanded');
+                            return;
+                        }
+                        contextBtn.disabled = true;
+                        contextBtn.textContent = 'Loading...';
+                        try {
+                            const fileResp = await fetch('/api/file', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ file_path: s.file_path }),
+                            });
+                            const fileData = await fileResp.json();
+                            if (fileData.error) {
+                                sourceContent.textContent = `Error: ${fileData.error}`;
+                            } else {
+                                const suffix = fileData.truncated ? '\n\n[truncated to first 2000 lines]' : '';
+                                sourceContent.textContent = fileData.content + suffix;
+                            }
+                            div.classList.add('expanded');
+                        } catch (fileErr) {
+                            sourceContent.textContent = `Error: ${fileErr.message}`;
+                            div.classList.add('expanded');
+                        } finally {
+                            contextBtn.disabled = false;
+                            contextBtn.textContent = 'Load file context';
+                        }
+                    };
+                    sourcesList.appendChild(div);
+                });
+
+                document.getElementById('answer-box').style.display = 'block';
+            } catch (err) {
+                document.getElementById('answer-content').innerHTML =
+                    `<span class="error">Error: ${err.message}</span>`;
+                document.getElementById('answer-box').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
