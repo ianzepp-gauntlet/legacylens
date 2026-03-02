@@ -112,4 +112,7 @@ def query_vectors(
 def delete_namespace():
     """Delete all vectors in the namespace."""
     index = get_index()
-    index.delete(delete_all=True, namespace=settings.pinecone_namespace)
+    try:
+        index.delete(delete_all=True, namespace=settings.pinecone_namespace)
+    except Exception:
+        pass  # Namespace may not exist yet
