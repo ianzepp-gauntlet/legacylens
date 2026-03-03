@@ -69,12 +69,15 @@ async def api_ask(request: Request):
     from legacylens.chain import ask
     from legacylens.models import QueryResult
 
-    cached = _get_cached_results(question, top_k, file_type) if use_l1 else None
-    if cached is not None:
-        results = [QueryResult(**r) for r in cached]
-        result = ask(question, top_k=top_k, file_type=file_type, model=model, results=results)
-    else:
-        result = ask(question, top_k=top_k, file_type=file_type, model=model)
+    try:
+        cached = _get_cached_results(question, top_k, file_type) if use_l1 else None
+        if cached is not None:
+            results = [QueryResult(**r) for r in cached]
+            result = await asyncio.to_thread(ask, question, top_k, file_type, model, results)
+        else:
+            result = await asyncio.to_thread(ask, question, top_k, file_type, model)
+    except Exception as exc:
+        return {"error": str(exc), "sources": []}
 
     # Cache the LLM answer for future requests
     if use_l2 and not file_type:

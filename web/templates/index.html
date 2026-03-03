@@ -1178,6 +1178,11 @@
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify(payload),
                     });
+
+                    if (!resp.ok) {
+                        throw new Error('Server returned ' + resp.status);
+                    }
+
                     const data = await resp.json();
 
                     if (data.error) {
