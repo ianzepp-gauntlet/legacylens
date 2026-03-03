@@ -1,0 +1,147 @@
+\documentclass[11pt,letterpaper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{titlesec}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+
+\hypersetup{
+  colorlinks=true,
+  linkcolor=blue!60!black,
+  urlcolor=blue!60!black
+}
+
+\titleformat{\section}{\Large\bfseries}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\large\bfseries}{}{0em}{}
+
+\title{\textbf{LegacyLens --- Pre-Search Decisions}}
+\author{Gauntlet Week 3}
+\date{}
+
+\begin{document}
+\maketitle
+
+\section{Phase 1: Constraints}
+
+\subsection{Scale \& Load Profile}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[Target codebase] AWS CardDemo (\texttt{aws-mainframe-modernization-carddemo})
+    \begin{itemize}[nosep]
+      \item Credit card management mainframe application (COBOL/CICS/VSAM/JCL)
+      \item 44 COBOL programs ($\sim$28K LOC), 62 copybooks ($\sim$10.7K LOC), 106 COBOL files total ($\sim$40.8K LOC)
+      \item Plus JCL, BMS maps, DDL, assembly --- rich supporting artifacts
+      \item Real business logic: accounts, cards, transactions, bill payments, statements
+      \item Intentionally varied coding styles for analysis tooling --- ideal for RAG
+      \item Apache 2.0 licensed, well-documented
+    \end{itemize}
+  \item[Exceeds minimum] 10,000+ LOC across 50+ files
+  \item[Query volume] Low steady-state (developer + reviewers), spiky from automated parallel evals
+  \item[Ingestion] Batch (one-time ingest of static codebase)
+  \item[Latency target] $<$3 seconds end-to-end
+\end{description}
+
+\subsection{Budget \& Cost Ceiling}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[Overall budget] $\sim$\$100/month comfortable
+  \item[Embedding costs] No ceiling (negligible for codebase size)
+  \item[LLM costs] No ceiling, OpenAI
+  \item[Preference] Managed services to save time
+\end{description}
+
+\subsection{Time to Ship}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[MVP deadline] Tuesday night (36 hours real time, 16--20 hours work)
+  \item[4-of-8 code understanding features] Deferred to Final submission
+  \item[Framework] LangChain (prework exposure lowers learning curve)
+\end{description}
+
+\subsection{Data Sensitivity}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[Codebase] Open source, no restrictions
+  \item[External APIs] No concerns sending code to OpenAI/Pinecone
+  \item[Data residency] US data center expected, not a hard requirement
+\end{description}
+
+\subsection{Team \& Skill Constraints}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[Vector databases] Very limited experience
+  \item[RAG frameworks] First exposure (cookbook prework only)
+  \item[COBOL] No experience reading COBOL code
+\end{description}
+
+\section{Phase 2: Architecture Decisions}
+
+\subsection{Vector Database: Pinecone}
+
+\begin{itemize}[nosep]
+  \item Managed cloud, free tier for MVP, paid tier for final submission
+  \item Hybrid search (vector + keyword) enabled
+  \item Metadata fields: file path, line numbers, section type, function/paragraph name, has\_comments
+  \item Comments are high-priority content --- preserve alongside associated code
+\end{itemize}
+
+\subsection{Embedding Strategy}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[Model] OpenAI text-embedding-3-small (1536 dimensions)
+  \item[Fallback/alternative] Can switch to text-embedding-3-large if quality is poor (re-index takes minutes)
+  \item[Local toggle] Ollama support for offline dev/testing (configurable provider)
+  \item[Batch processing] Optimize later
+\end{description}
+
+\subsection{Chunking Approach}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[Strategy] Syntax-aware from the start (COBOL DIVISIONs, SECTIONs, PARAGRAPHs)
+  \item[Max chunk size] $\sim$1000 tokens, split if exceeded
+  \item[Overlap strategy] Deferred until codebase is reviewed
+  \item[Fallback] Fixed-size + overlap for anything that doesn't parse cleanly
+\end{description}
+
+\subsection{Retrieval Pipeline}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[Top-k] 10 (configurable)
+  \item[Re-ranking] None for MVP
+  \item[Context window management] None for MVP
+  \item[Multi-query / query expansion] Deferred (not MVP)
+  \item[Dynamic k (LLM-suggested)] Stretch goal
+\end{description}
+
+\subsection{Answer Generation}
+
+\begin{description}[style=nextline, leftmargin=2em]
+  \item[LLM] OpenAI (GPT-4o and GPT-4o-mini, configurable, test both)
+  \item[Prompt design] Keep simple for MVP
+  \item[Citations] Inline file/line references, e.g.\ \texttt{(file.cob:42-58)}
+  \item[Streaming] No, full response for MVP
+\end{description}
+
+\subsection{Framework: LangChain}
+
+\begin{itemize}[nosep]
+  \item Pairs with OpenAI + Pinecone
+  \item Prior exposure from RAG cookbook prework
+\end{itemize}
+
+\section{Phase 3: Deferred to Implementation}
+
+\begin{itemize}[nosep]
+  \item Evaluation \& observability
+  \item Failure mode analysis
+  \item Evaluation strategy
+  \item Performance optimization
+  \item Observability / logging / metrics
+  \item Deployment \& DevOps
+\end{itemize}
+
+\end{document}
