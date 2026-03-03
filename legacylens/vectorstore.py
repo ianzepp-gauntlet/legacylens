@@ -193,8 +193,8 @@ def search_records(
 
     return [
         {
-            "id": hit.id,
-            "score": hit.score,
+            "id": hit.get("_id") or hit.id,
+            "score": hit.get("_score") or hit.score,
             "metadata": hit.fields or {},
         }
         for hit in response.result.hits
