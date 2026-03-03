@@ -1112,8 +1112,11 @@
                 var ragLabel = stats.rag_cached ? 'RAG (cached)' : 'RAG';
                 items.push('<span class="perf-item"><span class="perf-label">' + ragLabel + '</span><span class="perf-value">' + stats.rag_s.toFixed(2) + 's</span></span>');
             }
-            if (stats.llm_s != null) {
-                items.push('<span class="perf-item"><span class="perf-label">LLM</span><span class="perf-value">' + stats.llm_s.toFixed(2) + 's</span></span>');
+            if (stats.llm_first_token_s != null) {
+                items.push('<span class="perf-item"><span class="perf-label">LLM TTFT</span><span class="perf-value">' + stats.llm_first_token_s.toFixed(2) + 's</span></span>');
+            }
+            if (stats.llm_total_s != null) {
+                items.push('<span class="perf-item"><span class="perf-label">LLM Total</span><span class="perf-value">' + stats.llm_total_s.toFixed(2) + 's</span></span>');
             }
             if (stats.total_s != null) {
                 items.push('<span class="perf-item"><span class="perf-label">Total</span><span class="perf-value">' + stats.total_s.toFixed(2) + 's</span></span>');

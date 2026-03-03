@@ -112,10 +112,15 @@ def ask_stream(
 
     chain = prompt | llm | StrOutputParser()
     answer_chunks = []
+    t_llm_first = None
     for chunk in chain.stream({"context": context, "question": question}):
+        if t_llm_first is None:
+            t_llm_first = time.perf_counter()
         answer_chunks.append(chunk)
         yield ("token", chunk)
     t_llm = time.perf_counter()
+    if t_llm_first is None:
+        t_llm_first = t_llm
 
     answer_text = "".join(answer_chunks)
     tokens_out = _count_tokens(answer_text)
@@ -123,7 +128,8 @@ def ask_stream(
     yield ("sources", [_serialize_source(r) for r in results])
     yield ("stats", {
         "rag_s": round(t_rag - t_start, 3),
-        "llm_s": round(t_llm - t_rag, 3),
+        "llm_first_token_s": round(t_llm_first - t_rag, 3),
+        "llm_total_s": round(t_llm - t_rag, 3),
         "total_s": round(t_llm - t_start, 3),
         "tokens_in": tokens_in,
         "tokens_out": tokens_out,
@@ -174,7 +180,8 @@ def ask(
         "sources": [_serialize_source(r) for r in results],
         "stats": {
             "rag_s": round(t_rag - t_start, 3),
-            "llm_s": round(t_llm - t_rag, 3),
+            "llm_first_token_s": round(t_llm - t_rag, 3),
+            "llm_total_s": round(t_llm - t_rag, 3),
             "total_s": round(t_llm - t_start, 3),
             "tokens_in": tokens_in,
             "tokens_out": tokens_out,
