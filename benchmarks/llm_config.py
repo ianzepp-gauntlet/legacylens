@@ -20,6 +20,12 @@ class LLMConfig:
 DEFAULT_MODELS: list[LLMConfig] = [
     LLMConfig(name="gpt-4o-mini", provider="openai", model_id="gpt-4o-mini"),
     LLMConfig(name="gpt-4o", provider="openai", model_id="gpt-4o"),
+    LLMConfig(name="gpt-4.1-nano", provider="openai", model_id="gpt-4.1-nano"),
+    LLMConfig(name="gpt-4.1-mini", provider="openai", model_id="gpt-4.1-mini"),
+    LLMConfig(name="gpt-4.1", provider="openai", model_id="gpt-4.1"),
+    LLMConfig(name="gpt-5-nano", provider="openai", model_id="gpt-5-nano"),
+    LLMConfig(name="gpt-5-mini", provider="openai", model_id="gpt-5-mini"),
+    LLMConfig(name="gpt-5", provider="openai", model_id="gpt-5"),
 ]
 
 DEFAULT_GRADER = LLMConfig(
@@ -93,15 +99,20 @@ def _call_openai(
     from openai import OpenAI
 
     client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
-    response = client.chat.completions.create(
-        model=config.model_id,
-        temperature=config.temperature,
-        max_tokens=config.max_tokens,
-        messages=[
+    kwargs: dict = {
+        "model": config.model_id,
+        "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
         ],
-    )
+    }
+    # GPT-5+ models only support temperature=1 and use max_completion_tokens
+    if config.model_id.startswith("gpt-5"):
+        kwargs["max_completion_tokens"] = config.max_tokens
+    else:
+        kwargs["temperature"] = config.temperature
+        kwargs["max_tokens"] = config.max_tokens
+    response = client.chat.completions.create(**kwargs)
     return response.choices[0].message.content
 
 

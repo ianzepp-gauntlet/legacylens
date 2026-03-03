@@ -32,7 +32,7 @@ Rules:
 - When the question is broad or vague, describe what the retrieved code reveals about the topic.
 - Cite sources as [FileName:StartLine-EndLine] when referencing specific code.
 - Explain COBOL concepts in plain English when relevant.
-- Be concise but thorough.
+- Be concise but thorough. Your answers should be no more than 1-2 paragraphs, unless the response clearly requires an extended answer.
 
 Retrieved context:
 {context}
@@ -103,12 +103,15 @@ def ask_stream(
     input_text = SYSTEM_PROMPT.replace("{context}", context) + question
     tokens_in = _count_tokens(input_text)
 
-    llm = ChatOpenAI(
-        model=effective_model,
-        api_key=settings.openai_api_key,
-        temperature=0,
-        streaming=True,
-    )
+    # GPT-5+ models only support temperature=1
+    llm_kwargs: dict = {
+        "model": effective_model,
+        "api_key": settings.openai_api_key,
+        "streaming": True,
+    }
+    if not effective_model.startswith("gpt-5"):
+        llm_kwargs["temperature"] = 0
+    llm = ChatOpenAI(**llm_kwargs)
 
     chain = prompt | llm | StrOutputParser()
     answer_chunks = []
@@ -163,11 +166,14 @@ def ask(
     input_text = SYSTEM_PROMPT.replace("{context}", context) + question
     tokens_in = _count_tokens(input_text)
 
-    llm = ChatOpenAI(
-        model=effective_model,
-        api_key=settings.openai_api_key,
-        temperature=0,
-    )
+    # GPT-5+ models only support temperature=1
+    llm_kwargs: dict = {
+        "model": effective_model,
+        "api_key": settings.openai_api_key,
+    }
+    if not effective_model.startswith("gpt-5"):
+        llm_kwargs["temperature"] = 0
+    llm = ChatOpenAI(**llm_kwargs)
 
     chain = prompt | llm | StrOutputParser()
     answer = chain.invoke({"context": context, "question": question})
