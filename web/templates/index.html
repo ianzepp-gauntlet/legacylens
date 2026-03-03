@@ -4,16 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LegacyLens - AI-Powered COBOL Insights</title>
-    <!-- Monofonto: Fallout 3/NV Pip-Boy UI font (Typodermic, free commercial) -->
-    <link href="https://fonts.cdnfonts.com/css/monofonto" rel="stylesheet">
-    <!-- Fixedsys Excelsior: Fallout 3/NV terminal font (CC0, public domain) -->
-    <link href="https://fonts.cdnfonts.com/css/fixedsys-excelsior-301" rel="stylesheet">
     <style>
+        @font-face {
+            font-family: 'Monofonto';
+            src: url('/static/fonts/monofonto.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'Fixedsys Excelsior 3.01';
+            src: url('/static/fonts/FSEX300.woff') format('woff');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
         /* JH_Fallout: Pip-Boy 2000 font from Fallout 1, 2 & Tactics */
         @font-face {
             font-family: 'JH Fallout';
             src: url('/static/fonts/JH_Fallout.woff') format('woff'),
                  url('/static/fonts/JH_Fallout.ttf') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        @font-face {
+            font-family: 'IBM 3270';
+            src: url('/static/fonts/3270-Regular.woff') format('woff'),
+                 url('/static/fonts/3270-Regular.ttf') format('truetype');
             font-weight: 400;
             font-style: normal;
             font-display: swap;
@@ -992,8 +1013,11 @@
                             '<span class="source-file">' + escapeHtml(s.file_name + ':' + s.start_line + '-' + s.end_line) + '</span>' +
                             '<span class="score-label ' + tier + '">' + pct + '</span>' +
                         '</div>' +
-                        '<div class="source-meta">' + escapeHtml(s.name) + ' &middot; ' + escapeHtml(s.chunk_type || '') + ' &middot; ' + escapeHtml(s.file_name || '') + '</div>' +
-                        '<button type="button" class="btn-context">Show Chunk</button>' +
+                        '<div class="source-meta">' + escapeHtml(s.name) + ' &middot; ' + escapeHtml(s.chunk_type || '') + ' &middot; ' + escapeHtml(s.file_path || s.file_name || '') + '</div>' +
+                        '<div class="source-actions">' +
+                            '<button type="button" class="btn-context">Show Chunk</button>' +
+                            '<button type="button" class="btn-file">Load File Context</button>' +
+                        '</div>' +
                         '<div class="source-content"></div>';
 
                     const sourceContent = div.querySelector('.source-content');
@@ -1004,6 +1028,39 @@
                         var isVisible = sourceContent.style.display === 'block';
                         sourceContent.style.display = isVisible ? 'none' : 'block';
                         chunkBtn.textContent = isVisible ? 'Show Chunk' : 'Hide Chunk';
+                    });
+
+                    var fileBtn = div.querySelector('.btn-file');
+                    fileBtn.addEventListener('click', async function() {
+                        if (!s.file_path) {
+                            sourceContent.textContent = 'File path unavailable for this source.';
+                            sourceContent.style.display = 'block';
+                            chunkBtn.textContent = 'Hide Chunk';
+                            return;
+                        }
+                        fileBtn.disabled = true;
+                        fileBtn.textContent = 'Loading...';
+                        try {
+                            const fileResp = await fetch('/api/file', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ file_path: s.file_path }),
+                            });
+                            const fileData = await fileResp.json();
+                            if (fileData.error) {
+                                sourceContent.textContent = 'Error: ' + fileData.error;
+                            } else {
+                                const suffix = fileData.truncated ? '\n\n[truncated to first 2000 lines]' : '';
+                                sourceContent.textContent = fileData.content + suffix;
+                            }
+                        } catch (fileErr) {
+                            sourceContent.textContent = 'Error: ' + fileErr.message;
+                        } finally {
+                            sourceContent.style.display = 'block';
+                            chunkBtn.textContent = 'Hide Chunk';
+                            fileBtn.disabled = false;
+                            fileBtn.textContent = 'Load File Context';
+                        }
                     });
 
                     sourcesList.appendChild(div);

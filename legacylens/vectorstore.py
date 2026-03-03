@@ -11,6 +11,14 @@ from .models import CodeChunk
 METADATA_CONTENT_LIMIT = 10000  # Pinecone 40KB metadata limit
 
 
+def _is_not_found_error(exc: Exception) -> bool:
+    """Return True for namespace-not-found style errors."""
+    status = getattr(exc, "status", None) or getattr(exc, "status_code", None)
+    if status == 404:
+        return True
+    return "404" in str(exc)
+
+
 def make_vector_id(chunk: CodeChunk) -> str:
     """Build a stable, unique vector ID for a chunk."""
     path_digest = hashlib.sha1(chunk.file_path.encode("utf-8")).hexdigest()[:12]
@@ -114,5 +122,6 @@ def delete_namespace():
     index = get_index()
     try:
         index.delete(delete_all=True, namespace=settings.pinecone_namespace)
-    except Exception:
-        pass  # Namespace may not exist yet
+    except Exception as exc:
+        if not _is_not_found_error(exc):
+            raise

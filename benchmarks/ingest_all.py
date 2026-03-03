@@ -198,6 +198,14 @@ def ingest_config(
     print(f"{'='*60}")
 
     create_index(pc, config, clean=clean)
+    index = pc.Index(config.index_name)
+    try:
+        index.delete(delete_all=True, namespace=NAMESPACE)
+        print(f"  Cleared namespace '{NAMESPACE}' in {config.index_name}")
+    except Exception as exc:
+        status = getattr(exc, "status", None) or getattr(exc, "status_code", None)
+        if status != 404 and "404" not in str(exc):
+            raise
 
     # Chunk files
     chunks = []
@@ -229,9 +237,6 @@ def main():
     if not settings.pinecone_api_key:
         print("ERROR: PINECONE_API_KEY not set")
         sys.exit(1)
-    if not settings.openai_api_key:
-        print("ERROR: OPENAI_API_KEY not set")
-        sys.exit(1)
     if not settings.carddemo_path:
         print("ERROR: CARDDEMO_PATH not set")
         sys.exit(1)
@@ -246,6 +251,11 @@ def main():
             print(f"No matching configs found for: {args.configs}")
             print(f"Available: {', '.join(c.name for c in CONFIGS)}")
             sys.exit(1)
+
+    needs_openai = any(not config.is_pinecone_integrated for config in configs)
+    if needs_openai and not settings.openai_api_key:
+        print("ERROR: OPENAI_API_KEY not set (required for OpenAI embedding benchmark configs)")
+        sys.exit(1)
 
     print(f"Discovering files in {settings.carddemo_path}...")
     all_files = discover_files(settings.carddemo_path)

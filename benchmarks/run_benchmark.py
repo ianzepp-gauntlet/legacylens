@@ -125,25 +125,29 @@ def _query_pinecone_integrated(
 
 def run_single_query(
     pc: Pinecone,
-    openai_client: OpenAI,
+    openai_client: OpenAI | None,
     config: BenchmarkConfig,
     query: BenchmarkQuery,
     top_k: int,
-    repetitions: int = REPETITIONS,
+    repetitions: int,
 ) -> dict:
     """Run a single query against a config, timing multiple repetitions."""
     timings = []
     last_results = []
+    relevance_scores = []
 
     for _ in range(repetitions):
         if config.is_pinecone_integrated:
             results, elapsed = _query_pinecone_integrated(pc, config, query.query, top_k)
         else:
+            if openai_client is None:
+                raise ValueError(
+                    f"OpenAI client is required for non-integrated config: {config.name}"
+                )
             results, elapsed = _query_openai_index(pc, openai_client, config, query.query, top_k)
         timings.append(elapsed)
+        relevance_scores.append(score_relevance(results, query))
         last_results = results
-
-    relevance = score_relevance(last_results, query)
 
     return {
         "config": config.name,
@@ -156,7 +160,7 @@ def run_single_query(
         "p95_latency_s": sorted(timings)[int(len(timings) * 0.95)] if len(timings) > 1 else timings[0],
         "min_latency_s": min(timings),
         "max_latency_s": max(timings),
-        "relevance_score": relevance,
+        "relevance_score": statistics.mean(relevance_scores),
         "result_count": len(last_results),
         "top_results": last_results[:5],
     }
@@ -166,10 +170,12 @@ def run_benchmark(
     configs: list[BenchmarkConfig],
     queries: list[BenchmarkQuery],
     top_k_values: list[int],
+    repetitions: int,
 ) -> list[dict]:
     """Run the full benchmark suite."""
     pc = Pinecone(api_key=settings.pinecone_api_key)
-    openai_client = OpenAI(api_key=settings.openai_api_key)
+    needs_openai = any(not config.is_pinecone_integrated for config in configs)
+    openai_client = OpenAI(api_key=settings.openai_api_key) if needs_openai else None
 
     all_results = []
     total = len(configs) * len(queries) * len(top_k_values)
@@ -187,7 +193,14 @@ def run_benchmark(
         for top_k in top_k_values:
             for query in queries:
                 count += 1
-                result = run_single_query(pc, openai_client, config, query, top_k)
+                result = run_single_query(
+                    pc,
+                    openai_client,
+                    config,
+                    query,
+                    top_k,
+                    repetitions=repetitions,
+                )
                 all_results.append(result)
 
                 print(
@@ -243,8 +256,8 @@ def main():
     parser.add_argument("--repetitions", type=int, default=REPETITIONS, help="Timing repetitions per query")
     args = parser.parse_args()
 
-    if not settings.pinecone_api_key or not settings.openai_api_key:
-        print("ERROR: PINECONE_API_KEY and OPENAI_API_KEY must be set")
+    if not settings.pinecone_api_key:
+        print("ERROR: PINECONE_API_KEY must be set")
         sys.exit(1)
 
     configs = CONFIGS
@@ -259,12 +272,16 @@ def main():
     if args.top_k:
         top_k_values = [int(k.strip()) for k in args.top_k.split(",")]
 
+    needs_openai = any(not config.is_pinecone_integrated for config in configs)
+    if needs_openai and not settings.openai_api_key:
+        print("ERROR: OPENAI_API_KEY must be set for OpenAI embedding benchmark configs")
+        sys.exit(1)
+
     print(f"Benchmark: {len(configs)} configs × {len(QUERIES)} queries × {len(top_k_values)} top-k values")
     print(f"Top-k values: {top_k_values}")
     print(f"Repetitions: {args.repetitions}")
 
-    global REPETITIONS
-    results = run_benchmark(configs, QUERIES, top_k_values)
+    results = run_benchmark(configs, QUERIES, top_k_values, repetitions=args.repetitions)
     save_results(results, RESULTS_DIR)
 
     # Quick summary
