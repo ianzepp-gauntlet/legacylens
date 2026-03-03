@@ -349,7 +349,49 @@ Benchmark run: 1 config, 209 queries, 2 top-k values (5/10), 1 repetition (418 t
 
 3. **Latency is consistent.** Average latency of 0.41s across 209 queries matches the 40-query benchmark (0.365s), with no degradation at scale.
 
-### Running Benchmarks
+### LLM Answer Quality Benchmark
+
+A separate benchmark suite compares how well different LLMs answer questions given the same retrieved context. This runs in two phases:
+
+**Phase 1 — Generate responses:** Retrieves chunks once per query, then sends the same context to each model. Records full answers and response latency.
+
+```bash
+# Run with specific models (provider:model_id syntax)
+python benchmarks/run_llm_benchmark.py --models openai:gpt-4o-mini,anthropic:claude-sonnet-4-20250514
+
+# Quick test (5 queries only)
+python benchmarks/run_llm_benchmark.py --models openai:gpt-4o-mini --max-queries 5
+```
+
+**Phase 2 — Grade responses:** Sends each (question, context, response) triple to a grader LLM (default: Claude Opus) which scores on 6 dimensions:
+
+| Dimension | What it measures |
+|---|---|
+| Accuracy | Factual correctness vs provided context; no hallucination |
+| Completeness | Addresses all parts of the question; covers key code paths |
+| Citation Quality | Uses `[File:Line-Line]` format; citations match context |
+| Clarity | Well-organized; COBOL concepts explained in plain English |
+| Conciseness | Appropriately brief without omitting important details |
+| Overall | Holistic assessment (not a mechanical average) |
+
+```bash
+# Grade latest responses (default grader: Claude Opus)
+python benchmarks/grade_responses.py
+
+# Use a specific grader model
+python benchmarks/grade_responses.py --grader anthropic:claude-opus-4-20250514
+
+# Quick test
+python benchmarks/grade_responses.py --max-grades 10
+```
+
+**Report:** Generates model ranking tables, per-category breakdowns, score distributions, and worst-performing pairs.
+
+```bash
+python benchmarks/llm_report.py
+```
+
+### Running Retrieval Benchmarks
 
 ```bash
 # 1. Ingest into all 16 indexes (or a subset)
@@ -393,8 +435,12 @@ legacylens/
 │   ├── queries_curated.py     # 40 hand-curated benchmark queries
 │   ├── queries_suggestions.py # 209 auto-extracted suggestion queries
 │   ├── ingest_all.py          # Multi-index ingestion (OpenAI + Pinecone + sparse)
-│   ├── run_benchmark.py       # Benchmark runner (latency + relevance)
-│   ├── report.py              # Results analysis and summary tables
+│   ├── run_benchmark.py       # Retrieval benchmark runner (latency + relevance)
+│   ├── report.py              # Retrieval results analysis and summary tables
+│   ├── llm_config.py          # LLM model registry + multi-provider call abstraction
+│   ├── run_llm_benchmark.py   # Phase 1: LLM response generation + latency
+│   ├── grade_responses.py     # Phase 2: Grade responses with Claude Opus
+│   ├── llm_report.py          # LLM quality report (ranking, categories, distribution)
 │   └── results/               # JSON + CSV output
 ├── web/
 │   ├── app.py             # FastAPI endpoints
