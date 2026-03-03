@@ -146,7 +146,7 @@ Each configuration creates a separate Pinecone index named `legacylens-bench-{mo
 
 ### Query Suite
 
-10 predefined queries with expected file/chunk patterns for automated relevance scoring. Each query is run 3 times per configuration for timing stability. Metrics collected:
+40 predefined queries spanning 20 categories with expected file/chunk patterns for automated relevance scoring (expanded from the original 10-query suite). Each query is run 3 times per configuration for timing stability. Metrics collected:
 
 - **Latency:** mean, p50, p95, min, max (seconds)
 - **Relevance:** fraction of expected files/chunks found in results (0.0 - 1.0)
@@ -189,6 +189,35 @@ Benchmark run: 16 configs, 10 queries, 5 top-k values (3/5/10/20/50), 3 repetiti
 5. **`text-embedding-3-large` offers no advantage.** Slower than `small` with equal or worse relevance. The COBOL-specific preambles and chunking strategy contribute more to retrieval quality than embedding model size.
 
 6. **Hardest queries across all configs:** "File I/O operations" and "CICS screen navigation" consistently score low, suggesting the expected result patterns for these queries may need refinement.
+
+### Expanded Results: 40-Query Suite (2026-03-03)
+
+After the initial 10-query benchmark identified paragraph chunking as the clear winner, the 8 fixed-chunking indexes were deleted. A broader 40-query benchmark suite was then built from 209 curated suggestion queries spanning 20 categories (user management, account processing, card processing, transactions, export/import, admin, date/utility, copybooks, BMS maps, JCL jobs, CICS operations, DB2, VSAM, paragraph patterns, data elements, cross-cutting concerns, business domain, architecture, specific operations, file definitions).
+
+Benchmark run: 8 configs (paragraph only), 40 queries, 2 top-k values (5/10), 1 repetition (640 total query runs).
+
+#### Overall Summary (ranked by relevance, then latency)
+
+| Rank | Config | Avg Latency | Avg Relevance |
+|---:|---|--:|--:|
+| 1 | **llama-1024-paragraph** | **0.365s** | **0.88** |
+| 2 | large-1536-paragraph | 0.686s | 0.82 |
+| 3 | large-1024-paragraph | 0.591s | 0.80 |
+| 4 | large-512-paragraph | 0.528s | 0.77 |
+| 5 | small-1536-paragraph | 0.616s | 0.73 |
+| 6 | e5-1024-paragraph | 0.439s | 0.71 |
+| 7 | small-1024-paragraph | 0.593s | 0.71 |
+| 8 | small-512-paragraph | 0.568s | 0.68 |
+
+#### Key Findings (40-query update)
+
+1. **`llama-text-embed-v2` dominance confirmed at scale.** The relevance gap widened from +1pt (10 queries) to +6pts (40 queries) over the runner-up, while remaining the fastest config. Best relevance (0.88) and best latency (0.365s).
+
+2. **`text-embedding-3-large` overtakes `small` with broader queries.** With 40 queries spanning more categories, `large` models now clearly outperform `small` (0.77-0.82 vs 0.68-0.73). The original 10-query suite was too narrow to surface this difference.
+
+3. **Dimension size matters more for `large`.** The 1536d large config scores 0.82 vs 0.77 for 512d — a meaningful 5-point gap. For `small`, the spread is tighter (0.68-0.73).
+
+4. **Pinecone integrated models remain ~40% faster.** Llama at 0.365s and E5 at 0.439s vs OpenAI configs at 0.53-0.69s.
 
 ### Running Benchmarks
 
