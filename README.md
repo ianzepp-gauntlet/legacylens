@@ -99,8 +99,13 @@ Single-page interface with query input, file type filter, LLM-generated answers,
 ### API
 
 ```bash
-# Ask with LLM answer
+# Ask with LLM answer (blocks until complete, returns JSON)
 curl -X POST http://localhost:8000/api/ask \
+  -H "Content-Type: application/json" \
+  -d '{"question": "What does COCRDUPC do?", "top_k": 10}'
+
+# Ask with streaming (Server-Sent Events, token-by-token)
+curl -N -X POST http://localhost:8000/api/ask/stream \
   -H "Content-Type: application/json" \
   -d '{"question": "What does COCRDUPC do?", "top_k": 10}'
 
@@ -114,6 +119,8 @@ curl -X POST http://localhost:8000/api/file \
   -H "Content-Type: application/json" \
   -d '{"file_path": "/path/to/COCRDUPC.cbl"}'
 ```
+
+Both `/api/ask` and `/api/ask/stream` accept the same request body (`question`, `top_k`, `file_type`, `model`). The non-streaming endpoint returns JSON `{"answer": "...", "sources": [...]}`. The streaming endpoint returns SSE with `data:` lines for answer tokens, an `event: sources` with the sources JSON, and `event: done` to signal completion. Cached answers stream as a single chunk (instant). The web UI uses the streaming endpoint by default.
 
 ## Testing
 

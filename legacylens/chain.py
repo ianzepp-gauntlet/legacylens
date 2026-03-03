@@ -57,6 +57,42 @@ def _serialize_source(result) -> dict:
     }
 
 
+def ask_stream(
+    question: str,
+    top_k: int | None = None,
+    file_type: str | None = None,
+    model: str | None = None,
+    results: list | None = None,
+):
+    """Stream answer tokens, then yield sources.
+
+    Yields (type, data) tuples:
+      ("token", str)   — an answer chunk
+      ("sources", list) — serialized sources list (final item)
+    """
+    if results is None:
+        results = retrieve(question, top_k=top_k, file_type=file_type)
+    context = _format_context(results)
+
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", SYSTEM_PROMPT),
+        ("human", USER_PROMPT),
+    ])
+
+    llm = ChatOpenAI(
+        model=model or settings.chat_model,
+        api_key=settings.openai_api_key,
+        temperature=0,
+        streaming=True,
+    )
+
+    chain = prompt | llm | StrOutputParser()
+    for chunk in chain.stream({"context": context, "question": question}):
+        yield ("token", chunk)
+
+    yield ("sources", [_serialize_source(r) for r in results])
+
+
 def ask(
     question: str,
     top_k: int | None = None,

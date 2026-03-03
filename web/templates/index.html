@@ -960,6 +960,80 @@
             return 'low';
         }
 
+        function renderSources(sources) {
+            const sourcesList = document.getElementById('sources-list');
+            sourcesList.innerHTML = '';
+            document.getElementById('source-count').textContent = sources.length;
+
+            sources.forEach(function(s) {
+                const tier = getScoreTier(s.score);
+                const pct = (s.score * 100).toFixed(1) + '%';
+                const sourceBody = ((s.preamble || '') + '\n\n' + (s.content || '')).trim();
+
+                const div = document.createElement('div');
+                div.className = 'source-item score-' + tier;
+
+                div.innerHTML =
+                    '<div class="source-top">' +
+                        '<span class="source-file">' + escapeHtml(s.file_name + ':' + s.start_line + '-' + s.end_line) + '</span>' +
+                        '<span class="score-label ' + tier + '">' + pct + '</span>' +
+                    '</div>' +
+                    '<div class="source-meta">' + escapeHtml(s.name) + ' &middot; ' + escapeHtml(s.chunk_type || '') + ' &middot; ' + escapeHtml(s.file_path || s.file_name || '') + '</div>' +
+                    '<div class="source-actions">' +
+                        '<button type="button" class="btn-context">Show Chunk</button>' +
+                        '<button type="button" class="btn-file">Load File Context</button>' +
+                    '</div>' +
+                    '<div class="source-content"></div>';
+
+                const sourceContent = div.querySelector('.source-content');
+                sourceContent.textContent = sourceBody;
+
+                var chunkBtn = div.querySelector('.btn-context');
+                chunkBtn.addEventListener('click', function() {
+                    var isVisible = sourceContent.style.display === 'block';
+                    sourceContent.style.display = isVisible ? 'none' : 'block';
+                    chunkBtn.textContent = isVisible ? 'Show Chunk' : 'Hide Chunk';
+                });
+
+                var fileBtn = div.querySelector('.btn-file');
+                fileBtn.addEventListener('click', async function() {
+                    if (!s.file_path) {
+                        sourceContent.textContent = 'File path unavailable for this source.';
+                        sourceContent.style.display = 'block';
+                        chunkBtn.textContent = 'Hide Chunk';
+                        return;
+                    }
+                    fileBtn.disabled = true;
+                    fileBtn.textContent = 'Loading...';
+                    try {
+                        const fileResp = await fetch('/api/file', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ file_path: s.file_path }),
+                        });
+                        const fileData = await fileResp.json();
+                        if (fileData.error) {
+                            sourceContent.textContent = 'Error: ' + fileData.error;
+                        } else {
+                            const suffix = fileData.truncated ? '\n\n[truncated to first 2000 lines]' : '';
+                            sourceContent.textContent = fileData.content + suffix;
+                        }
+                    } catch (fileErr) {
+                        sourceContent.textContent = 'Error: ' + fileErr.message;
+                    } finally {
+                        sourceContent.style.display = 'block';
+                        chunkBtn.textContent = 'Hide Chunk';
+                        fileBtn.disabled = false;
+                        fileBtn.textContent = 'Load File Context';
+                    }
+                });
+
+                sourcesList.appendChild(div);
+            });
+
+            document.getElementById('sources-section').classList.remove('collapsed');
+        }
+
         async function handleSubmit(e) {
             e.preventDefault();
             const question = document.getElementById('question').value.trim();
@@ -975,7 +1049,7 @@
             document.getElementById('answer-box').style.display = 'none';
 
             try {
-                const resp = await fetch('/api/ask', {
+                const resp = await fetch('/api/ask/stream', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -985,91 +1059,46 @@
                         model: model,
                     }),
                 });
-                const data = await resp.json();
 
-                if (data.error) {
-                    document.getElementById('answer-content').innerHTML =
-                        '<span class="error">' + escapeHtml(data.error) + '</span>';
-                } else {
-                    document.getElementById('answer-content').textContent = data.answer;
+                if (!resp.ok) {
+                    throw new Error('Server returned ' + resp.status);
                 }
 
-                // Build sources
-                const sourcesList = document.getElementById('sources-list');
-                sourcesList.innerHTML = '';
-                const sources = data.sources || [];
-                document.getElementById('source-count').textContent = sources.length;
+                const reader = resp.body.getReader();
+                const decoder = new TextDecoder();
+                let answerText = '';
+                let buffer = '';
+                let sourcesEvent = false;
 
-                sources.forEach(function(s) {
-                    const tier = getScoreTier(s.score);
-                    const pct = (s.score * 100).toFixed(1) + '%';
-                    const sourceBody = ((s.preamble || '') + '\n\n' + (s.content || '')).trim();
-
-                    const div = document.createElement('div');
-                    div.className = 'source-item score-' + tier;
-
-                    div.innerHTML =
-                        '<div class="source-top">' +
-                            '<span class="source-file">' + escapeHtml(s.file_name + ':' + s.start_line + '-' + s.end_line) + '</span>' +
-                            '<span class="score-label ' + tier + '">' + pct + '</span>' +
-                        '</div>' +
-                        '<div class="source-meta">' + escapeHtml(s.name) + ' &middot; ' + escapeHtml(s.chunk_type || '') + ' &middot; ' + escapeHtml(s.file_path || s.file_name || '') + '</div>' +
-                        '<div class="source-actions">' +
-                            '<button type="button" class="btn-context">Show Chunk</button>' +
-                            '<button type="button" class="btn-file">Load File Context</button>' +
-                        '</div>' +
-                        '<div class="source-content"></div>';
-
-                    const sourceContent = div.querySelector('.source-content');
-                    sourceContent.textContent = sourceBody;
-
-                    var chunkBtn = div.querySelector('.btn-context');
-                    chunkBtn.addEventListener('click', function() {
-                        var isVisible = sourceContent.style.display === 'block';
-                        sourceContent.style.display = isVisible ? 'none' : 'block';
-                        chunkBtn.textContent = isVisible ? 'Show Chunk' : 'Hide Chunk';
-                    });
-
-                    var fileBtn = div.querySelector('.btn-file');
-                    fileBtn.addEventListener('click', async function() {
-                        if (!s.file_path) {
-                            sourceContent.textContent = 'File path unavailable for this source.';
-                            sourceContent.style.display = 'block';
-                            chunkBtn.textContent = 'Hide Chunk';
-                            return;
-                        }
-                        fileBtn.disabled = true;
-                        fileBtn.textContent = 'Loading...';
-                        try {
-                            const fileResp = await fetch('/api/file', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ file_path: s.file_path }),
-                            });
-                            const fileData = await fileResp.json();
-                            if (fileData.error) {
-                                sourceContent.textContent = 'Error: ' + fileData.error;
-                            } else {
-                                const suffix = fileData.truncated ? '\n\n[truncated to first 2000 lines]' : '';
-                                sourceContent.textContent = fileData.content + suffix;
-                            }
-                        } catch (fileErr) {
-                            sourceContent.textContent = 'Error: ' + fileErr.message;
-                        } finally {
-                            sourceContent.style.display = 'block';
-                            chunkBtn.textContent = 'Hide Chunk';
-                            fileBtn.disabled = false;
-                            fileBtn.textContent = 'Load File Context';
-                        }
-                    });
-
-                    sourcesList.appendChild(div);
-                });
-
+                document.getElementById('answer-content').textContent = '';
                 document.getElementById('answer-box').style.display = 'block';
+                document.getElementById('loading').style.display = 'none';
 
-                // Ensure sources are expanded by default
-                document.getElementById('sources-section').classList.remove('collapsed');
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+
+                    const lines = buffer.split('\n');
+                    buffer = lines.pop();
+
+                    for (const line of lines) {
+                        if (sourcesEvent && line.startsWith('data: ')) {
+                            const sources = JSON.parse(line.slice(6));
+                            renderSources(sources);
+                            sourcesEvent = false;
+                        } else if (line.startsWith('event: sources')) {
+                            sourcesEvent = true;
+                        } else if (line.startsWith('event: error')) {
+                            // Next data line has error message
+                            sourcesEvent = false;
+                        } else if (line.startsWith('data: ')) {
+                            const token = JSON.parse(line.slice(6));
+                            answerText += token;
+                            document.getElementById('answer-content').textContent = answerText;
+                        }
+                    }
+                }
 
             } catch (err) {
                 document.getElementById('answer-content').innerHTML =

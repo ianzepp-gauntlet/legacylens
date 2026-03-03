@@ -1,11 +1,12 @@
 """FastAPI web application for LegacyLens."""
 
+import asyncio
 import json
 import os
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -78,6 +79,70 @@ async def api_ask(request: Request):
         _ask_cache[cache_key] = result
 
     return result
+
+
+@app.post("/api/ask/stream")
+async def api_ask_stream(request: Request):
+    body = await request.json()
+    question = body.get("question", "")
+    top_k = body.get("top_k", 10)
+    file_type = body.get("file_type") or None
+    model = body.get("model") or None
+
+    if not question.strip():
+        async def error_stream():
+            yield f"event: error\ndata: {json.dumps('Question is required')}\n\n"
+        return StreamingResponse(error_stream(), media_type="text/event-stream")
+
+    from legacylens.config import settings
+    effective_model = model or settings.chat_model
+    cache_key = (question, effective_model)
+
+    # Check Layer 2 cache — stream cached answer as single chunk
+    if LAYER_2_CACHE and cache_key in _ask_cache and not file_type:
+        cached = _ask_cache[cache_key]
+
+        async def cached_stream():
+            yield f"data: {json.dumps(cached['answer'])}\n\n"
+            yield f"event: sources\ndata: {json.dumps(cached['sources'])}\n\n"
+            yield "event: done\ndata: \n\n"
+
+        return StreamingResponse(cached_stream(), media_type="text/event-stream")
+
+    # Stream from LLM
+    from legacylens.chain import ask_stream
+    from legacylens.models import QueryResult
+
+    cached_results = _get_cached_results(question, top_k, file_type)
+    if cached_results is not None:
+        results = [QueryResult(**r) for r in cached_results]
+    else:
+        results = None
+
+    async def event_stream():
+        full_answer = []
+        sources = []
+        gen = ask_stream(question, top_k=top_k, file_type=file_type, model=model, results=results)
+
+        while True:
+            try:
+                typ, data = await asyncio.to_thread(next, gen)
+            except StopIteration:
+                break
+            if typ == "token":
+                full_answer.append(data)
+                yield f"data: {json.dumps(data)}\n\n"
+            elif typ == "sources":
+                sources = data
+
+        yield f"event: sources\ndata: {json.dumps(sources)}\n\n"
+        yield "event: done\ndata: \n\n"
+
+        # Cache the complete answer
+        if LAYER_2_CACHE and not file_type:
+            _ask_cache[cache_key] = {"answer": "".join(full_answer), "sources": sources}
+
+    return StreamingResponse(event_stream(), media_type="text/event-stream")
 
 
 @app.post("/api/search")
