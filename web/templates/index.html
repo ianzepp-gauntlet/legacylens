@@ -450,6 +450,18 @@
             letter-spacing: 0.1em;
         }
 
+        .stream-cursor {
+            color: var(--text-answer);
+            opacity: 0.6;
+        }
+        .stream-cursor::after {
+            content: '\2588';
+            animation: blink 0.8s step-end infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
         #answer-content {
             color: var(--text-answer);
             font-family: var(--font-body);
@@ -1145,10 +1157,11 @@
                     let buffer = '';
                     let sourcesEvent = false;
 
-                    document.getElementById('answer-content').textContent = '';
+                    document.getElementById('answer-content').innerHTML = '<span class="stream-cursor">Thinking\u2026</span>';
                     document.getElementById('answer-box').style.display = 'block';
                     document.getElementById('loading').style.display = 'none';
 
+                    let pendingEvent = null;
                     while (true) {
                         const { done, value } = await reader.read();
                         if (done) break;
@@ -1158,18 +1171,31 @@
                         buffer = lines.pop();
 
                         for (const line of lines) {
-                            if (sourcesEvent && line.startsWith('data: ')) {
-                                const sources = JSON.parse(line.slice(6));
-                                renderSources(sources);
-                                sourcesEvent = false;
-                            } else if (line.startsWith('event: sources')) {
-                                sourcesEvent = true;
-                            } else if (line.startsWith('event: error')) {
-                                sourcesEvent = false;
+                            if (line.startsWith('event: ')) {
+                                pendingEvent = line.slice(7).trim();
                             } else if (line.startsWith('data: ')) {
-                                const token = JSON.parse(line.slice(6));
-                                answerText += token;
-                                document.getElementById('answer-content').textContent = answerText;
+                                const raw = line.slice(6);
+                                if (pendingEvent === 'done') {
+                                    pendingEvent = null;
+                                    continue;
+                                }
+                                if (pendingEvent === 'error') {
+                                    try { answerText = 'Error: ' + JSON.parse(raw); } catch(_) { answerText = 'Error: ' + raw; }
+                                    document.getElementById('answer-content').textContent = answerText;
+                                    pendingEvent = null;
+                                    continue;
+                                }
+                                if (pendingEvent === 'sources') {
+                                    try { renderSources(JSON.parse(raw)); } catch(_) {}
+                                    pendingEvent = null;
+                                    continue;
+                                }
+                                pendingEvent = null;
+                                try {
+                                    const token = JSON.parse(raw);
+                                    answerText += token;
+                                    document.getElementById('answer-content').textContent = answerText;
+                                } catch(_) {}
                             }
                         }
                     }
