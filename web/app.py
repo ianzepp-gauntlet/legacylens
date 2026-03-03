@@ -53,6 +53,8 @@ async def api_ask(request: Request):
     top_k = body.get("top_k", 10)
     file_type = body.get("file_type") or None
     model = body.get("model") or None
+    use_l1 = body.get("l1_cache", LAYER_1_CACHE)
+    use_l2 = body.get("l2_cache", LAYER_2_CACHE)
 
     if not question.strip():
         return {"error": "Question is required"}
@@ -61,13 +63,13 @@ async def api_ask(request: Request):
     from legacylens.config import settings
     effective_model = model or settings.chat_model
     cache_key = (question, effective_model)
-    if LAYER_2_CACHE and cache_key in _ask_cache and not file_type:
+    if use_l2 and cache_key in _ask_cache and not file_type:
         return _ask_cache[cache_key]
 
     from legacylens.chain import ask
     from legacylens.models import QueryResult
 
-    cached = _get_cached_results(question, top_k, file_type)
+    cached = _get_cached_results(question, top_k, file_type) if use_l1 else None
     if cached is not None:
         results = [QueryResult(**r) for r in cached]
         result = ask(question, top_k=top_k, file_type=file_type, model=model, results=results)
@@ -75,7 +77,7 @@ async def api_ask(request: Request):
         result = ask(question, top_k=top_k, file_type=file_type, model=model)
 
     # Cache the LLM answer for future requests
-    if LAYER_2_CACHE and not file_type:
+    if use_l2 and not file_type:
         _ask_cache[cache_key] = result
 
     return result
@@ -88,6 +90,8 @@ async def api_ask_stream(request: Request):
     top_k = body.get("top_k", 10)
     file_type = body.get("file_type") or None
     model = body.get("model") or None
+    use_l1 = body.get("l1_cache", LAYER_1_CACHE)
+    use_l2 = body.get("l2_cache", LAYER_2_CACHE)
 
     if not question.strip():
         async def error_stream():
@@ -99,7 +103,7 @@ async def api_ask_stream(request: Request):
     cache_key = (question, effective_model)
 
     # Check Layer 2 cache — stream cached answer as single chunk
-    if LAYER_2_CACHE and cache_key in _ask_cache and not file_type:
+    if use_l2 and cache_key in _ask_cache and not file_type:
         cached = _ask_cache[cache_key]
 
         async def cached_stream():
@@ -113,7 +117,7 @@ async def api_ask_stream(request: Request):
     from legacylens.chain import ask_stream
     from legacylens.models import QueryResult
 
-    cached_results = _get_cached_results(question, top_k, file_type)
+    cached_results = _get_cached_results(question, top_k, file_type) if use_l1 else None
     if cached_results is not None:
         results = [QueryResult(**r) for r in cached_results]
     else:
@@ -139,7 +143,7 @@ async def api_ask_stream(request: Request):
         yield "event: done\ndata: \n\n"
 
         # Cache the complete answer
-        if LAYER_2_CACHE and not file_type:
+        if use_l2 and not file_type:
             _ask_cache[cache_key] = {"answer": "".join(full_answer), "sources": sources}
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")

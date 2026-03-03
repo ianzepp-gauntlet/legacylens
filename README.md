@@ -120,7 +120,9 @@ curl -X POST http://localhost:8000/api/file \
   -d '{"file_path": "/path/to/COCRDUPC.cbl"}'
 ```
 
-Both `/api/ask` and `/api/ask/stream` accept the same request body (`question`, `top_k`, `file_type`, `model`). The non-streaming endpoint returns JSON `{"answer": "...", "sources": [...]}`. The streaming endpoint returns SSE with `data:` lines for answer tokens, an `event: sources` with the sources JSON, and `event: done` to signal completion. Cached answers stream as a single chunk (instant). The web UI uses the streaming endpoint by default.
+Both `/api/ask` and `/api/ask/stream` accept the same request body (`question`, `top_k`, `file_type`, `model`, `l1_cache`, `l2_cache`). The non-streaming endpoint returns JSON `{"answer": "...", "sources": [...]}`. The streaming endpoint returns SSE with `data:` lines for answer tokens, an `event: sources` with the sources JSON, and `event: done` to signal completion. Cached answers stream as a single chunk (instant). The web UI uses the streaming endpoint by default.
+
+The optional `l1_cache` and `l2_cache` boolean fields override the server-side cache settings for that request. When omitted, the server defaults (`LAYER_1_CACHE`/`LAYER_2_CACHE` env vars) apply.
 
 ## Testing
 
@@ -155,7 +157,11 @@ The LLM cache resets on app restart (it is not persisted to disk).
 
 ### Cache Controls
 
-Both layers are enabled by default. Disable independently via environment variables:
+Both layers are enabled by default. They can be controlled in two ways:
+
+**UI toggles:** The web interface has L1 Cache and L2 Cache toggle switches in the config row. These are per-request overrides — toggling off skips cache reads and writes for that query without affecting previously cached entries.
+
+**Environment variables:** Disable at the server level (affects all requests unless overridden per-request):
 
 ```bash
 LAYER_1_CACHE=false uvicorn web.app:app  # skip search cache, always hit Pinecone

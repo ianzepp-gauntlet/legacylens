@@ -295,6 +295,51 @@
 
         .config-select:focus { border-color: var(--accent-green); }
 
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 36px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-primary);
+            border: 1px solid var(--border-panel);
+            border-radius: 10px;
+            transition: background 0.2s, border-color 0.2s;
+        }
+
+        .toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            left: 2px;
+            bottom: 2px;
+            background: var(--text-label);
+            border-radius: 50%;
+            transition: transform 0.2s;
+        }
+
+        .toggle-switch input:checked + .toggle-slider {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+        }
+
+        .toggle-switch input:checked + .toggle-slider::before {
+            transform: translateX(16px);
+            background: var(--bg-primary);
+        }
+
         /* ── Loading ── */
         #loading {
             display: none;
@@ -658,6 +703,20 @@
                         <option value="15">15</option>
                         <option value="20">20</option>
                     </select>
+                </div>
+                <div class="config-group">
+                    <label class="config-label">L1 Cache</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="cfg-l1cache" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
+                </div>
+                <div class="config-group">
+                    <label class="config-label">L2 Cache</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="cfg-l2cache" checked>
+                        <span class="toggle-slider"></span>
+                    </label>
                 </div>
             </div>
         </form>
@@ -1042,6 +1101,8 @@
             const fileType = document.getElementById('cfg-filetype').value;
             const topK = parseInt(document.getElementById('cfg-topk').value, 10);
             const model = document.getElementById('cfg-model').value;
+            const l1Cache = document.getElementById('cfg-l1cache').checked;
+            const l2Cache = document.getElementById('cfg-l2cache').checked;
 
             const btn = document.getElementById('btn-submit');
             btn.disabled = true;
@@ -1057,6 +1118,8 @@
                         file_type: fileType || null,
                         top_k: topK,
                         model: model,
+                        l1_cache: l1Cache,
+                        l2_cache: l2Cache,
                     }),
                 });
 
