@@ -11,18 +11,22 @@ from fastapi.templating import Jinja2Templates
 
 load_dotenv()
 
+LAYER_1_CACHE = os.environ.get("LAYER_1_CACHE", "true").lower() == "true"
+LAYER_2_CACHE = os.environ.get("LAYER_2_CACHE", "true").lower() == "true"
+
 app = FastAPI(title="LegacyLens", description="Query legacy COBOL codebases")
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
 
-# Pre-computed search cache for suggestion queries
+# Layer 1: Pre-computed search cache for suggestion queries
 _search_cache: dict[str, list[dict]] = {}
-_cache_file = os.path.join(os.path.dirname(__file__), "cache", "search_cache.json")
-if os.path.isfile(_cache_file):
-    with open(_cache_file) as _f:
-        _search_cache = json.load(_f)
+if LAYER_1_CACHE:
+    _cache_file = os.path.join(os.path.dirname(__file__), "cache", "search_cache.json")
+    if os.path.isfile(_cache_file):
+        with open(_cache_file) as _f:
+            _search_cache = json.load(_f)
 
 # In-memory LLM answer cache, keyed by (question, model)
 _ask_cache: dict[tuple[str, str], dict] = {}
@@ -56,7 +60,7 @@ async def api_ask(request: Request):
     from legacylens.config import settings
     effective_model = model or settings.chat_model
     cache_key = (question, effective_model)
-    if cache_key in _ask_cache and not file_type:
+    if LAYER_2_CACHE and cache_key in _ask_cache and not file_type:
         return _ask_cache[cache_key]
 
     from legacylens.chain import ask
@@ -70,7 +74,7 @@ async def api_ask(request: Request):
         result = ask(question, top_k=top_k, file_type=file_type, model=model)
 
     # Cache the LLM answer for future requests
-    if not file_type:
+    if LAYER_2_CACHE and not file_type:
         _ask_cache[cache_key] = result
 
     return result
@@ -118,6 +122,8 @@ async def api_search(request: Request):
 @app.get("/api/cache-status")
 async def cache_status():
     return {
+        "layer_1_enabled": LAYER_1_CACHE,
+        "layer_2_enabled": LAYER_2_CACHE,
         "cached_queries": len(_search_cache),
         "cached_answers": len(_ask_cache),
     }
