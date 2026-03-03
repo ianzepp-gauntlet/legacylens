@@ -11,10 +11,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from benchmarks.config import (
     CONFIGS,
-    QUERIES,
     TOP_K_VALUES,
     BenchmarkConfig,
     BenchmarkQuery,
+    load_queries,
     score_relevance,
 )
 
@@ -79,17 +79,31 @@ class TestBenchmarkConfigs:
 
 
 class TestBenchmarkQueries:
-    def test_queries_not_empty(self):
-        assert len(QUERIES) >= 40
+    def test_curated_queries_count(self):
+        queries = load_queries("curated")
+        assert len(queries) == 40
 
-    def test_all_queries_have_descriptions(self):
-        for q in QUERIES:
-            assert q.description, f"Missing description for: {q.query[:40]}"
+    def test_suggestions_queries_count(self):
+        queries = load_queries("suggestions")
+        assert len(queries) == 209
 
-    def test_all_queries_have_expected_patterns(self):
-        for q in QUERIES:
-            assert q.expected_files or q.expected_chunks, \
-                f"No expected patterns for: {q.query[:40]}"
+    def test_all_query_sets_have_descriptions(self):
+        for query_set in ("curated", "suggestions"):
+            queries = load_queries(query_set)
+            for q in queries:
+                assert q.description, f"Missing description in {query_set}: {q.query[:40]}"
+
+    def test_all_query_sets_have_expected_patterns(self):
+        for query_set in ("curated", "suggestions"):
+            queries = load_queries(query_set)
+            for q in queries:
+                assert q.expected_files or q.expected_chunks, \
+                    f"No expected patterns in {query_set}: {q.query[:40]}"
+
+    def test_invalid_query_set_raises(self):
+        import pytest
+        with pytest.raises(ValueError, match="Unknown query set"):
+            load_queries("nonexistent")
 
 
 class TestRelevanceScoring:

@@ -1,0 +1,2082 @@
+[
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does COUSR00C do?",
+    "query_description": "Identify user list program",
+    "top_k": 5,
+    "timings_s": [
+      1.4783172080060467
+    ],
+    "mean_latency_s": 1.4783172080060467,
+    "p50_latency_s": 1.4783172080060467,
+    "p95_latency_s": 1.4783172080060467,
+    "min_latency_s": 1.4783172080060467,
+    "max_latency_s": 1.4783172080060467,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.9425068,
+        "file_name": "COUSR00C.cbl",
+        "name": "PROCESS-PAGE-FORWARD",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the sign-on screen COSGN00C work?",
+    "query_description": "Sign-on screen logic",
+    "top_k": 5,
+    "timings_s": [
+      1.9651742079877295
+    ],
+    "mean_latency_s": 1.9651742079877295,
+    "p50_latency_s": 1.9651742079877295,
+    "p95_latency_s": 1.9651742079877295,
+    "min_latency_s": 1.9651742079877295,
+    "max_latency_s": 1.9651742079877295,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0005703157,
+        "file_name": "COSGN00.bms",
+        "name": "COSGN00",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does COACTUPC do for account updates?",
+    "query_description": "Account update program",
+    "top_k": 5,
+    "timings_s": [
+      1.0350110419967677
+    ],
+    "mean_latency_s": 1.0350110419967677,
+    "p50_latency_s": 1.0350110419967677,
+    "p95_latency_s": 1.0350110419967677,
+    "min_latency_s": 1.0350110419967677,
+    "max_latency_s": 1.0350110419967677,
+    "relevance_score": 0.5,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.8568123,
+        "file_name": "COACTUPC.cbl",
+        "name": "3320-UNPROTECT-FEW-ATTRS, 3320-UNPROTECT-FEW-ATTRS-EXIT",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is the account record structure in CVACT01Y?",
+    "query_description": "Account record copybook lookup",
+    "top_k": 5,
+    "timings_s": [
+      0.9438734170107637
+    ],
+    "mean_latency_s": 0.9438734170107637,
+    "p50_latency_s": 0.9438734170107637,
+    "p95_latency_s": 0.9438734170107637,
+    "min_latency_s": 0.9438734170107637,
+    "max_latency_s": 0.9438734170107637,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.01243165,
+        "file_name": "CBACT01C.cbl",
+        "name": "1550-WRITE-VB1-RECORD",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How are credit card numbers validated?",
+    "query_description": "Credit card validation logic",
+    "top_k": 5,
+    "timings_s": [
+      1.1136278329940978
+    ],
+    "mean_latency_s": 1.1136278329940978,
+    "p50_latency_s": 1.1136278329940978,
+    "p95_latency_s": 1.1136278329940978,
+    "min_latency_s": 1.1136278329940978,
+    "max_latency_s": 1.1136278329940978,
+    "relevance_score": 0.25,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00010229986,
+        "file_name": "COCRDSLC.cbl",
+        "name": "WS-MISC-STORAGE",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the card list BMS map COCRDLI work?",
+    "query_description": "Card list BMS map",
+    "top_k": 5,
+    "timings_s": [
+      0.9890649169974495
+    ],
+    "mean_latency_s": 0.9890649169974495,
+    "p50_latency_s": 0.9890649169974495,
+    "p95_latency_s": 0.9890649169974495,
+    "min_latency_s": 0.9890649169974495,
+    "max_latency_s": 0.9890649169974495,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.006903838,
+        "file_name": "COCRDUP.bms",
+        "name": "CCRDUPA",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CBTRN01C process daily transactions?",
+    "query_description": "Daily transaction batch processing",
+    "top_k": 5,
+    "timings_s": [
+      0.8105539999960456
+    ],
+    "mean_latency_s": 0.8105539999960456,
+    "p50_latency_s": 0.8105539999960456,
+    "p95_latency_s": 0.8105539999960456,
+    "min_latency_s": 0.8105539999960456,
+    "max_latency_s": 0.8105539999960456,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.7505527,
+        "file_name": "CBTRN01C.cbl",
+        "name": "9500-TRANFILE-CLOSE",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How are transaction amounts validated?",
+    "query_description": "Transaction amount validation",
+    "top_k": 5,
+    "timings_s": [
+      1.027434457995696
+    ],
+    "mean_latency_s": 1.027434457995696,
+    "p50_latency_s": 1.027434457995696,
+    "p95_latency_s": 1.027434457995696,
+    "min_latency_s": 1.027434457995696,
+    "max_latency_s": 1.027434457995696,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 4.832564e-05,
+        "file_name": "CVTRA05Y.cpy",
+        "name": "CVTRA05Y",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CBEXPORT export customer data?",
+    "query_description": "Customer data export",
+    "top_k": 5,
+    "timings_s": [
+      0.8466903749795165
+    ],
+    "mean_latency_s": 0.8466903749795165,
+    "p50_latency_s": 0.8466903749795165,
+    "p95_latency_s": 0.8466903749795165,
+    "min_latency_s": 0.8466903749795165,
+    "max_latency_s": 0.8466903749795165,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0032730652,
+        "file_name": "CVEXPORT.cpy",
+        "name": "CVEXPORT",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What validation does CBIMPORT perform on import?",
+    "query_description": "Import validation logic",
+    "top_k": 5,
+    "timings_s": [
+      1.2862745829916093
+    ],
+    "mean_latency_s": 1.2862745829916093,
+    "p50_latency_s": 1.2862745829916093,
+    "p95_latency_s": 1.2862745829916093,
+    "min_latency_s": 1.2862745829916093,
+    "max_latency_s": 1.2862745829916093,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0057302467,
+        "file_name": "CBIMPORT.cbl",
+        "name": "2200-PROCESS-RECORD-BY-TYPE",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the menu program COMEN01C work?",
+    "query_description": "Main menu program",
+    "top_k": 5,
+    "timings_s": [
+      0.9156052499893121
+    ],
+    "mean_latency_s": 0.9156052499893121,
+    "p50_latency_s": 0.9156052499893121,
+    "p95_latency_s": 0.9156052499893121,
+    "min_latency_s": 0.9156052499893121,
+    "max_latency_s": 0.9156052499893121,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00021654405,
+        "file_name": "COMEN01.bms",
+        "name": "COMEN1A",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What admin options are in COADM02Y?",
+    "query_description": "Admin options copybook",
+    "top_k": 5,
+    "timings_s": [
+      1.1581817920086905
+    ],
+    "mean_latency_s": 1.1581817920086905,
+    "p50_latency_s": 1.1581817920086905,
+    "p95_latency_s": 1.1581817920086905,
+    "min_latency_s": 1.1581817920086905,
+    "max_latency_s": 1.1581817920086905,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00044421837,
+        "file_name": "COADM01.bms",
+        "name": "COADM01 Header",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CSUTLDTC handle date and time?",
+    "query_description": "Date/time utility program",
+    "top_k": 5,
+    "timings_s": [
+      0.9795113329892047
+    ],
+    "mean_latency_s": 0.9795113329892047,
+    "p50_latency_s": 0.9795113329892047,
+    "p95_latency_s": 0.9795113329892047,
+    "min_latency_s": 0.9795113329892047,
+    "max_latency_s": 0.9795113329892047,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0017546144,
+        "file_name": "COTRN02C.cbl",
+        "name": "VALIDATE-INPUT-DATA-FIELDS",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is GENERATE-TIMESTAMP implemented?",
+    "query_description": "Timestamp generation",
+    "top_k": 5,
+    "timings_s": [
+      0.9015021249942947
+    ],
+    "mean_latency_s": 0.9015021249942947,
+    "p50_latency_s": 0.9015021249942947,
+    "p95_latency_s": 0.9015021249942947,
+    "min_latency_s": 0.9015021249942947,
+    "max_latency_s": 0.9015021249942947,
+    "relevance_score": 0.5,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 6.2050494e-05,
+        "file_name": "CBEXPORT.cbl",
+        "name": "5200-CREATE-TRAN-EXP-REC",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is the customer record structure in CVCUS01Y?",
+    "query_description": "Customer record copybook",
+    "top_k": 5,
+    "timings_s": [
+      0.9577687499986496
+    ],
+    "mean_latency_s": 0.9577687499986496,
+    "p50_latency_s": 0.9577687499986496,
+    "p95_latency_s": 0.9577687499986496,
+    "min_latency_s": 0.9577687499986496,
+    "max_latency_s": 0.9577687499986496,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.002800927,
+        "file_name": "CBCUS01C.cbl",
+        "name": "0000-CUSTFILE-OPEN",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "Explain the communication area COCOM01Y",
+    "query_description": "Communication area copybook",
+    "top_k": 5,
+    "timings_s": [
+      0.806965665979078
+    ],
+    "mean_latency_s": 0.806965665979078,
+    "p50_latency_s": 0.806965665979078,
+    "p95_latency_s": 0.806965665979078,
+    "min_latency_s": 0.806965665979078,
+    "max_latency_s": 0.806965665979078,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.002472623,
+        "file_name": "COCRDSLC.cbl",
+        "name": "0000-MAIN",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is the sign-on BMS map COSGN00 structured?",
+    "query_description": "Sign-on BMS map structure",
+    "top_k": 5,
+    "timings_s": [
+      1.3156199580116663
+    ],
+    "mean_latency_s": 1.3156199580116663,
+    "p50_latency_s": 1.3156199580116663,
+    "p95_latency_s": 1.3156199580116663,
+    "min_latency_s": 1.3156199580116663,
+    "max_latency_s": 1.3156199580116663,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 7.031184e-05,
+        "file_name": "COMEN01.bms",
+        "name": "COMEN01",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the card update map COCRDUP contain?",
+    "query_description": "Card update BMS map",
+    "top_k": 5,
+    "timings_s": [
+      1.6901587909960654
+    ],
+    "mean_latency_s": 1.6901587909960654,
+    "p50_latency_s": 1.6901587909960654,
+    "p95_latency_s": 1.6901587909960654,
+    "min_latency_s": 1.6901587909960654,
+    "max_latency_s": 1.6901587909960654,
+    "relevance_score": 0.5,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.011687257,
+        "file_name": "COCRDUPC.cbl",
+        "name": "9300-CHECK-CHANGE-IN-REC",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the POSTTRAN JCL post transactions?",
+    "query_description": "Transaction posting JCL",
+    "top_k": 5,
+    "timings_s": [
+      1.0120680000109132
+    ],
+    "mean_latency_s": 1.0120680000109132,
+    "p50_latency_s": 1.0120680000109132,
+    "p95_latency_s": 1.0120680000109132,
+    "min_latency_s": 1.0120680000109132,
+    "max_latency_s": 1.0120680000109132,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0003799845,
+        "file_name": "COTRN00C.cbl",
+        "name": "POPULATE-TRAN-DATA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the CREADB21 JCL create in DB2?",
+    "query_description": "DB2 creation JCL",
+    "top_k": 5,
+    "timings_s": [
+      0.7979456250031944
+    ],
+    "mean_latency_s": 0.7979456250031944,
+    "p50_latency_s": 0.7979456250031944,
+    "p95_latency_s": 0.7979456250031944,
+    "min_latency_s": 0.7979456250031944,
+    "max_latency_s": 0.7979456250031944,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 4.0063693e-05,
+        "file_name": "POSTTRAN.jcl",
+        "name": "STEP15",
+        "chunk_type": "jcl_step",
+        "file_type": "jcl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is the COMMAREA used for inter-program communication?",
+    "query_description": "COMMAREA inter-program communication",
+    "top_k": 5,
+    "timings_s": [
+      2.0592489580158144
+    ],
+    "mean_latency_s": 2.0592489580158144,
+    "p50_latency_s": 2.0592489580158144,
+    "p95_latency_s": 2.0592489580158144,
+    "min_latency_s": 2.0592489580158144,
+    "max_latency_s": 2.0592489580158144,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00055277866,
+        "file_name": "COTRTLIC.cbl",
+        "name": "DFHCOMMAREA",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CICS RECEIVE capture user input?",
+    "query_description": "CICS RECEIVE operations",
+    "top_k": 5,
+    "timings_s": [
+      0.9792603340174537
+    ],
+    "mean_latency_s": 0.9792603340174537,
+    "p50_latency_s": 0.9792603340174537,
+    "p95_latency_s": 0.9792603340174537,
+    "min_latency_s": 0.9792603340174537,
+    "max_latency_s": 0.9792603340174537,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00026119032,
+        "file_name": "COUSR02C.cbl",
+        "name": "PROCESS-ENTER-KEY",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is the SQLCA used for DB2 error handling?",
+    "query_description": "SQLCA DB2 error handling",
+    "top_k": 5,
+    "timings_s": [
+      1.0991237080015708
+    ],
+    "mean_latency_s": 1.0991237080015708,
+    "p50_latency_s": 1.0991237080015708,
+    "p95_latency_s": 1.0991237080015708,
+    "min_latency_s": 1.0991237080015708,
+    "max_latency_s": 1.0991237080015708,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 1.2219076e-05,
+        "file_name": "COBTUPDT.cbl",
+        "name": "DATA DIVISION",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What DB2 tables does CardDemo define?",
+    "query_description": "DB2 table definitions",
+    "top_k": 5,
+    "timings_s": [
+      0.9789986250107177
+    ],
+    "mean_latency_s": 0.9789986250107177,
+    "p50_latency_s": 0.9789986250107177,
+    "p95_latency_s": 0.9789986250107177,
+    "min_latency_s": 0.9789986250107177,
+    "max_latency_s": 0.9789986250107177,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00048785712,
+        "file_name": "UNUSED1Y.cpy",
+        "name": "UNUSED1Y",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What VSAM file status codes are checked?",
+    "query_description": "VSAM file status code checks",
+    "top_k": 5,
+    "timings_s": [
+      1.0624184579937719
+    ],
+    "mean_latency_s": 1.0624184579937719,
+    "p50_latency_s": 1.0624184579937719,
+    "p95_latency_s": 1.0624184579937719,
+    "min_latency_s": 1.0624184579937719,
+    "max_latency_s": 1.0624184579937719,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 2.2827997e-05,
+        "file_name": "COCRDLIC.cbl",
+        "name": "WS-MISC-STORAGE",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does STARTBR begin a VSAM browse?",
+    "query_description": "VSAM browse start operations",
+    "top_k": 5,
+    "timings_s": [
+      0.9795697499939706
+    ],
+    "mean_latency_s": 0.9795697499939706,
+    "p50_latency_s": 0.9795697499939706,
+    "p95_latency_s": 0.9795697499939706,
+    "min_latency_s": 0.9795697499939706,
+    "max_latency_s": 0.9795697499939706,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 3.7636444e-05,
+        "file_name": "DUSRSECJ.jcl",
+        "name": "STEP02",
+        "chunk_type": "jcl_step",
+        "file_type": "jcl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the MAIN-PARA entry point do?",
+    "query_description": "MAIN-PARA entry point",
+    "top_k": 5,
+    "timings_s": [
+      1.037550375011051
+    ],
+    "mean_latency_s": 1.037550375011051,
+    "p50_latency_s": 1.037550375011051,
+    "p95_latency_s": 1.037550375011051,
+    "min_latency_s": 1.037550375011051,
+    "max_latency_s": 1.037550375011051,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 7.967301e-05,
+        "file_name": "COMEN01C.cbl",
+        "name": "RETURN-TO-SIGNON-SCREEN",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does PROCESS-ENTER-KEY handle user input?",
+    "query_description": "Enter key processing pattern",
+    "top_k": 5,
+    "timings_s": [
+      0.9801728750171605
+    ],
+    "mean_latency_s": 0.9801728750171605,
+    "p50_latency_s": 0.9801728750171605,
+    "p95_latency_s": 0.9801728750171605,
+    "min_latency_s": 0.9801728750171605,
+    "max_latency_s": 0.9801728750171605,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.020023441,
+        "file_name": "COUSR03C.cbl",
+        "name": "PROCESS-ENTER-KEY",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is WS-PGMNAME used for?",
+    "query_description": "WS-PGMNAME working storage variable",
+    "top_k": 5,
+    "timings_s": [
+      0.9798500420001801
+    ],
+    "mean_latency_s": 0.9798500420001801,
+    "p50_latency_s": 0.9798500420001801,
+    "p95_latency_s": 0.9798500420001801,
+    "min_latency_s": 0.9798500420001801,
+    "max_latency_s": 0.9798500420001801,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00012339458,
+        "file_name": "COACTVWC.cbl",
+        "name": "WS-THIS-PROGCOMMAREA",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is in the DFHCOMMAREA linkage section?",
+    "query_description": "DFHCOMMAREA linkage section",
+    "top_k": 5,
+    "timings_s": [
+      1.057393625000259
+    ],
+    "mean_latency_s": 1.057393625000259,
+    "p50_latency_s": 1.057393625000259,
+    "p95_latency_s": 1.057393625000259,
+    "min_latency_s": 1.057393625000259,
+    "max_latency_s": 1.057393625000259,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00041731575,
+        "file_name": "COCRDUPC.cbl",
+        "name": "WS-COMMAREA",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does RETURN-TO-PREV-SCREEN navigate on errors?",
+    "query_description": "Screen return navigation pattern",
+    "top_k": 5,
+    "timings_s": [
+      1.116112499992596
+    ],
+    "mean_latency_s": 1.116112499992596,
+    "p50_latency_s": 1.116112499992596,
+    "p95_latency_s": 1.116112499992596,
+    "min_latency_s": 1.116112499992596,
+    "max_latency_s": 1.116112499992596,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00033535014,
+        "file_name": "COMEN01C.cbl",
+        "name": "MAIN-PARA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How do programs pass data via the communication area?",
+    "query_description": "Communication area data passing",
+    "top_k": 5,
+    "timings_s": [
+      0.8461568329948932
+    ],
+    "mean_latency_s": 0.8461568329948932,
+    "p50_latency_s": 0.8461568329948932,
+    "p95_latency_s": 0.8461568329948932,
+    "min_latency_s": 0.8461568329948932,
+    "max_latency_s": 0.8461568329948932,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0027149853,
+        "file_name": "COTRTLIC.cbl",
+        "name": "DFHCOMMAREA",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CardDemo handle interest calculation?",
+    "query_description": "Interest calculation logic",
+    "top_k": 5,
+    "timings_s": [
+      0.9664743329922203
+    ],
+    "mean_latency_s": 0.9664743329922203,
+    "p50_latency_s": 0.9664743329922203,
+    "p95_latency_s": 0.9664743329922203,
+    "min_latency_s": 0.9664743329922203,
+    "max_latency_s": 0.9664743329922203,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 7.967301e-05,
+        "file_name": "CVTRA02Y.cpy",
+        "name": "CVTRA02Y",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How are transaction categories and types classified?",
+    "query_description": "Transaction category/type classification",
+    "top_k": 5,
+    "timings_s": [
+      0.9061734999995679
+    ],
+    "mean_latency_s": 0.9061734999995679,
+    "p50_latency_s": 0.9061734999995679,
+    "p95_latency_s": 0.9061734999995679,
+    "min_latency_s": 0.9061734999995679,
+    "max_latency_s": 0.9061734999995679,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.007345827,
+        "file_name": "DEFGDGD.jcl",
+        "name": "STEP20",
+        "chunk_type": "jcl_step",
+        "file_type": "jcl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What batch vs online programs exist?",
+    "query_description": "Batch vs online program inventory",
+    "top_k": 5,
+    "timings_s": [
+      0.8872227079991717
+    ],
+    "mean_latency_s": 0.8872227079991717,
+    "p50_latency_s": 0.8872227079991717,
+    "p95_latency_s": 0.8872227079991717,
+    "min_latency_s": 0.8872227079991717,
+    "max_latency_s": 0.8872227079991717,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 7.967301e-05,
+        "file_name": "CBACT03C.cbl",
+        "name": "CBACT03C Header",
+        "chunk_type": "header",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How do copybooks reduce code duplication?",
+    "query_description": "Copybook reuse patterns",
+    "top_k": 5,
+    "timings_s": [
+      1.401647208025679
+    ],
+    "mean_latency_s": 1.401647208025679,
+    "p50_latency_s": 1.401647208025679,
+    "p95_latency_s": 1.401647208025679,
+    "min_latency_s": 1.401647208025679,
+    "max_latency_s": 1.401647208025679,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 3.7636444e-05,
+        "file_name": "COCRDSL.CPY",
+        "name": "COCRDSL",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does LOOKUP-XREF perform cross-reference lookups?",
+    "query_description": "Cross-reference lookup operation",
+    "top_k": 5,
+    "timings_s": [
+      0.9391792920068838
+    ],
+    "mean_latency_s": 0.9391792920068838,
+    "p50_latency_s": 0.9391792920068838,
+    "p95_latency_s": 0.9391792920068838,
+    "min_latency_s": 0.9391792920068838,
+    "max_latency_s": 0.9391792920068838,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0003459916,
+        "file_name": "CBEXPORT.cbl",
+        "name": "4200-CREATE-XREF-EXPORT-RECORD",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does HANDLE-DB2-ERROR do on SQL failures?",
+    "query_description": "DB2 error handler",
+    "top_k": 5,
+    "timings_s": [
+      1.0847917920036707
+    ],
+    "mean_latency_s": 1.0847917920036707,
+    "p50_latency_s": 1.0847917920036707,
+    "p95_latency_s": 1.0847917920036707,
+    "min_latency_s": 1.0847917920036707,
+    "max_latency_s": 1.0847917920036707,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 2.586743e-05,
+        "file_name": "CRDDEMOD.csd",
+        "name": "CRDDEMOD",
+        "chunk_type": "file",
+        "file_type": "csd"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does COMBTRAN combine transaction data?",
+    "query_description": "Transaction data combining JCL",
+    "top_k": 5,
+    "timings_s": [
+      0.9430824170121923
+    ],
+    "mean_latency_s": 0.9430824170121923,
+    "p50_latency_s": 0.9430824170121923,
+    "p95_latency_s": 0.9430824170121923,
+    "min_latency_s": 0.9430824170121923,
+    "max_latency_s": 0.9430824170121923,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00036829791,
+        "file_name": "COTRN02C.cbl",
+        "name": "VALIDATE-INPUT-DATA-FIELDS",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the DUSRSECJ JCL do for user security?",
+    "query_description": "User security file JCL",
+    "top_k": 5,
+    "timings_s": [
+      0.8946271669992711
+    ],
+    "mean_latency_s": 0.8946271669992711,
+    "p50_latency_s": 0.8946271669992711,
+    "p95_latency_s": 0.8946271669992711,
+    "min_latency_s": 0.8946271669992711,
+    "max_latency_s": 0.8946271669992711,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00014883849,
+        "file_name": "ESDSRRDS.jcl",
+        "name": "STEP01",
+        "chunk_type": "jcl_step",
+        "file_type": "jcl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does COUSR00C do?",
+    "query_description": "Identify user list program",
+    "top_k": 10,
+    "timings_s": [
+      0.9803692919958849
+    ],
+    "mean_latency_s": 0.9803692919958849,
+    "p50_latency_s": 0.9803692919958849,
+    "p95_latency_s": 0.9803692919958849,
+    "min_latency_s": 0.9803692919958849,
+    "max_latency_s": 0.9803692919958849,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.93991333,
+        "file_name": "COUSR00C.cbl",
+        "name": "PROCESS-PF7-KEY",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the sign-on screen COSGN00C work?",
+    "query_description": "Sign-on screen logic",
+    "top_k": 10,
+    "timings_s": [
+      0.9790167080063839
+    ],
+    "mean_latency_s": 0.9790167080063839,
+    "p50_latency_s": 0.9790167080063839,
+    "p95_latency_s": 0.9790167080063839,
+    "min_latency_s": 0.9790167080063839,
+    "max_latency_s": 0.9790167080063839,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00058840885,
+        "file_name": "COTRN00C.cbl",
+        "name": "SEND-TRNLST-SCREEN",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does COACTUPC do for account updates?",
+    "query_description": "Account update program",
+    "top_k": 10,
+    "timings_s": [
+      1.0877212500199676
+    ],
+    "mean_latency_s": 1.0877212500199676,
+    "p50_latency_s": 1.0877212500199676,
+    "p95_latency_s": 1.0877212500199676,
+    "min_latency_s": 1.0877212500199676,
+    "max_latency_s": 1.0877212500199676,
+    "relevance_score": 0.5,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.8624676,
+        "file_name": "COACTUPC.cbl",
+        "name": "9300-GETACCTDATA-BYACCT, 9300-GETACCTDATA-BYACCT-EXIT",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is the account record structure in CVACT01Y?",
+    "query_description": "Account record copybook lookup",
+    "top_k": 10,
+    "timings_s": [
+      0.990452792000724
+    ],
+    "mean_latency_s": 0.990452792000724,
+    "p50_latency_s": 0.990452792000724,
+    "p95_latency_s": 0.990452792000724,
+    "min_latency_s": 0.990452792000724,
+    "max_latency_s": 0.990452792000724,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.012821214,
+        "file_name": "CBACT01C.cbl",
+        "name": "1350-WRITE-ACCT-RECORD",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How are credit card numbers validated?",
+    "query_description": "Credit card validation logic",
+    "top_k": 10,
+    "timings_s": [
+      1.1886104159930255
+    ],
+    "mean_latency_s": 1.1886104159930255,
+    "p50_latency_s": 1.1886104159930255,
+    "p95_latency_s": 1.1886104159930255,
+    "min_latency_s": 1.1886104159930255,
+    "max_latency_s": 1.1886104159930255,
+    "relevance_score": 0.25,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00019110432,
+        "file_name": "COCRDSLC.cbl",
+        "name": "9000-READ-DATA, 9000-READ-DATA-EXIT",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the card list BMS map COCRDLI work?",
+    "query_description": "Card list BMS map",
+    "top_k": 10,
+    "timings_s": [
+      1.0479209170152899
+    ],
+    "mean_latency_s": 1.0479209170152899,
+    "p50_latency_s": 1.0479209170152899,
+    "p95_latency_s": 1.0479209170152899,
+    "min_latency_s": 1.0479209170152899,
+    "max_latency_s": 1.0479209170152899,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 9.610242e-05,
+        "file_name": "COTRN02.bms",
+        "name": "COTRN02",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CBTRN01C process daily transactions?",
+    "query_description": "Daily transaction batch processing",
+    "top_k": 10,
+    "timings_s": [
+      1.075602583005093
+    ],
+    "mean_latency_s": 1.075602583005093,
+    "p50_latency_s": 1.075602583005093,
+    "p95_latency_s": 1.075602583005093,
+    "min_latency_s": 1.075602583005093,
+    "max_latency_s": 1.075602583005093,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.7264256,
+        "file_name": "CBTRN01C.cbl",
+        "name": "9400-ACCTFILE-CLOSE",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How are transaction amounts validated?",
+    "query_description": "Transaction amount validation",
+    "top_k": 10,
+    "timings_s": [
+      0.8831624169833958
+    ],
+    "mean_latency_s": 0.8831624169833958,
+    "p50_latency_s": 0.8831624169833958,
+    "p95_latency_s": 0.8831624169833958,
+    "min_latency_s": 0.8831624169833958,
+    "max_latency_s": 0.8831624169833958,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 7.4846226e-05,
+        "file_name": "COTRN02.bms",
+        "name": "COTRN02 Header",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CBEXPORT export customer data?",
+    "query_description": "Customer data export",
+    "top_k": 10,
+    "timings_s": [
+      0.8464030000031926
+    ],
+    "mean_latency_s": 0.8464030000031926,
+    "p50_latency_s": 0.8464030000031926,
+    "p95_latency_s": 0.8464030000031926,
+    "min_latency_s": 0.8464030000031926,
+    "max_latency_s": 0.8464030000031926,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.049589027,
+        "file_name": "CBEXPORT.jcl",
+        "name": "STEP01",
+        "chunk_type": "jcl_step",
+        "file_type": "jcl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What validation does CBIMPORT perform on import?",
+    "query_description": "Import validation logic",
+    "top_k": 10,
+    "timings_s": [
+      0.7559742919984274
+    ],
+    "mean_latency_s": 0.7559742919984274,
+    "p50_latency_s": 0.7559742919984274,
+    "p95_latency_s": 0.7559742919984274,
+    "min_latency_s": 0.7559742919984274,
+    "max_latency_s": 0.7559742919984274,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00015843622,
+        "file_name": "CBTRN02C.cbl",
+        "name": "1500-VALIDATE-TRAN",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the menu program COMEN01C work?",
+    "query_description": "Main menu program",
+    "top_k": 10,
+    "timings_s": [
+      0.8626463749969844
+    ],
+    "mean_latency_s": 0.8626463749969844,
+    "p50_latency_s": 0.8626463749969844,
+    "p95_latency_s": 0.8626463749969844,
+    "min_latency_s": 0.8626463749969844,
+    "max_latency_s": 0.8626463749969844,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0027149853,
+        "file_name": "COADM01C.cbl",
+        "name": "MAIN-PARA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What admin options are in COADM02Y?",
+    "query_description": "Admin options copybook",
+    "top_k": 10,
+    "timings_s": [
+      0.9667825409851503
+    ],
+    "mean_latency_s": 0.9667825409851503,
+    "p50_latency_s": 0.9667825409851503,
+    "p95_latency_s": 0.9667825409851503,
+    "min_latency_s": 0.9667825409851503,
+    "max_latency_s": 0.9667825409851503,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 5.1442217e-05,
+        "file_name": "COADM01.CPY",
+        "name": "COADM01",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CSUTLDTC handle date and time?",
+    "query_description": "Date/time utility program",
+    "top_k": 10,
+    "timings_s": [
+      1.0144491670071147
+    ],
+    "mean_latency_s": 1.0144491670071147,
+    "p50_latency_s": 1.0144491670071147,
+    "p95_latency_s": 1.0144491670071147,
+    "min_latency_s": 1.0144491670071147,
+    "max_latency_s": 1.0144491670071147,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 1.6701422e-05,
+        "file_name": "CODATECN.cpy",
+        "name": "CODATECN",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is GENERATE-TIMESTAMP implemented?",
+    "query_description": "Timestamp generation",
+    "top_k": 10,
+    "timings_s": [
+      0.9508381659979932
+    ],
+    "mean_latency_s": 0.9508381659979932,
+    "p50_latency_s": 0.9508381659979932,
+    "p95_latency_s": 0.9508381659979932,
+    "min_latency_s": 0.9508381659979932,
+    "max_latency_s": 0.9508381659979932,
+    "relevance_score": 0.5,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 5.1442217e-05,
+        "file_name": "CBEXPORT.cbl",
+        "name": "4200-CREATE-XREF-EXPORT-RECORD",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is the customer record structure in CVCUS01Y?",
+    "query_description": "Customer record copybook",
+    "top_k": 10,
+    "timings_s": [
+      0.92326187499566
+    ],
+    "mean_latency_s": 0.92326187499566,
+    "p50_latency_s": 0.92326187499566,
+    "p95_latency_s": 0.92326187499566,
+    "min_latency_s": 0.92326187499566,
+    "max_latency_s": 0.92326187499566,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0027149853,
+        "file_name": "CBCUS01C.cbl",
+        "name": "9000-CUSTFILE-CLOSE",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "Explain the communication area COCOM01Y",
+    "query_description": "Communication area copybook",
+    "top_k": 10,
+    "timings_s": [
+      0.9725528339913581
+    ],
+    "mean_latency_s": 0.9725528339913581,
+    "p50_latency_s": 0.9725528339913581,
+    "p95_latency_s": 0.9725528339913581,
+    "min_latency_s": 0.9725528339913581,
+    "max_latency_s": 0.9725528339913581,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0019267347,
+        "file_name": "COMEN01C.cbl",
+        "name": "RETURN-TO-SIGNON-SCREEN",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is the sign-on BMS map COSGN00 structured?",
+    "query_description": "Sign-on BMS map structure",
+    "top_k": 10,
+    "timings_s": [
+      0.8678039590013213
+    ],
+    "mean_latency_s": 0.8678039590013213,
+    "p50_latency_s": 0.8678039590013213,
+    "p95_latency_s": 0.8678039590013213,
+    "min_latency_s": 0.8678039590013213,
+    "max_latency_s": 0.8678039590013213,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 5.8291265e-05,
+        "file_name": "COTRTLI.bms",
+        "name": "COTRTLI",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the card update map COCRDUP contain?",
+    "query_description": "Card update BMS map",
+    "top_k": 10,
+    "timings_s": [
+      0.977821665990632
+    ],
+    "mean_latency_s": 0.977821665990632,
+    "p50_latency_s": 0.977821665990632,
+    "p95_latency_s": 0.977821665990632,
+    "min_latency_s": 0.977821665990632,
+    "max_latency_s": 0.977821665990632,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00066670234,
+        "file_name": "COTRTUP.bms",
+        "name": "COTRTUP Header",
+        "chunk_type": "bms_map",
+        "file_type": "bms"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does the POSTTRAN JCL post transactions?",
+    "query_description": "Transaction posting JCL",
+    "top_k": 10,
+    "timings_s": [
+      0.9300350000266917
+    ],
+    "mean_latency_s": 0.9300350000266917,
+    "p50_latency_s": 0.9300350000266917,
+    "p95_latency_s": 0.9300350000266917,
+    "min_latency_s": 0.9300350000266917,
+    "max_latency_s": 0.9300350000266917,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.002800927,
+        "file_name": "CBTRN01C.cbl",
+        "name": "0000-DALYTRAN-OPEN",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the CREADB21 JCL create in DB2?",
+    "query_description": "DB2 creation JCL",
+    "top_k": 10,
+    "timings_s": [
+      0.7792157910007518
+    ],
+    "mean_latency_s": 0.7792157910007518,
+    "p50_latency_s": 0.7792157910007518,
+    "p95_latency_s": 0.7792157910007518,
+    "min_latency_s": 0.7792157910007518,
+    "max_latency_s": 0.7792157910007518,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 8.4811036e-05,
+        "file_name": "INTRDRJ2.JCL",
+        "name": "INTRDRJ2 Header",
+        "chunk_type": "jcl_step",
+        "file_type": "jcl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is the COMMAREA used for inter-program communication?",
+    "query_description": "COMMAREA inter-program communication",
+    "top_k": 10,
+    "timings_s": [
+      0.8058215840137564
+    ],
+    "mean_latency_s": 0.8058215840137564,
+    "p50_latency_s": 0.8058215840137564,
+    "p95_latency_s": 0.8058215840137564,
+    "min_latency_s": 0.8058215840137564,
+    "max_latency_s": 0.8058215840137564,
+    "relevance_score": 0.5,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0008295892,
+        "file_name": "COTRTLIC.cbl",
+        "name": "WS-COMMAREA",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CICS RECEIVE capture user input?",
+    "query_description": "CICS RECEIVE operations",
+    "top_k": 10,
+    "timings_s": [
+      0.9396809590107296
+    ],
+    "mean_latency_s": 0.9396809590107296,
+    "p50_latency_s": 0.9396809590107296,
+    "p95_latency_s": 0.9396809590107296,
+    "min_latency_s": 0.9396809590107296,
+    "max_latency_s": 0.9396809590107296,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0012448432,
+        "file_name": "COADM01C.cbl",
+        "name": "MAIN-PARA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How is the SQLCA used for DB2 error handling?",
+    "query_description": "SQLCA DB2 error handling",
+    "top_k": 10,
+    "timings_s": [
+      1.0626509169815108
+    ],
+    "mean_latency_s": 1.0626509169815108,
+    "p50_latency_s": 1.0626509169815108,
+    "p95_latency_s": 1.0626509169815108,
+    "min_latency_s": 1.0626509169815108,
+    "max_latency_s": 1.0626509169815108,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 1.3846005e-05,
+        "file_name": "COPAUA0C.cbl",
+        "name": "9500-LOG-ERROR, 9500-EXIT",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What DB2 tables does CardDemo define?",
+    "query_description": "DB2 table definitions",
+    "top_k": 10,
+    "timings_s": [
+      1.0277039580105338
+    ],
+    "mean_latency_s": 1.0277039580105338,
+    "p50_latency_s": 1.0277039580105338,
+    "p95_latency_s": 1.0277039580105338,
+    "min_latency_s": 1.0277039580105338,
+    "max_latency_s": 1.0277039580105338,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.007345827,
+        "file_name": "CVEXPORT.cpy",
+        "name": "CVEXPORT",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What VSAM file status codes are checked?",
+    "query_description": "VSAM file status code checks",
+    "top_k": 10,
+    "timings_s": [
+      2.0296093330252916
+    ],
+    "mean_latency_s": 2.0296093330252916,
+    "p50_latency_s": 2.0296093330252916,
+    "p95_latency_s": 2.0296093330252916,
+    "min_latency_s": 2.0296093330252916,
+    "max_latency_s": 2.0296093330252916,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 5.1442217e-05,
+        "file_name": "CBSTM03B.CBL",
+        "name": "DATA DIVISION",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does STARTBR begin a VSAM browse?",
+    "query_description": "VSAM browse start operations",
+    "top_k": 10,
+    "timings_s": [
+      0.9963302089890931
+    ],
+    "mean_latency_s": 0.9963302089890931,
+    "p50_latency_s": 0.9963302089890931,
+    "p95_latency_s": 0.9963302089890931,
+    "min_latency_s": 0.9963302089890931,
+    "max_latency_s": 0.9963302089890931,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 2.9311539e-05,
+        "file_name": "TRANCATG.jcl",
+        "name": "STEP10",
+        "chunk_type": "jcl_step",
+        "file_type": "jcl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the MAIN-PARA entry point do?",
+    "query_description": "MAIN-PARA entry point",
+    "top_k": 10,
+    "timings_s": [
+      0.9832018750021234
+    ],
+    "mean_latency_s": 0.9832018750021234,
+    "p50_latency_s": 0.9832018750021234,
+    "p95_latency_s": 0.9832018750021234,
+    "min_latency_s": 0.9832018750021234,
+    "max_latency_s": 0.9832018750021234,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 2.2827997e-05,
+        "file_name": "COADM01C.cbl",
+        "name": "PROCESS-ENTER-KEY",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does PROCESS-ENTER-KEY handle user input?",
+    "query_description": "Enter key processing pattern",
+    "top_k": 10,
+    "timings_s": [
+      1.0048547080077697
+    ],
+    "mean_latency_s": 1.0048547080077697,
+    "p50_latency_s": 1.0048547080077697,
+    "p95_latency_s": 1.0048547080077697,
+    "min_latency_s": 1.0048547080077697,
+    "max_latency_s": 1.0048547080077697,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0018102111,
+        "file_name": "COTRN00C.cbl",
+        "name": "MAIN-PARA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is WS-PGMNAME used for?",
+    "query_description": "WS-PGMNAME working storage variable",
+    "top_k": 10,
+    "timings_s": [
+      0.9790715830167755
+    ],
+    "mean_latency_s": 0.9790715830167755,
+    "p50_latency_s": 0.9790715830167755,
+    "p95_latency_s": 0.9790715830167755,
+    "min_latency_s": 0.9790715830167755,
+    "max_latency_s": 0.9790715830167755,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 1.6701422e-05,
+        "file_name": "PSBPAUTB.psb",
+        "name": "PSBPAUTB",
+        "chunk_type": "file",
+        "file_type": "psb"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What is in the DFHCOMMAREA linkage section?",
+    "query_description": "DFHCOMMAREA linkage section",
+    "top_k": 10,
+    "timings_s": [
+      1.03549366700463
+    ],
+    "mean_latency_s": 1.03549366700463,
+    "p50_latency_s": 1.03549366700463,
+    "p95_latency_s": 1.03549366700463,
+    "min_latency_s": 1.03549366700463,
+    "max_latency_s": 1.03549366700463,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 1.568955e-05,
+        "file_name": "COPAUS2C.cbl",
+        "name": "DATA DIVISION",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does RETURN-TO-PREV-SCREEN navigate on errors?",
+    "query_description": "Screen return navigation pattern",
+    "top_k": 10,
+    "timings_s": [
+      0.9862192079890519
+    ],
+    "mean_latency_s": 0.9862192079890519,
+    "p50_latency_s": 0.9862192079890519,
+    "p95_latency_s": 0.9862192079890519,
+    "min_latency_s": 0.9862192079890519,
+    "max_latency_s": 0.9862192079890519,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 2.753569e-05,
+        "file_name": "COSGN00C.cbl",
+        "name": "MAIN-PARA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How do programs pass data via the communication area?",
+    "query_description": "Communication area data passing",
+    "top_k": 10,
+    "timings_s": [
+      0.8906255420006346
+    ],
+    "mean_latency_s": 0.8906255420006346,
+    "p50_latency_s": 0.8906255420006346,
+    "p95_latency_s": 0.8906255420006346,
+    "min_latency_s": 0.8906255420006346,
+    "max_latency_s": 0.8906255420006346,
+    "relevance_score": 0.5,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0007321813,
+        "file_name": "COCRDLIC.cbl",
+        "name": "WS-COMMAREA",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does CardDemo handle interest calculation?",
+    "query_description": "Interest calculation logic",
+    "top_k": 10,
+    "timings_s": [
+      0.991612832993269
+    ],
+    "mean_latency_s": 0.991612832993269,
+    "p50_latency_s": 0.991612832993269,
+    "p95_latency_s": 0.991612832993269,
+    "min_latency_s": 0.991612832993269,
+    "max_latency_s": 0.991612832993269,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 2.0145691e-05,
+        "file_name": "COCRDLIC.cbl",
+        "name": "1300-SETUP-SCREEN-ATTRS",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How are transaction categories and types classified?",
+    "query_description": "Transaction category/type classification",
+    "top_k": 10,
+    "timings_s": [
+      1.0144592500000726
+    ],
+    "mean_latency_s": 1.0144592500000726,
+    "p50_latency_s": 1.0144592500000726,
+    "p95_latency_s": 1.0144592500000726,
+    "min_latency_s": 1.0144592500000726,
+    "max_latency_s": 1.0144592500000726,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00033535014,
+        "file_name": "COTRTLIC.cbl",
+        "name": "DATA DIVISION",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What batch vs online programs exist?",
+    "query_description": "Batch vs online program inventory",
+    "top_k": 10,
+    "timings_s": [
+      1.033666874980554
+    ],
+    "mean_latency_s": 1.033666874980554,
+    "p50_latency_s": 1.033666874980554,
+    "p95_latency_s": 1.033666874980554,
+    "min_latency_s": 1.033666874980554,
+    "max_latency_s": 1.033666874980554,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 7.031184e-05,
+        "file_name": "CORPT00C.cbl",
+        "name": "MAIN-PARA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How do copybooks reduce code duplication?",
+    "query_description": "Copybook reuse patterns",
+    "top_k": 10,
+    "timings_s": [
+      0.9851368330128025
+    ],
+    "mean_latency_s": 0.9851368330128025,
+    "p50_latency_s": 0.9851368330128025,
+    "p95_latency_s": 0.9851368330128025,
+    "min_latency_s": 0.9851368330128025,
+    "max_latency_s": 0.9851368330128025,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 3.7636444e-05,
+        "file_name": "COTRTLI.cpy",
+        "name": "COTRTLI",
+        "chunk_type": "copybook",
+        "file_type": "cpy"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does LOOKUP-XREF perform cross-reference lookups?",
+    "query_description": "Cross-reference lookup operation",
+    "top_k": 10,
+    "timings_s": [
+      0.9752502079936676
+    ],
+    "mean_latency_s": 0.9752502079936676,
+    "p50_latency_s": 0.9752502079936676,
+    "p95_latency_s": 0.9752502079936676,
+    "min_latency_s": 0.9752502079936676,
+    "max_latency_s": 0.9752502079936676,
+    "relevance_score": 0.3333333333333333,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.00048785712,
+        "file_name": "COACTVWC.cbl",
+        "name": "9200-GETCARDXREF-BYACCT, 9200-GETCARDXREF-BYACCT-EXIT",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does HANDLE-DB2-ERROR do on SQL failures?",
+    "query_description": "DB2 error handler",
+    "top_k": 10,
+    "timings_s": [
+      1.1347555829852354
+    ],
+    "mean_latency_s": 1.1347555829852354,
+    "p50_latency_s": 1.1347555829852354,
+    "p95_latency_s": 1.1347555829852354,
+    "min_latency_s": 1.1347555829852354,
+    "max_latency_s": 1.1347555829852354,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 1.8925148e-05,
+        "file_name": "COADM01C.cbl",
+        "name": "MAIN-PARA",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "How does COMBTRAN combine transaction data?",
+    "query_description": "Transaction data combining JCL",
+    "top_k": 10,
+    "timings_s": [
+      1.10332137500518
+    ],
+    "mean_latency_s": 1.10332137500518,
+    "p50_latency_s": 1.10332137500518,
+    "p95_latency_s": 1.10332137500518,
+    "min_latency_s": 1.10332137500518,
+    "max_latency_s": 1.10332137500518,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 4.264747e-05,
+        "file_name": "COTRTLIC.cbl",
+        "name": "LIT-ALL-ALPHANUM-FROM",
+        "chunk_type": "data_division",
+        "file_type": "cbl"
+      }
+    ]
+  },
+  {
+    "config": "llama-hybrid-rerank",
+    "query": "What does the DUSRSECJ JCL do for user security?",
+    "query_description": "User security file JCL",
+    "top_k": 10,
+    "timings_s": [
+      0.9188709169975482
+    ],
+    "mean_latency_s": 0.9188709169975482,
+    "p50_latency_s": 0.9188709169975482,
+    "p95_latency_s": 0.9188709169975482,
+    "min_latency_s": 0.9188709169975482,
+    "max_latency_s": 0.9188709169975482,
+    "relevance_score": 0.0,
+    "result_count": 1,
+    "top_results": [
+      {
+        "id": null,
+        "score": 0.0008830458,
+        "file_name": "COUSR00C.cbl",
+        "name": "PROCESS-PAGE-FORWARD",
+        "chunk_type": "paragraph",
+        "file_type": "cbl"
+      }
+    ]
+  }
+]

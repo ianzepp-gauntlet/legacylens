@@ -24,11 +24,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 from benchmarks.config import (
     CONFIGS,
-    QUERIES,
+    DEFAULT_QUERY_SET,
+    QUERY_SETS,
     REPETITIONS,
     TOP_K_VALUES,
     BenchmarkConfig,
     BenchmarkQuery,
+    load_queries,
     score_relevance,
 )
 from legacylens.config import settings
@@ -440,6 +442,12 @@ def main():
     parser.add_argument("--configs", help="Comma-separated config names (default: all)")
     parser.add_argument("--top-k", help="Comma-separated top-k values (default: 3,5,10,20,50)")
     parser.add_argument("--repetitions", type=int, default=REPETITIONS, help="Timing repetitions per query")
+    parser.add_argument(
+        "--queries",
+        choices=list(QUERY_SETS.keys()),
+        default=DEFAULT_QUERY_SET,
+        help=f"Query set to use (default: {DEFAULT_QUERY_SET})",
+    )
     args = parser.parse_args()
 
     if not settings.pinecone_api_key:
@@ -454,6 +462,8 @@ def main():
             print(f"No matching configs. Available: {', '.join(c.name for c in CONFIGS)}")
             sys.exit(1)
 
+    queries = load_queries(args.queries)
+
     top_k_values = TOP_K_VALUES
     if args.top_k:
         top_k_values = [int(k.strip()) for k in args.top_k.split(",")]
@@ -463,11 +473,12 @@ def main():
         print("ERROR: OPENAI_API_KEY must be set for OpenAI embedding benchmark configs")
         sys.exit(1)
 
-    print(f"Benchmark: {len(configs)} configs × {len(QUERIES)} queries × {len(top_k_values)} top-k values")
+    print(f"Benchmark: {len(configs)} configs × {len(queries)} queries × {len(top_k_values)} top-k values")
+    print(f"Query set: {args.queries} ({len(queries)} queries)")
     print(f"Top-k values: {top_k_values}")
     print(f"Repetitions: {args.repetitions}")
 
-    results = run_benchmark(configs, QUERIES, top_k_values, repetitions=args.repetitions)
+    results = run_benchmark(configs, queries, top_k_values, repetitions=args.repetitions)
     save_results(results, RESULTS_DIR)
 
     # Quick summary

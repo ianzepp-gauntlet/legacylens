@@ -144,9 +144,16 @@ A performance benchmark suite compares retrieval latency and relevance across di
 
 Each configuration creates a separate Pinecone index named `legacylens-bench-{model}-{dims}-{chunking}`.
 
-### Query Suite
+### Query Suites
 
-40 predefined queries spanning 20 categories with expected file/chunk patterns for automated relevance scoring (expanded from the original 10-query suite). Each query is run 3 times per configuration for timing stability. Metrics collected:
+Two query sets are available, selectable via `--queries`:
+
+| Set | Queries | Description |
+|---|--:|---|
+| `curated` (default) | 40 | Hand-curated queries with manually verified expected files/chunks |
+| `suggestions` | 209 | Auto-extracted from the "Suggest" feature across 20 categories |
+
+Each query is run 3 times per configuration for timing stability. Metrics collected:
 
 - **Latency:** mean, p50, p95, min, max (seconds)
 - **Relevance:** fraction of expected files/chunks found in results (0.0 - 1.0)
@@ -219,6 +226,54 @@ Benchmark run: 8 configs (paragraph only), 40 queries, 2 top-k values (5/10), 1 
 
 4. **Pinecone integrated models remain ~40% faster.** Llama at 0.365s and E5 at 0.439s vs OpenAI configs at 0.53-0.69s.
 
+### Reranking & Hybrid Search Results (2026-03-03)
+
+With `llama-1024-paragraph` confirmed as the best dense index, the next tuning level tested reranking (re-scoring results with a cross-encoder) and hybrid search (combining dense semantic + sparse keyword retrieval). Three reranker models were benchmarked, plus a hybrid config using a separate sparse index (`pinecone-sparse-english-v0`).
+
+Benchmark run: 4 configs, 40 queries, 2 top-k values (5/10), 1 repetition (320 total query runs).
+
+#### Overall Summary (vs baseline)
+
+| Rank | Config | Strategy | Avg Latency | Avg Relevance | vs Baseline |
+|---:|---|---|--:|--:|---|
+| 1 | **llama-1024-paragraph** (baseline) | Dense only | **0.365s** | **0.88** | — |
+| 2 | llama-rerank-pinecone | Two-step, truncated to 900 chars | 0.867s | 0.88 | Same relevance, +137% latency |
+| 3 | llama-rerank-cohere | Inline (4K token context) | 0.609s | 0.86 | -2pt relevance, +67% latency |
+| 4 | llama-rerank-bge | Two-step, truncated to 900 chars | 0.811s | 0.86 | -2pt relevance, +122% latency |
+| 5 | llama-hybrid-rerank | Dense + Sparse + Rerank | 0.967s | 0.10 | -78pt relevance |
+
+#### Key Findings (reranking update)
+
+1. **The baseline wins.** `llama-text-embed-v2` at 0.88 relevance is already so good that reranking cannot improve it — it only adds latency (2-2.5x slower).
+
+2. **Cohere inline reranking is the fastest reranker** (0.609s) thanks to a single API call with 4K token context, but still 67% slower than no reranking.
+
+3. **Pinecone-rerank-v0 ties on relevance** (0.88) but requires two-step fetch-then-rerank with truncation due to its 512-token limit. COBOL tokenizes poorly (~2 chars/token due to hyphenated identifiers like `WS-RESP-CD`, `9910-DISPLAY-IO-STATUS`), so documents must be truncated to ~900 chars.
+
+4. **Hybrid search is catastrophic** (0.10 relevance). The sparse keyword model generates irrelevant matches on COBOL's verbose naming conventions, overwhelming the reranker. COBOL's domain-specific tokens (paragraph names, copybook prefixes, level numbers) are a poor fit for general-purpose sparse/keyword retrieval.
+
+5. **Conclusion: ship the baseline.** Dense retrieval with `llama-text-embed-v2` and paragraph chunking is the optimal configuration. Reranking and hybrid search add complexity and latency without improving relevance for this domain.
+
+### Expanded Results: 209-Query Suite (2026-03-03)
+
+To validate generalization beyond hand-curated queries, the full 209-query suggestion set was run against the top model (`llama-1024-paragraph`). These queries were auto-extracted from the "Suggest" feature, spanning all 20 categories with expected file patterns derived from program names in the query text.
+
+Benchmark run: 1 config, 209 queries, 2 top-k values (5/10), 1 repetition (418 total query runs).
+
+| Query Set | top_k | Avg Latency | Avg Relevance | Queries |
+|---|--:|--:|--:|--:|
+| Curated | 5 | 0.365s | 0.88 | 40 |
+| Suggestions | 5 | 0.404s | 0.89 | 209 |
+| Suggestions | 10 | 0.416s | 0.92 | 209 |
+
+#### Key Findings (209-query update)
+
+1. **The model generalizes well.** Relevance on 209 auto-generated queries (0.89-0.92) matches or exceeds the hand-curated 40-query score (0.88), confirming the benchmark results are not overfit to the curated set.
+
+2. **top_k=10 provides a meaningful lift.** Going from k=5 to k=10 improves relevance by 3 points (0.89 → 0.92) with only 12ms additional latency — a worthwhile trade-off for production use.
+
+3. **Latency is consistent.** Average latency of 0.41s across 209 queries matches the 40-query benchmark (0.365s), with no degradation at scale.
+
 ### Running Benchmarks
 
 ```bash
@@ -230,6 +285,7 @@ python benchmarks/ingest_all.py --clean  # delete and re-create indexes
 # 2. Run benchmark suite
 python benchmarks/run_benchmark.py
 python benchmarks/run_benchmark.py --configs small-512-paragraph --top-k 5,10
+python benchmarks/run_benchmark.py --queries suggestions --configs llama-1024-paragraph
 
 # 3. Analyze results
 python benchmarks/report.py                               # latest results
@@ -258,11 +314,13 @@ legacylens/
 │   ├── chain.py           # LangChain RAG chain (context + LLM)
 │   └── cli.py             # Typer CLI (ask, search, ingest)
 ├── benchmarks/
-│   ├── config.py          # Test matrix (16 configs), query suite, relevance scoring
-│   ├── ingest_all.py      # Multi-index ingestion (OpenAI + Pinecone integrated)
-│   ├── run_benchmark.py   # Benchmark runner (latency + relevance)
-│   ├── report.py          # Results analysis and summary tables
-│   └── results/           # JSON + CSV output
+│   ├── config.py              # Test matrix (20 configs), query loading, relevance scoring
+│   ├── queries_curated.py     # 40 hand-curated benchmark queries
+│   ├── queries_suggestions.py # 209 auto-extracted suggestion queries
+│   ├── ingest_all.py          # Multi-index ingestion (OpenAI + Pinecone + sparse)
+│   ├── run_benchmark.py       # Benchmark runner (latency + relevance)
+│   ├── report.py              # Results analysis and summary tables
+│   └── results/               # JSON + CSV output
 ├── web/
 │   ├── app.py             # FastAPI endpoints
 │   └── templates/
@@ -276,7 +334,7 @@ legacylens/
     ├── test_vectorstore.py# 8 tests
     ├── test_chain.py      # 9 tests
     ├── test_retrieval.py  # 13 tests (6 live + 7 chunking)
-    └── test_benchmark.py  # 23 tests (configs, queries, relevance scoring, fixed chunker)
+    └── test_benchmark.py  # 27 tests (configs, queries, relevance scoring, fixed chunker)
 ```
 
 ## Deployment
