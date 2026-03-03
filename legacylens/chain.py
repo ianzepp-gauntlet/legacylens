@@ -29,9 +29,10 @@ def _format_context(results: list) -> str:
     """Format retrieved results into context string."""
     parts = []
     for i, r in enumerate(results, 1):
+        score_str = f"{r.score:.3f}" if r.score is not None else "n/a"
         parts.append(
             f"--- Source {i}: {r.file_path}:{r.start_line}-{r.end_line} "
-            f"(score: {r.score:.3f}) ---\n"
+            f"(score: {score_str}) ---\n"
             f"{r.preamble}\n\n"
             f"{r.content}\n"
         )

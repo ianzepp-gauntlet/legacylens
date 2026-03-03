@@ -139,18 +139,23 @@ async def api_ask_stream(request: Request):
     async def event_stream():
         full_answer = []
         sources = []
-        gen = ask_stream(question, top_k=top_k, file_type=file_type, model=model, results=results)
+        try:
+            gen = ask_stream(question, top_k=top_k, file_type=file_type, model=model, results=results)
 
-        while True:
-            result = await asyncio.to_thread(_next_chunk, gen)
-            if result is _sentinel:
-                break
-            typ, data = result
-            if typ == "token":
-                full_answer.append(data)
-                yield f"data: {json.dumps(data)}\n\n"
-            elif typ == "sources":
-                sources = data
+            while True:
+                result = await asyncio.to_thread(_next_chunk, gen)
+                if result is _sentinel:
+                    break
+                typ, data = result
+                if typ == "token":
+                    full_answer.append(data)
+                    yield f"data: {json.dumps(data)}\n\n"
+                elif typ == "sources":
+                    sources = data
+        except Exception as exc:
+            yield f"event: error\ndata: {json.dumps(str(exc))}\n\n"
+            yield "event: done\ndata: \n\n"
+            return
 
         yield f"event: sources\ndata: {json.dumps(sources)}\n\n"
         yield "event: done\ndata: \n\n"
