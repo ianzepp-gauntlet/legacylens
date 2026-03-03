@@ -380,11 +380,7 @@
             background: var(--bg-panel);
             border-radius: 0 4px 4px 0;
             padding: 0.6rem 0.75rem;
-            cursor: pointer;
-            transition: opacity 0.15s;
         }
-
-        .source-item:hover { opacity: 0.85; }
 
         .source-item.score-high { border-left: 3px solid var(--score-high); }
         .source-item.score-mid  { border-left: 3px solid var(--score-mid); }
@@ -404,19 +400,16 @@
             color: var(--text-primary);
         }
 
-        .score-badge {
-            display: inline-block;
-            padding: 0.1rem 0.5rem;
-            border-radius: 3px;
+        .score-label {
             font-family: var(--font-display);
             font-size: 0.7rem;
             font-weight: 700;
             flex-shrink: 0;
         }
 
-        .score-badge.high { background: var(--score-high); color: var(--bg-primary); }
-        .score-badge.mid  { background: var(--score-mid); color: var(--bg-primary); }
-        .score-badge.low  { background: var(--score-low); color: var(--text-primary); }
+        .score-label.high { color: var(--score-high); }
+        .score-label.mid  { color: var(--score-mid); }
+        .score-label.low  { color: var(--score-low); }
 
         .source-meta {
             font-size: 0.75rem;
@@ -651,53 +644,20 @@
                     div.innerHTML =
                         '<div class="source-top">' +
                             '<span class="source-file">' + escapeHtml(s.file_name + ':' + s.start_line + '-' + s.end_line) + '</span>' +
-                            '<span class="score-badge ' + tier + '">' + pct + '</span>' +
+                            '<span class="score-label ' + tier + '">' + pct + '</span>' +
                         '</div>' +
-                        '<div class="source-meta">' + escapeHtml(s.name) + ' &middot; ' + escapeHtml(s.chunk_type || '') + ' &middot; ' + escapeHtml(s.file_path || '') + '</div>' +
-                        '<div class="source-content"></div>' +
-                        '<button type="button" class="btn-context">Load file context</button>';
+                        '<div class="source-meta">' + escapeHtml(s.name) + ' &middot; ' + escapeHtml(s.chunk_type || '') + ' &middot; ' + escapeHtml(s.file_name || '') + '</div>' +
+                        '<button type="button" class="btn-context">Show Chunk</button>' +
+                        '<div class="source-content"></div>';
 
                     const sourceContent = div.querySelector('.source-content');
                     sourceContent.textContent = sourceBody;
 
-                    // Click to expand/collapse
-                    div.addEventListener('click', function(event) {
-                        if (event.target.closest('.btn-context')) return;
-                        div.classList.toggle('expanded');
-                    });
-
-                    // Load full file
-                    var contextBtn = div.querySelector('.btn-context');
-                    contextBtn.addEventListener('click', async function(event) {
-                        event.stopPropagation();
-                        if (!s.file_path) {
-                            sourceContent.textContent = 'File path unavailable.';
-                            div.classList.add('expanded');
-                            return;
-                        }
-                        contextBtn.disabled = true;
-                        contextBtn.textContent = 'Loading...';
-                        try {
-                            const fileResp = await fetch('/api/file', {
-                                method: 'POST',
-                                headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({ file_path: s.file_path }),
-                            });
-                            const fileData = await fileResp.json();
-                            if (fileData.error) {
-                                sourceContent.textContent = 'Error: ' + fileData.error;
-                            } else {
-                                var suffix = fileData.truncated ? '\n\n[truncated to first 2000 lines]' : '';
-                                sourceContent.textContent = fileData.content + suffix;
-                            }
-                            div.classList.add('expanded');
-                        } catch (fileErr) {
-                            sourceContent.textContent = 'Error: ' + fileErr.message;
-                            div.classList.add('expanded');
-                        } finally {
-                            contextBtn.disabled = false;
-                            contextBtn.textContent = 'Load file context';
-                        }
+                    var chunkBtn = div.querySelector('.btn-context');
+                    chunkBtn.addEventListener('click', function() {
+                        var isVisible = sourceContent.style.display === 'block';
+                        sourceContent.style.display = isVisible ? 'none' : 'block';
+                        chunkBtn.textContent = isVisible ? 'Show Chunk' : 'Hide Chunk';
                     });
 
                     sourcesList.appendChild(div);
