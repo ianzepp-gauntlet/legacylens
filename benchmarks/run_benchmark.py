@@ -16,7 +16,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from openai import OpenAI
-from pinecone import Pinecone, SearchQuery
+from pinecone import Pinecone, SearchQuery, SearchRerank
 
 load_dotenv()
 
@@ -84,30 +84,8 @@ def _query_openai_index(
     return results, elapsed
 
 
-def _query_pinecone_integrated(
-    pc: Pinecone,
-    config: BenchmarkConfig,
-    query: str,
-    top_k: int,
-) -> tuple[list[dict], float]:
-    """Query a Pinecone integrated-embedding index using search_records.
-
-    Pinecone embeds the query text server-side using the model
-    configured on the index.
-    """
-    start = time.perf_counter()
-
-    index = pc.Index(config.index_name)
-    response = index.search_records(
-        namespace=NAMESPACE,
-        query=SearchQuery(
-            inputs={"text": query},
-            top_k=top_k,
-        ),
-    )
-
-    elapsed = time.perf_counter() - start
-
+def _parse_search_hits(response) -> list[dict]:
+    """Extract result dicts from a Pinecone search response."""
     results = []
     for hit in response.result.hits:
         fields = hit.fields or {}
@@ -119,7 +97,138 @@ def _query_pinecone_integrated(
             "chunk_type": fields.get("chunk_type", ""),
             "file_type": fields.get("file_type", ""),
         })
+    return results
 
+
+def _query_pinecone_integrated(
+    pc: Pinecone,
+    config: BenchmarkConfig,
+    query: str,
+    top_k: int,
+) -> tuple[list[dict], float]:
+    """Query a Pinecone integrated-embedding index.
+
+    Supports optional reranking via config.rerank_model.
+    Over-fetches at 2× top_k when reranking, then reranks down to rerank_top_n.
+    """
+    start = time.perf_counter()
+
+    index = pc.Index(config.index_name)
+    fetch_k = top_k * 2 if config.rerank_model else top_k
+
+    rerank = None
+    if config.rerank_model:
+        rerank = SearchRerank(
+            model=config.rerank_model,
+            rank_fields=[TEXT_FIELD],
+            top_n=config.rerank_top_n or top_k,
+        )
+
+    response = index.search(
+        namespace=NAMESPACE,
+        query=SearchQuery(
+            inputs={"text": query},
+            top_k=fetch_k,
+        ),
+        rerank=rerank,
+    )
+
+    elapsed = time.perf_counter() - start
+    return _parse_search_hits(response), elapsed
+
+
+def _query_hybrid(
+    pc: Pinecone,
+    config: BenchmarkConfig,
+    query: str,
+    top_k: int,
+) -> tuple[list[dict], float]:
+    """Hybrid search: query dense + sparse indexes, merge, then rerank.
+
+    1. Query the dense index (llama) for top_k * 2 results
+    2. Query the sparse index for top_k * 2 results
+    3. Merge by record ID (union, deduplicate — keep higher score)
+    4. Rerank merged set down to rerank_top_n
+    """
+    start = time.perf_counter()
+
+    dense_index = pc.Index(config.index_name)
+    sparse_index = pc.Index(config.sparse_index_name)
+    fetch_k = top_k * 2
+
+    search_query = SearchQuery(inputs={"text": query}, top_k=fetch_k)
+
+    # Query both indexes
+    dense_response = dense_index.search(
+        namespace=NAMESPACE,
+        query=search_query,
+    )
+    sparse_response = sparse_index.search(
+        namespace=NAMESPACE,
+        query=search_query,
+    )
+
+    # Merge by ID — keep the hit with the higher score on collision
+    merged: dict[str, dict] = {}
+    for hit in dense_response.result.hits:
+        fields = hit.fields or {}
+        merged[hit.id] = {
+            "id": hit.id,
+            "score": hit.score,
+            "file_name": fields.get("file_name", ""),
+            "name": fields.get("name", ""),
+            "chunk_type": fields.get("chunk_type", ""),
+            "file_type": fields.get("file_type", ""),
+            TEXT_FIELD: fields.get(TEXT_FIELD, ""),
+        }
+    for hit in sparse_response.result.hits:
+        fields = hit.fields or {}
+        if hit.id not in merged or hit.score > merged[hit.id]["score"]:
+            merged[hit.id] = {
+                "id": hit.id,
+                "score": hit.score,
+                "file_name": fields.get("file_name", ""),
+                "name": fields.get("name", ""),
+                "chunk_type": fields.get("chunk_type", ""),
+                "file_type": fields.get("file_type", ""),
+                TEXT_FIELD: fields.get(TEXT_FIELD, ""),
+            }
+
+    # Rerank merged results using Pinecone inference API
+    merged_list = sorted(merged.values(), key=lambda x: x["score"], reverse=True)
+    rerank_top_n = config.rerank_top_n or top_k
+
+    if config.rerank_model and len(merged_list) > 0:
+        documents = [
+            {"id": doc["id"], TEXT_FIELD: doc.get(TEXT_FIELD, "")}
+            for doc in merged_list
+        ]
+        rerank_response = pc.inference.rerank(
+            model=config.rerank_model,
+            query=query,
+            documents=documents,
+            rank_fields=[TEXT_FIELD],
+            top_n=rerank_top_n,
+        )
+        # Rebuild results in reranked order
+        results = []
+        for item in rerank_response.data:
+            doc = merged_list[item.index]
+            results.append({
+                "id": doc["id"],
+                "score": item.score,
+                "file_name": doc["file_name"],
+                "name": doc["name"],
+                "chunk_type": doc["chunk_type"],
+                "file_type": doc["file_type"],
+            })
+    else:
+        results = [
+            {k: v for k, v in doc.items() if k != TEXT_FIELD}
+            for doc in merged_list[:rerank_top_n]
+        ]
+
+    elapsed = time.perf_counter() - start
     return results, elapsed
 
 
@@ -137,7 +246,9 @@ def run_single_query(
     relevance_scores = []
 
     for _ in range(repetitions):
-        if config.is_pinecone_integrated:
+        if config.is_hybrid:
+            results, elapsed = _query_hybrid(pc, config, query.query, top_k)
+        elif config.is_pinecone_integrated:
             results, elapsed = _query_pinecone_integrated(pc, config, query.query, top_k)
         else:
             if openai_client is None:
@@ -186,6 +297,9 @@ def run_benchmark(
         existing = [idx.name for idx in pc.list_indexes()]
         if config.index_name not in existing:
             print(f"  SKIP {config.name}: index {config.index_name} not found")
+            continue
+        if config.is_hybrid and config.sparse_index_name not in existing:
+            print(f"  SKIP {config.name}: sparse index {config.sparse_index_name} not found")
             continue
 
         print(f"\n--- {config.name} ---")

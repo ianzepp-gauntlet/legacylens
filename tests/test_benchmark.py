@@ -27,8 +27,10 @@ class TestBenchmarkConfigs:
         names = [c.name for c in CONFIGS]
         assert len(names) == len(set(names)), f"Duplicate config names: {[n for n in names if names.count(n) > 1]}"
 
-    def test_all_configs_have_unique_index_names(self):
-        index_names = [c.index_name for c in CONFIGS]
+    def test_base_configs_have_unique_index_names(self):
+        # Rerank/hybrid configs share index_name with base configs (by design)
+        base_configs = [c for c in CONFIGS if not c.rerank_model]
+        index_names = [c.index_name for c in base_configs]
         assert len(index_names) == len(set(index_names))
 
     def test_openai_configs_have_correct_provider(self):
@@ -48,22 +50,37 @@ class TestBenchmarkConfigs:
             assert len(c.index_name) <= 45, f"Index name too long: {c.index_name}"
             assert c.index_name.replace("-", "").isalnum(), f"Invalid chars in: {c.index_name}"
 
+    def test_rerank_configs_have_valid_models(self):
+        valid_models = {"pinecone-rerank-v0", "bge-reranker-v2-m3", "cohere-rerank-3.5"}
+        for c in CONFIGS:
+            if c.rerank_model:
+                assert c.rerank_model in valid_models, f"Invalid rerank model: {c.rerank_model}"
+                assert c.rerank_top_n is not None and c.rerank_top_n > 0
+
+    def test_hybrid_configs_have_sparse_index(self):
+        for c in CONFIGS:
+            if c.is_hybrid:
+                assert c.sparse_index_name is not None
+                assert c.rerank_model is not None, "Hybrid configs should include reranking"
+
     def test_chunking_strategies(self):
         strategies = {c.chunking_strategy for c in CONFIGS}
         assert "paragraph" in strategies
         assert "fixed" in strategies
 
     def test_expected_config_count(self):
-        # small: 4 dims × 2 chunking = 8
+        # small: 3 dims × 2 chunking = 6
         # large: 3 dims × 2 chunking = 6
         # e5: 1 dim × 2 chunking = 2
         # llama: 1 dim × 2 chunking = 2
-        assert len(CONFIGS) == 16
+        # rerank: 3 (pinecone, bge, cohere)
+        # hybrid: 1
+        assert len(CONFIGS) == 20
 
 
 class TestBenchmarkQueries:
     def test_queries_not_empty(self):
-        assert len(QUERIES) >= 10
+        assert len(QUERIES) >= 40
 
     def test_all_queries_have_descriptions(self):
         for q in QUERIES:

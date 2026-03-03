@@ -22,7 +22,7 @@ load_dotenv()
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
-from benchmarks.config import CONFIGS, BenchmarkConfig
+from benchmarks.config import CONFIGS, SPARSE_INDEX_NAME, BenchmarkConfig
 from legacylens.chunker import chunk_file
 from legacylens.config import settings
 from legacylens.ingest import discover_files
@@ -217,10 +217,84 @@ def ingest_config(
     print(f"  Done: {config.name}")
 
 
+def create_sparse_index(pc: Pinecone, clean: bool = False):
+    """Create the sparse index for hybrid search."""
+    existing = [idx.name for idx in pc.list_indexes()]
+
+    if SPARSE_INDEX_NAME in existing:
+        if clean:
+            print(f"  Deleting existing sparse index {SPARSE_INDEX_NAME}...")
+            pc.delete_index(SPARSE_INDEX_NAME)
+            time.sleep(5)
+        else:
+            print(f"  Sparse index {SPARSE_INDEX_NAME} already exists, skipping creation")
+            return
+
+    print(f"  Creating sparse index {SPARSE_INDEX_NAME}...")
+    pc.create_index_for_model(
+        name=SPARSE_INDEX_NAME,
+        cloud="aws",
+        region="us-east-1",
+        embed={
+            "model": "pinecone-sparse-english-v0",
+            "field_map": {"text": TEXT_FIELD},
+        },
+    )
+    _wait_for_index(pc, SPARSE_INDEX_NAME)
+
+
+def ingest_sparse_index(pc: Pinecone, all_files: list[str], clean: bool = False):
+    """Ingest paragraph chunks into the sparse index for hybrid search."""
+    print(f"\n{'='*60}")
+    print(f"Sparse Index: {SPARSE_INDEX_NAME}")
+    print(f"  Model: pinecone-sparse-english-v0, Chunking: paragraph")
+    print(f"{'='*60}")
+
+    create_sparse_index(pc, clean=clean)
+
+    index = pc.Index(SPARSE_INDEX_NAME)
+    try:
+        index.delete(delete_all=True, namespace=NAMESPACE)
+        print(f"  Cleared namespace '{NAMESPACE}' in {SPARSE_INDEX_NAME}")
+    except Exception as exc:
+        status = getattr(exc, "status", None) or getattr(exc, "status_code", None)
+        if status != 404 and "404" not in str(exc):
+            raise
+
+    # Chunk files using paragraph strategy (same as the best dense index)
+    chunks = []
+    errors = []
+    for f in all_files:
+        try:
+            file_chunks = chunk_file(f, strategy="paragraph")
+            chunks.extend(file_chunks)
+        except Exception as e:
+            errors.append((f, str(e)))
+            print(f"  ERROR chunking {Path(f).name}: {e}")
+
+    print(f"  Chunked {len(all_files)} files → {len(chunks)} chunks ({len(errors)} errors)")
+
+    # Upsert using Pinecone integrated embedding (sparse model embeds server-side)
+    batch_size = 96
+    print(f"  Upserting {len(chunks)} records (Pinecone will embed with pinecone-sparse-english-v0)...")
+    for i in range(0, len(chunks), batch_size):
+        batch = chunks[i : i + batch_size]
+        records = []
+        for chunk in batch:
+            record = _chunk_metadata(chunk)
+            record["_id"] = _make_vector_id(chunk)
+            record[TEXT_FIELD] = _embed_text(chunk)
+            records.append(record)
+        index.upsert_records(NAMESPACE, records)
+
+    print(f"  Done: {SPARSE_INDEX_NAME}")
+
+
 def main():
     parser = argparse.ArgumentParser(description="Ingest CardDemo into benchmark indexes")
     parser.add_argument("--configs", help="Comma-separated config names to run (default: all)")
     parser.add_argument("--clean", action="store_true", help="Delete and recreate indexes")
+    parser.add_argument("--sparse-only", action="store_true", help="Only ingest the sparse index")
     args = parser.parse_args()
 
     if not settings.pinecone_api_key:
@@ -249,13 +323,23 @@ def main():
     print(f"Discovering files in {settings.carddemo_path}...")
     all_files = discover_files(settings.carddemo_path)
     print(f"Found {len(all_files)} source files")
+
+    if args.sparse_only:
+        ingest_sparse_index(pc, all_files, clean=args.clean)
+        print(f"\n{'='*60}")
+        print("All done! Ingested sparse index.")
+        return
+
     print(f"\nWill ingest into {len(configs)} indexes")
 
     for config in configs:
         ingest_config(pc, config, all_files, clean=args.clean)
 
+    # Also ingest the sparse index for hybrid search
+    ingest_sparse_index(pc, all_files, clean=args.clean)
+
     print(f"\n{'='*60}")
-    print(f"All done! Ingested into {len(configs)} indexes.")
+    print(f"All done! Ingested into {len(configs)} indexes + sparse index.")
 
 
 if __name__ == "__main__":
