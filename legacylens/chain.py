@@ -1,11 +1,27 @@
 """LangChain RAG chain for answering questions about COBOL code."""
 
+import time
+
+import tiktoken
 from langchain_core.output_parsers import StrOutputParser
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
 
 from .config import settings
 from .retriever import retrieve
+
+_encoder = None
+
+
+def _count_tokens(text: str) -> int:
+    """Approximate token count using tiktoken."""
+    global _encoder
+    if _encoder is None:
+        try:
+            _encoder = tiktoken.encoding_for_model(settings.chat_model)
+        except Exception:
+            _encoder = tiktoken.get_encoding("cl100k_base")
+    return len(_encoder.encode(text))
 
 SYSTEM_PROMPT = """\
 You are LegacyLens, an expert assistant for understanding legacy COBOL codebases.
@@ -71,8 +87,11 @@ def ask_stream(
       ("token", str)   — an answer chunk
       ("sources", list) — serialized sources list (final item)
     """
+    t_start = time.perf_counter()
+    rag_cached = results is not None
     if results is None:
         results = retrieve(question, top_k=top_k, file_type=file_type)
+    t_rag = time.perf_counter()
     context = _format_context(results)
 
     prompt = ChatPromptTemplate.from_messages([
@@ -80,18 +99,38 @@ def ask_stream(
         ("human", USER_PROMPT),
     ])
 
+    effective_model = model or settings.chat_model
+    input_text = SYSTEM_PROMPT.replace("{context}", context) + question
+    tokens_in = _count_tokens(input_text)
+
     llm = ChatOpenAI(
-        model=model or settings.chat_model,
+        model=effective_model,
         api_key=settings.openai_api_key,
         temperature=0,
         streaming=True,
     )
 
     chain = prompt | llm | StrOutputParser()
+    answer_chunks = []
     for chunk in chain.stream({"context": context, "question": question}):
+        answer_chunks.append(chunk)
         yield ("token", chunk)
+    t_llm = time.perf_counter()
+
+    answer_text = "".join(answer_chunks)
+    tokens_out = _count_tokens(answer_text)
 
     yield ("sources", [_serialize_source(r) for r in results])
+    yield ("stats", {
+        "rag_s": round(t_rag - t_start, 3),
+        "llm_s": round(t_llm - t_rag, 3),
+        "total_s": round(t_llm - t_start, 3),
+        "tokens_in": tokens_in,
+        "tokens_out": tokens_out,
+        "chunks": len(results),
+        "model": effective_model,
+        "rag_cached": rag_cached,
+    })
 
 
 def ask(
@@ -102,8 +141,11 @@ def ask(
     results: list | None = None,
 ) -> dict:
     """Ask a question about the codebase and get an answer with sources."""
+    t_start = time.perf_counter()
+    rag_cached = results is not None
     if results is None:
         results = retrieve(question, top_k=top_k, file_type=file_type)
+    t_rag = time.perf_counter()
     context = _format_context(results)
 
     prompt = ChatPromptTemplate.from_messages([
@@ -111,16 +153,33 @@ def ask(
         ("human", USER_PROMPT),
     ])
 
+    effective_model = model or settings.chat_model
+    input_text = SYSTEM_PROMPT.replace("{context}", context) + question
+    tokens_in = _count_tokens(input_text)
+
     llm = ChatOpenAI(
-        model=model or settings.chat_model,
+        model=effective_model,
         api_key=settings.openai_api_key,
         temperature=0,
     )
 
     chain = prompt | llm | StrOutputParser()
     answer = chain.invoke({"context": context, "question": question})
+    t_llm = time.perf_counter()
+
+    tokens_out = _count_tokens(answer)
 
     return {
         "answer": answer,
         "sources": [_serialize_source(r) for r in results],
+        "stats": {
+            "rag_s": round(t_rag - t_start, 3),
+            "llm_s": round(t_llm - t_rag, 3),
+            "total_s": round(t_llm - t_start, 3),
+            "tokens_in": tokens_in,
+            "tokens_out": tokens_out,
+            "chunks": len(results),
+            "model": effective_model,
+            "rag_cached": rag_cached,
+        },
     }

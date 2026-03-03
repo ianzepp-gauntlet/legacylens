@@ -64,7 +64,10 @@ async def api_ask(request: Request):
     effective_model = model or settings.chat_model
     cache_key = (question, effective_model)
     if use_l2 and cache_key in _ask_cache and not file_type:
-        return _ask_cache[cache_key]
+        cached = _ask_cache[cache_key]
+        cached_stats = dict(cached.get("stats", {}))
+        cached_stats["l2_cached"] = True
+        return {**cached, "stats": cached_stats}
 
     from legacylens.chain import ask
     from legacylens.models import QueryResult
@@ -112,6 +115,9 @@ async def api_ask_stream(request: Request):
         async def cached_stream():
             yield f"data: {json.dumps(cached['answer'])}\n\n"
             yield f"event: sources\ndata: {json.dumps(cached['sources'])}\n\n"
+            cached_stats = cached.get('stats', {})
+            cached_stats['l2_cached'] = True
+            yield f"event: stats\ndata: {json.dumps(cached_stats)}\n\n"
             yield "event: done\ndata: \n\n"
 
         return StreamingResponse(cached_stream(), media_type="text/event-stream")
@@ -139,6 +145,7 @@ async def api_ask_stream(request: Request):
     async def event_stream():
         full_answer = []
         sources = []
+        stats = {}
         try:
             gen = ask_stream(question, top_k=top_k, file_type=file_type, model=model, results=results)
 
@@ -152,17 +159,20 @@ async def api_ask_stream(request: Request):
                     yield f"data: {json.dumps(data)}\n\n"
                 elif typ == "sources":
                     sources = data
+                elif typ == "stats":
+                    stats = data
         except Exception as exc:
             yield f"event: error\ndata: {json.dumps(str(exc))}\n\n"
             yield "event: done\ndata: \n\n"
             return
 
         yield f"event: sources\ndata: {json.dumps(sources)}\n\n"
+        yield f"event: stats\ndata: {json.dumps(stats)}\n\n"
         yield "event: done\ndata: \n\n"
 
         # Cache the complete answer
         if use_l2 and not file_type:
-            _ask_cache[cache_key] = {"answer": "".join(full_answer), "sources": sources}
+            _ask_cache[cache_key] = {"answer": "".join(full_answer), "sources": sources, "stats": stats}
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
