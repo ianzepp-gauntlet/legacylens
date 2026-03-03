@@ -8,8 +8,10 @@ class Settings(BaseSettings):
     pinecone_namespace: str = "carddemo"
     carddemo_path: str = ""
 
+    embedding_provider: str = "pinecone"  # "pinecone" | "openai"
     embedding_model: str = "text-embedding-3-small"
     embedding_dimensions: int = 1536
+    pinecone_model: str = "llama-text-embed-v2"
     chat_model: str = "gpt-4o-mini"
     top_k: int = 10
 

@@ -16,10 +16,6 @@ from openai import OpenAI
 from pinecone import (
     Pinecone,
     ServerlessSpec,
-    CloudProvider,
-    AwsRegion,
-    EmbedModel,
-    IndexEmbed,
 )
 
 load_dotenv()
@@ -36,12 +32,6 @@ from legacylens.vectorstore import METADATA_CONTENT_LIMIT
 
 NAMESPACE = "carddemo"
 TEXT_FIELD = "chunk_text"  # field name used in Pinecone integrated indexes
-
-# Map config model strings to Pinecone SDK EmbedModel enums
-PINECONE_MODEL_MAP = {
-    "multilingual-e5-large": EmbedModel.Multilingual_E5_Large,
-    "llama-text-embed-v2": EmbedModel.Llama_Text_Embed_V2,
-}
 
 
 def _make_vector_id(chunk: CodeChunk) -> str:
@@ -99,16 +89,15 @@ def create_index(pc: Pinecone, config: BenchmarkConfig, clean: bool = False):
             return
 
     if config.is_pinecone_integrated:
-        embed_model = PINECONE_MODEL_MAP[config.pinecone_model]
         print(f"  Creating integrated index {config.index_name} ({config.pinecone_model})...")
         pc.create_index_for_model(
             name=config.index_name,
-            cloud=CloudProvider.AWS,
-            region=AwsRegion.US_EAST_1,
-            embed=IndexEmbed(
-                model=embed_model,
-                field_map={"text": TEXT_FIELD},
-            ),
+            cloud="aws",
+            region="us-east-1",
+            embed={
+                "model": config.pinecone_model,
+                "field_map": {"text": TEXT_FIELD},
+            },
         )
     else:
         print(f"  Creating index {config.index_name} (dim={config.embedding_dimensions})...")
@@ -170,7 +159,7 @@ def ingest_pinecone_integrated(
     from the text field specified in the index's field_map.
     """
     index = pc.Index(config.index_name)
-    batch_size = 100
+    batch_size = 96  # Pinecone integrated indexes limit batches to 96
 
     print(f"  Upserting {len(chunks)} records (Pinecone will embed with {config.pinecone_model})...")
     for i in range(0, len(chunks), batch_size):

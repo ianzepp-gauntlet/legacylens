@@ -55,10 +55,10 @@ class TestBenchmarkConfigs:
 
     def test_expected_config_count(self):
         # small: 4 dims × 2 chunking = 8
-        # large: 5 dims × 2 chunking = 10
+        # large: 3 dims × 2 chunking = 6
         # e5: 1 dim × 2 chunking = 2
         # llama: 1 dim × 2 chunking = 2
-        assert len(CONFIGS) == 22
+        assert len(CONFIGS) == 16
 
 
 class TestBenchmarkQueries:

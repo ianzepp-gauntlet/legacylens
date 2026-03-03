@@ -75,10 +75,10 @@ def _build_pinecone_configs(
 
 
 CONFIGS: list[BenchmarkConfig] = [
-    # OpenAI text-embedding-3-small at various dimensions
-    *_build_openai_configs("text-embedding-3-small", "small", [256, 512, 1024, 1536]),
-    # OpenAI text-embedding-3-large at various dimensions
-    *_build_openai_configs("text-embedding-3-large", "large", [256, 512, 1024, 1536, 3072]),
+    # OpenAI text-embedding-3-small: 512, 1024, 1536
+    *_build_openai_configs("text-embedding-3-small", "small", [512, 1024, 1536]),
+    # OpenAI text-embedding-3-large: 512, 1024, 1536
+    *_build_openai_configs("text-embedding-3-large", "large", [512, 1024, 1536]),
     # Pinecone integrated models
     *_build_pinecone_configs("multilingual-e5-large", "e5", 1024),
     *_build_pinecone_configs("llama-text-embed-v2", "llama", 1024),
