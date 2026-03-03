@@ -1,5 +1,6 @@
 """FastAPI web application for LegacyLens."""
 
+import json
 import os
 
 from dotenv import load_dotenv
@@ -15,6 +16,21 @@ static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
+
+# Pre-computed search cache for suggestion queries
+_search_cache: dict[str, list[dict]] = {}
+_cache_file = os.path.join(os.path.dirname(__file__), "cache", "search_cache.json")
+if os.path.isfile(_cache_file):
+    with open(_cache_file) as _f:
+        _search_cache = json.load(_f)
+
+
+def _get_cached_results(query: str, top_k: int, file_type: str | None) -> list[dict] | None:
+    """Return cached search results if available for this query with default params."""
+    if file_type or query not in _search_cache:
+        return None
+    results = _search_cache[query]
+    return results[:top_k]
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -34,8 +50,15 @@ async def api_ask(request: Request):
         return {"error": "Question is required"}
 
     from legacylens.chain import ask
+    from legacylens.models import QueryResult
 
-    result = ask(question, top_k=top_k, file_type=file_type, model=model)
+    cached = _get_cached_results(question, top_k, file_type)
+    if cached is not None:
+        # Convert cached dicts back to QueryResult objects for the chain
+        results = [QueryResult(**r) for r in cached]
+        result = ask(question, top_k=top_k, file_type=file_type, model=model, results=results)
+    else:
+        result = ask(question, top_k=top_k, file_type=file_type, model=model)
     return result
 
 
@@ -48,6 +71,10 @@ async def api_search(request: Request):
 
     if not query.strip():
         return {"error": "Query is required"}
+
+    cached = _get_cached_results(query, top_k, file_type)
+    if cached is not None:
+        return {"results": cached}
 
     from legacylens.retriever import retrieve
 
@@ -72,6 +99,11 @@ async def api_search(request: Request):
             for r in results
         ]
     }
+
+
+@app.get("/api/cache-status")
+async def cache_status():
+    return {"cached_queries": len(_search_cache)}
 
 
 @app.post("/api/file")

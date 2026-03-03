@@ -62,9 +62,11 @@ def ask(
     top_k: int | None = None,
     file_type: str | None = None,
     model: str | None = None,
+    results: list | None = None,
 ) -> dict:
     """Ask a question about the codebase and get an answer with sources."""
-    results = retrieve(question, top_k=top_k, file_type=file_type)
+    if results is None:
+        results = retrieve(question, top_k=top_k, file_type=file_type)
     context = _format_context(results)
 
     prompt = ChatPromptTemplate.from_messages([
