@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LegacyLens - AI-Powered COBOL Insights</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/styles/stackoverflow-dark.min.css">
     <style>
         @font-face {
             font-family: 'Monofonto';
@@ -640,23 +641,37 @@
         .source-content {
             display: none;
             margin-top: 0.5rem;
-            padding: 0.75rem 1rem;
-            background: #0a0a0a;
+            background: #0f1318;
             border: 1px solid #1a3a1a;
             border-radius: 4px;
-            font-family: var(--font-body);
-            font-size: 0.78rem;
-            white-space: pre-wrap;
             max-height: 400px;
             overflow-y: auto;
             overflow-x: auto;
-            color: #33ff33;
-            line-height: 1.5;
-            text-shadow: 0 0 4px rgba(51, 255, 51, 0.3);
             /* Subtle CRT curvature via vignette */
             box-shadow:
                 inset 0 0 60px rgba(0, 0, 0, 0.3),
                 inset 0 0 1px rgba(51, 255, 51, 0.05);
+        }
+
+        .source-content pre {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+        }
+
+        .source-content code {
+            display: block;
+            padding: 0.75rem 1rem;
+            font-family: var(--font-body);
+            font-size: 0.78rem;
+            line-height: 1.5;
+            white-space: pre;
+            overflow-x: auto;
+            background: transparent;
+        }
+
+        .source-content code.hljs {
+            background: transparent;
         }
 
         .source-item.expanded .source-content { display: block; }
@@ -787,6 +802,7 @@
         }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.11.1/highlight.min.js"></script>
 </head>
 <body>
     <div class="container">
@@ -1206,6 +1222,24 @@
             return 'low';
         }
 
+        function sourceLanguage(fileType) {
+            var t = String(fileType || '').toLowerCase();
+            if (t === 'cbl' || t === 'cob' || t === 'cpy') return 'cobol';
+            if (t === 'jcl') return 'plaintext';
+            if (t === 'bms') return 'plaintext';
+            return 'plaintext';
+        }
+
+        function highlightCode(codeEl) {
+            if (window.hljs && codeEl) {
+                try {
+                    window.hljs.highlightElement(codeEl);
+                } catch (_) {
+                    // Fallback: show plain text if highlighting fails.
+                }
+            }
+        }
+
         function renderPerfBar(stats) {
             var bar = document.getElementById('perf-bar');
             if (!stats || Object.keys(stats).length === 0) {
@@ -1266,10 +1300,13 @@
                             '<a class="btn-file" href="' + githubUrl(s.file_path, s.start_line, s.end_line) + '" target="_blank" rel="noopener">Full File</a>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="source-content"></div>';
+                    '<div class="source-content"><pre><code></code></pre></div>';
 
                 const sourceContent = div.querySelector('.source-content');
-                sourceContent.textContent = sourceBody;
+                const sourceCode = sourceContent.querySelector('code');
+                sourceCode.textContent = sourceBody;
+                sourceCode.className = 'language-' + sourceLanguage(s.file_type);
+                highlightCode(sourceCode);
                 const chunkBtn = div.querySelector('.btn-context');
                 const fileBtn = div.querySelector('.btn-file');
 
