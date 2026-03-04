@@ -18,6 +18,10 @@ A RAG-powered system that makes legacy COBOL codebases queryable via natural lan
 | 8 | Basic answer generation using retrieved context | Done | LangChain RAG chain with GPT-4o-mini; grounded answers with `[File:Line-Line]` citations |
 | 9 | Deployed and publicly accessible | Done | https://web-production-3455.up.railway.app/ |
 
+## Video Demos
+
+- [LegacyLens Demo — RAG-Powered COBOL Code Explorer](https://youtu.be/wxKjCIaJizY)
+
 ## Architecture
 
 ```
