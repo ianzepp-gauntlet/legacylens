@@ -866,6 +866,15 @@
                         <option value="deepseek/deepseek-chat">deepseek-chat</option>
                     </select>
                 </div>
+                <div class="config-group">
+                    <label class="config-label" for="cfg-verbosity">Verbosity</label>
+                    <select id="cfg-verbosity" class="config-select">
+                        <option value="succinct">Succint</option>
+                        <option value="concise">Concise</option>
+                        <option value="regular" selected>Regular</option>
+                        <option value="detailed">Detailed</option>
+                    </select>
+                </div>
                 <div class="config-group flex-1">
                     <label class="config-label" for="cfg-filetype">File Type</label>
                     <select id="cfg-filetype" class="config-select">
@@ -901,7 +910,7 @@
                 <div class="config-group">
                     <label class="config-label">L1 Cache</label>
                     <label class="toggle-switch">
-                        <input type="checkbox" id="cfg-l1-cache">
+                        <input type="checkbox" id="cfg-l1-cache" checked>
                         <span class="toggle-slider"></span>
                     </label>
                 </div>
@@ -1511,6 +1520,7 @@
             const fileType = document.getElementById('cfg-filetype').value;
             const topK = parseInt(document.getElementById('cfg-topk').value, 10);
             const model = document.getElementById('cfg-model').value;
+            const verbosity = document.getElementById('cfg-verbosity').value;
             const useStream = document.getElementById('cfg-stream').checked;
             const useL1Cache = document.getElementById('cfg-l1-cache').checked;
 
@@ -1527,6 +1537,7 @@
                 file_type: fileType || null,
                 top_k: topK,
                 model: model,
+                verbosity: verbosity,
                 l1_cache: useL1Cache,
             };
             clearWsLog();
