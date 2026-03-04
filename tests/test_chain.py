@@ -16,6 +16,7 @@ def _make_result(**overrides):
         end_line=120,
         score=0.85,
         preamble="File: FOO.cbl\nParagraph: 1000-PROCESS",
+        summary="Moves A into B for the main processing step.",
         comments="Process input",
         copy_references=["COPYLIB"],
         calls_to=["PERFORM 2000-DO-STUFF"],
@@ -47,6 +48,11 @@ class TestFormatContext:
         ctx = _format_context(results)
         assert "Paragraph: MAIN" in ctx
 
+    def test_includes_summary(self):
+        results = [_make_result(summary="This paragraph initializes working storage.")]
+        ctx = _format_context(results)
+        assert "Summary: This paragraph initializes working storage." in ctx
+
     def test_includes_content(self):
         results = [_make_result(content="PERFORM 1000-INIT.")]
         ctx = _format_context(results)
@@ -76,15 +82,17 @@ class TestSerializeSource:
         assert s["score"] == 0.85
         assert s["chunk_type"] == "paragraph"
         assert s["preamble"] == "File: FOO.cbl\nParagraph: 1000-PROCESS"
+        assert s["summary"] == "Moves A into B for the main processing step."
         assert s["content"] == "MOVE A TO B."
         assert s["comments"] == "Process input"
         assert s["copy_references"] == ["COPYLIB"]
         assert s["calls_to"] == ["PERFORM 2000-DO-STUFF"]
 
     def test_empty_optional_fields(self):
-        r = _make_result(preamble="", comments="", copy_references=[], calls_to=[])
+        r = _make_result(preamble="", summary="", comments="", copy_references=[], calls_to=[])
         s = _serialize_source(r)
         assert s["preamble"] == ""
+        assert s["summary"] == ""
         assert s["comments"] == ""
         assert s["copy_references"] == []
         assert s["calls_to"] == []
