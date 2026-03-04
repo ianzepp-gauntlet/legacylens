@@ -683,6 +683,72 @@
             cursor: not-allowed;
         }
 
+        /* ── WebSocket Log ── */
+        .ws-log-section {
+            margin-top: 1.25rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 4px;
+            padding: 0.6rem 0.75rem;
+        }
+
+        .ws-log-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.5rem;
+            margin-bottom: 0.45rem;
+        }
+
+        .ws-log-title {
+            font-family: var(--font-display);
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--text-label);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .ws-log-clear {
+            background: transparent;
+            border: 1px solid var(--border-panel);
+            border-radius: 3px;
+            padding: 0.15rem 0.45rem;
+            color: var(--text-muted);
+            font-family: var(--font-display);
+            font-size: 0.65rem;
+            cursor: pointer;
+        }
+
+        .ws-log-clear:hover {
+            border-color: var(--accent-green);
+            color: var(--accent-green);
+        }
+
+        .ws-log-lines {
+            max-height: 220px;
+            overflow-y: auto;
+            background: #0f1318;
+            border: 1px solid #1f2630;
+            border-radius: 3px;
+            padding: 0.35rem 0.45rem;
+            font-family: var(--font-body);
+            font-size: 0.72rem;
+            line-height: 1.35;
+            color: #aab5c4;
+        }
+
+        .ws-log-line {
+            white-space: pre-wrap;
+            word-break: break-word;
+            padding: 0.1rem 0;
+            border-bottom: 1px dotted rgba(106, 112, 128, 0.25);
+        }
+
+        .ws-log-line:last-child {
+            border-bottom: none;
+        }
+
         /* ── Footer ── */
         .footer {
             margin-top: 2rem;
@@ -829,6 +895,14 @@
             </div>
         </div>
 
+        <div class="ws-log-section">
+            <div class="ws-log-header">
+                <span class="ws-log-title">WebSocket JSONL Log</span>
+                <button type="button" class="ws-log-clear" onclick="clearWsLog()">Clear</button>
+            </div>
+            <div class="ws-log-lines" id="ws-log-lines"></div>
+        </div>
+
         <!-- Footer -->
         <footer class="footer">
             System Status: Online since 1963. Declassified.
@@ -837,6 +911,8 @@
 
     <script>
         marked.setOptions({ breaks: true });
+        const MAX_WS_LOG_LINES = 2000;
+        let wsLogSeq = 0;
 
         const SUGGESTIONS = [
             // ── User Management ──
@@ -1193,6 +1269,29 @@
             document.getElementById('sources-section').classList.remove('collapsed');
         }
 
+        function clearWsLog() {
+            const node = document.getElementById('ws-log-lines');
+            node.innerHTML = '';
+            wsLogSeq = 0;
+        }
+
+        function appendWsLog(label, line) {
+            const node = document.getElementById('ws-log-lines');
+            if (!node) return;
+
+            wsLogSeq += 1;
+            const row = document.createElement('div');
+            row.className = 'ws-log-line';
+            row.textContent = '[' + wsLogSeq + '] ' + label + ' ' + String(line || '');
+            node.appendChild(row);
+
+            while (node.children.length > MAX_WS_LOG_LINES) {
+                node.removeChild(node.firstChild);
+            }
+            node.scrollTop = node.scrollHeight;
+            console.log('[ws-jsonl]', label, line);
+        }
+
         function wsUrl(path) {
             const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
             return proto + '://' + window.location.host + path;
@@ -1203,10 +1302,12 @@
             for (const rawLine of lines) {
                 const line = rawLine.trim();
                 if (!line) continue;
+                appendWsLog('recv', line);
                 try {
                     const evt = JSON.parse(line);
                     onEvent(evt);
                 } catch (_) {
+                    appendWsLog('parse_error', line);
                     onEvent({ type: 'error', data: 'Invalid JSONL event from server' });
                 }
             }
@@ -1228,9 +1329,11 @@
                 const ws = new WebSocket(wsUrl('/ws/ask'));
 
                 ws.onopen = function() {
+                    appendWsLog('state', 'open');
                     document.getElementById('answer-content').innerHTML = '<span class="stream-cursor">Thinking\u2026</span>';
                     document.getElementById('answer-box').style.display = 'block';
                     document.getElementById('loading').style.display = 'none';
+                    appendWsLog('send', JSON.stringify(payload));
                     ws.send(JSON.stringify(payload));
                 };
 
@@ -1277,10 +1380,12 @@
                 };
 
                 ws.onerror = function() {
+                    appendWsLog('state', 'error');
                     finish(false, new Error('WebSocket connection error'));
                 };
 
                 ws.onclose = function() {
+                    appendWsLog('state', 'close');
                     if (!settled) {
                         finish(false, new Error('WebSocket closed unexpectedly'));
                     }
@@ -1312,6 +1417,7 @@
                 top_k: topK,
                 model: model,
             };
+            clearWsLog();
 
             try {
                 if (useStream) {
