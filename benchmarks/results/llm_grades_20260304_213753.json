@@ -1,0 +1,100 @@
+{
+  "metadata": {
+    "timestamp": "2026-03-04T21:37:53.019254+00:00",
+    "grader_model": "claude-opus-4-20250514",
+    "source_file": "llm_responses_20260304_213419.json",
+    "total_graded": 10
+  },
+  "grades": [
+    {
+      "query": "What does COUSR00C do?",
+      "description": "User Management: What does COUSR00C do?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "How does the user list screen work in COUSR00C?",
+      "description": "User Management: How does the user list screen work in COUSR00C?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "How does COUSR01C handle user inquiry?",
+      "description": "User Management: How does COUSR01C handle user inquiry?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.001
+    },
+    {
+      "query": "Explain the user add logic in COUSR02C",
+      "description": "User Management: Explain the user add logic in COUSR02C",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "How does COUSR03C update user records?",
+      "description": "User Management: How does COUSR03C update user records?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "How is the USRSEC user security file accessed?",
+      "description": "User Management: How is the USRSEC user security file accessed?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "What is the user authentication flow in CardDemo?",
+      "description": "User Management: What is the user authentication flow in CardDemo?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "How are user roles and permissions managed?",
+      "description": "User Management: How are user roles and permissions managed?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "How does the sign-on screen COSGN00C work?",
+      "description": "User Management: How does the sign-on screen COSGN00C work?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    },
+    {
+      "query": "What validation happens during user login?",
+      "description": "User Management: What validation happens during user login?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": null,
+      "justification": null,
+      "error": "parse_failure: ERROR: No module named 'anthropic'",
+      "grader_latency_s": 0.0
+    }
+  ]
+}

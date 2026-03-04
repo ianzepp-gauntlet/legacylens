@@ -1,0 +1,993 @@
+{
+  "metadata": {
+    "timestamp": "2026-03-04T21:46:59.854809+00:00",
+    "models_tested": [
+      "google/gemini-2.5-flash-lite"
+    ],
+    "query_count": 10,
+    "top_k": 10,
+    "benchmark_verbosity": "detailed"
+  },
+  "queries": [
+    {
+      "query": "What does COUSR00C do?",
+      "description": "User Management: What does COUSR00C do?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:549.0-561.0 (score: 0.335) ---\nSummary: paragraph RECEIVE-USRLST-SCREEN in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: RECEIVE-USRLST-SCREEN (lines 549-561)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       RECEIVE-USRLST-SCREEN.\n\n           EXEC CICS RECEIVE\n                     MAP('COUSR0A')\n                     MAPSET('COUSR00')\n                     INTO(COUSR0AI)\n                     RESP(WS-RESP-CD)\n                     RESP2(WS-REAS-CD)\n           END-EXEC.\n\n      *----------------------------------------------------------------*\n      *                      POPULATE-HEADER-INFO\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:522.0-548.0 (score: 0.327) ---\nSummary: paragraph SEND-USRLST-SCREEN in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM POPULATE-HEADER-INFO. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: SEND-USRLST-SCREEN (lines 522-548)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM POPULATE-HEADER-INFO\n\n       SEND-USRLST-SCREEN.\n\n           PERFORM POPULATE-HEADER-INFO\n\n           MOVE WS-MESSAGE TO ERRMSGO OF COUSR0AO\n\n           IF SEND-ERASE-YES\n               EXEC CICS SEND\n                         MAP('COUSR0A')\n                         MAPSET('COUSR00')\n                         FROM(COUSR0AO)\n                         ERASE\n                         CURSOR\n               END-EXEC\n           ELSE\n               EXEC CICS SEND\n                         MAP('COUSR0A')\n                         MAPSET('COUSR00')\n                         FROM(COUSR0AO)\n      *                  ERASE\n                         CURSOR\n               END-EXEC\n           END-IF.\n\n      *----------------------------------------------------------------*\n      *                      RECEIVE-USRLST-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:446.0-505.0 (score: 0.320) ---\nSummary: paragraph INITIALIZE-USER-DATA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: INITIALIZE-USER-DATA (lines 446-505)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       INITIALIZE-USER-DATA.\n\n           EVALUATE WS-IDX\n               WHEN 1\n                   MOVE SPACES TO USRID01I OF COUSR0AI\n                   MOVE SPACES TO FNAME01I OF COUSR0AI\n                   MOVE SPACES TO LNAME01I OF COUSR0AI\n                   MOVE SPACES TO UTYPE01I OF COUSR0AI\n               WHEN 2\n                   MOVE SPACES TO USRID02I OF COUSR0AI\n                   MOVE SPACES TO FNAME02I OF COUSR0AI\n                   MOVE SPACES TO LNAME02I OF COUSR0AI\n                   MOVE SPACES TO UTYPE02I OF COUSR0AI\n               WHEN 3\n                   MOVE SPACES TO USRID03I OF COUSR0AI\n                   MOVE SPACES TO FNAME03I OF COUSR0AI\n                   MOVE SPACES TO LNAME03I OF COUSR0AI\n                   MOVE SPACES TO UTYPE03I OF COUSR0AI\n               WHEN 4\n                   MOVE SPACES TO USRID04I OF COUSR0AI\n                   MOVE SPACES TO FNAME04I OF COUSR0AI\n                   MOVE SPACES TO LNAME04I OF COUSR0AI\n                   MOVE SPACES TO UTYPE04I OF COUSR0AI\n               WHEN 5\n                   MOVE SPACES TO USRID05I OF COUSR0AI\n                   MOVE SPACES TO FNAME05I OF COUSR0AI\n                   MOVE SPACES TO LNAME05I OF COUSR0AI\n                   MOVE SPACES TO UTYPE05I OF COUSR0AI\n               WHEN 6\n                   MOVE SPACES TO USRID06I OF COUSR0AI\n                   MOVE SPACES TO FNAME06I OF COUSR0AI\n                   MOVE SPACES TO LNAME06I OF COUSR0AI\n                   MOVE SPACES TO UTYPE06I OF COUSR0AI\n               WHEN 7\n                   MOVE SPACES TO USRID07I OF COUSR0AI\n                   MOVE SPACES TO FNAME07I OF COUSR0AI\n                   MOVE SPACES TO LNAME07I OF COUSR0AI\n                   MOVE SPACES TO UTYPE07I OF COUSR0AI\n               WHEN 8\n                   MOVE SPACES TO USRID08I OF COUSR0AI\n                   MOVE SPACES TO FNAME08I OF COUSR0AI\n                   MOVE SPACES TO LNAME08I OF COUSR0AI\n                   MOVE SPACES TO UTYPE08I OF COUSR0AI\n               WHEN 9\n                   MOVE SPACES TO USRID09I OF COUSR0AI\n                   MOVE SPACES TO FNAME09I OF COUSR0AI\n                   MOVE SPACES TO LNAME09I OF COUSR0AI\n                   MOVE SPACES TO UTYPE09I OF COUSR0AI\n               WHEN 10\n                   MOVE SPACES TO USRID10I OF COUSR0AI\n                   MOVE SPACES TO FNAME10I OF COUSR0AI\n                   MOVE SPACES TO LNAME10I OF COUSR0AI\n                   MOVE SPACES TO UTYPE10I OF COUSR0AI\n               WHEN OTHER\n                   CONTINUE\n           END-EVALUATE.\n\n      *----------------------------------------------------------------*\n      *                      RETURN-TO-PREV-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:384.0-445.0 (score: 0.317) ---\nSummary: paragraph POPULATE-USER-DATA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: POPULATE-USER-DATA (lines 384-445)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       POPULATE-USER-DATA.\n\n           EVALUATE WS-IDX\n               WHEN 1\n                   MOVE SEC-USR-ID    TO USRID01I OF COUSR0AI\n                                         CDEMO-CU00-USRID-FIRST\n                   MOVE SEC-USR-FNAME TO FNAME01I OF COUSR0AI\n                   MOVE SEC-USR-LNAME TO LNAME01I OF CO\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:260.0-281.0 (score: 0.312) ---\nSummary: paragraph PROCESS-PF8-KEY in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM PROCESS-PAGE-FORWARD, PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: PROCESS-PF8-KEY (lines 260-281)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM PROCESS-PAGE-FORWARD, PERFORM SEND-USRLST-SCREEN\n\n       PROCESS-PF8-KEY.\n\n           IF CDEMO-CU00-USRID-LAST = SPACES OR LOW-VALUES\n               MOVE HIGH-VALUES TO SEC-USR-ID\n           ELSE\n               MOVE CDEMO-CU00-USRID-LAST TO SEC-USR-ID\n           END-IF\n\n           MOVE -1       TO USRIDINL OF COUSR0AI\n\n           IF NEXT-PAGE-YES\n               PERFOR\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR00.bms:19.0-25.0 (score: 0.309) ---\nSummary: bms_map COUSR00 in COUSR00.bms.\nFile: COUSR00.bms\nBMS Map: COUSR00 (lines 19-25)\n\nCOUSR00 DFHMSD CTRL=(ALARM,FREEKB),                                    -\n               EXTATT=YES,                                             -\n               LANG=COBOL,                                             -\n               MODE=INOUT,                                             -\n               STORAGE=AUTO,\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:29.0-96.0 (score: 0.307) ---\nSummary: data_division DATA DIVISION in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y....\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nSection: DATA DIVISION (lines 29-96)\n\n       DATA DIVISION.\n      *----------------------------------------------------------------*\n      *                     WORKING STORAGE SECTION\n      *----------------------------------------------------------------*\n       WORKING-STORAGE SECTION.\n\n       01 WS-VARIABLES.\n         05 WS-PGMNAME                 PIC\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:562.0-585.0 (score: 0.307) ---\nSummary: paragraph POPULATE-HEADER-INFO in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: POPULATE-HEADER-INFO (lines 562-585)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       POPULATE-HEADER-INFO.\n\n           MOVE FUNCTION CURRENT-DATE  TO WS-CURDATE-DATA\n\n           MOVE CCDA-TITLE01           TO TITLE01O OF COUSR0AO\n           MOVE CCDA-TITLE02           TO TITLE02O OF COUSR0AO\n           MOVE WS-TRANID              TO TRNNAMEO OF COUSR0AO\n           MOVE WS-PGMNAME             TO\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:336.0-383.0 (score: 0.304) ---\nSummary: paragraph PROCESS-PAGE-BACKWARD in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READPREV-USER-SEC-FILE.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: PROCESS-PAGE-BACKWARD (lines 336-383)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READPREV-USER-SEC-FILE, PERFORM SEND-USRLST-SCREEN, PERFORM STARTBR-USER-SEC-FILE\n\n       PROCESS-PAGE-BACKWARD.\n\n           PERFORM STARTBR-USER-SEC-FILE\n\n           IF NOT ERR-FLG-ON\n\n               IF EIBAID NOT = DFHENTER  AND DFHPF8\n                   PERFORM READPREV-USER-SEC-FILE\n               END-IF\n\n               IF USER-SEC-NOT-EOF AND ERR-FLG-OFF\n               PERFORM VARYING WS-IDX FRO\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:282.0-335.0 (score: 0.301) ---\nSummary: paragraph PROCESS-PAGE-FORWARD in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READNEXT-USER-SEC-FILE.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: PROCESS-PAGE-FORWARD (lines 282-335)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READNEXT-USER-SEC-FILE, PERFORM SEND-USRLST-SCREEN, PERFORM STARTBR-USER-SEC-FILE\n\n       PROCESS-PAGE-FORWARD.\n\n           PERFORM STARTBR-USER-SEC-FILE\n\n           IF NOT ERR-FLG-ON\n\n               IF EIBAID NOT = DFHENTER AND DFHPF7 AND DFHPF3\n                   PERFORM READNEXT-USER-SEC-FILE\n               END-IF\n\n               IF USER-SEC-NOT-EOF AND ERR-FLG-OFF\n               PERFORM VARYING W\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "RECEIVE-USRLST-SCREEN",
+          "start_line": 549.0,
+          "end_line": 561.0,
+          "score": 0.3348,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "SEND-USRLST-SCREEN",
+          "start_line": 522.0,
+          "end_line": 548.0,
+          "score": 0.3271,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "INITIALIZE-USER-DATA",
+          "start_line": 446.0,
+          "end_line": 505.0,
+          "score": 0.3196,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "POPULATE-USER-DATA",
+          "start_line": 384.0,
+          "end_line": 445.0,
+          "score": 0.3172,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "PROCESS-PF8-KEY",
+          "start_line": 260.0,
+          "end_line": 281.0,
+          "score": 0.312,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00.bms",
+          "name": "COUSR00",
+          "start_line": 19.0,
+          "end_line": 25.0,
+          "score": 0.309,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "DATA DIVISION",
+          "start_line": 29.0,
+          "end_line": 96.0,
+          "score": 0.3075,
+          "chunk_type": "data_division"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "POPULATE-HEADER-INFO",
+          "start_line": 562.0,
+          "end_line": 585.0,
+          "score": 0.3074,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "PROCESS-PAGE-BACKWARD",
+          "start_line": 336.0,
+          "end_line": 383.0,
+          "score": 0.3038,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "PROCESS-PAGE-FORWARD",
+          "start_line": 282.0,
+          "end_line": 335.0,
+          "score": 0.3013,
+          "chunk_type": "paragraph"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 4.416,
+          "answer": "The COBOL program `COUSR00C` is designed to list all users from the `USRSEC` file within a CICS environment [COUSR00C.cbl]. It handles the display and interaction for a user list screen, identified by the BMS map `COUSR0A` and mapset `COUSR00` [COUSR00C.cbl:549.0-561.0, COUSR00C.cbl:522.0-548.0, COUSR00.bms:19.0-25.0].\n\nThe program's functionality includes:\n*   **Sending and Receiving Screens**: It uses `EXEC CICS SEND` and `EXEC CICS RECEIVE` commands to display the user list screen (`COUSR0A`) and capture user input [COUSR00C.cbl:549.0-561.0, COUSR00C.cbl:522.0-548.0]. The `ERASE` and `CURSOR` options in the `SEND` command suggest interaction with a terminal display.\n*   **Data Population**: The `POPULATE-USER-DATA` paragraph is responsible for moving user data from the `USRSEC` file (variables like `SEC-USR-ID`, `SEC-USR-FNAME`, `SEC-USR-LNAME`) into the corresponding fields on the screen (`COUSR0AI`) [COUSR00C.cbl:384.0-445.0].\n*   **Screen Initialization**: The `INITIALIZE-USER-DATA` paragraph clears specific fields on the screen, preparing them for new data input, and this is done for up to 10 user record fields [COUSR00C.cbl:446.0-505.0].\n*   **Navigation**: It handles page navigation with `PROCESS-PAGE-FORWARD` and `PROCESS-PAGE-BACKWARD` paragraphs, likely triggered by specific function keys (PF-keys) such as PF8, PF7, and PF3 [COUSR00C.cbl:260.0-281.0, COUSR00C.cbl:336.0-383.0, COUSR00C.cbl:282.0-335.0]. These paragraphs interact with file I/O operations like `STARTBR-USER-SEC-FILE`, `READNEXT-USER-SEC-FILE`, and `READPREV-USER-SEC-FILE` to retrieve records sequentially or in reverse.\n*   **Header Information**: The `POPULATE-HEADER-INFO` paragraph is used to populate header information on the screen, including the current date and transaction/program names [COUSR00C.cbl:562.0-585.0].\n\nOverall, `COUSR00C` provides a CICS-based interface for viewing and navigating through a list of users stored in the `USRSEC` file.",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "How does the user list screen work in COUSR00C?",
+      "description": "User Management: How does the user list screen work in COUSR00C?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:549.0-561.0 (score: 0.508) ---\nSummary: paragraph RECEIVE-USRLST-SCREEN in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: RECEIVE-USRLST-SCREEN (lines 549-561)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       RECEIVE-USRLST-SCREEN.\n\n           EXEC CICS RECEIVE\n                     MAP('COUSR0A')\n                     MAPSET('COUSR00')\n                     INTO(COUSR0AI)\n                     RESP(WS-RESP-CD)\n                     RESP2(WS-REAS-CD)\n           END-EXEC.\n\n      *----------------------------------------------------------------*\n      *                      POPULATE-HEADER-INFO\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:522.0-548.0 (score: 0.498) ---\nSummary: paragraph SEND-USRLST-SCREEN in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM POPULATE-HEADER-INFO. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: SEND-USRLST-SCREEN (lines 522-548)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM POPULATE-HEADER-INFO\n\n       SEND-USRLST-SCREEN.\n\n           PERFORM POPULATE-HEADER-INFO\n\n           MOVE WS-MESSAGE TO ERRMSGO OF COUSR0AO\n\n           IF SEND-ERASE-YES\n               EXEC CICS SEND\n                         MAP('COUSR0A')\n                         MAPSET('COUSR00')\n                         FROM(COUSR0AO)\n                         ERASE\n                         CURSOR\n               END-EXEC\n           ELSE\n               EXEC CICS SEND\n                         MAP('COUSR0A')\n                         MAPSET('COUSR00')\n                         FROM(COUSR0AO)\n      *                  ERASE\n                         CURSOR\n               END-EXEC\n           END-IF.\n\n      *----------------------------------------------------------------*\n      *                      RECEIVE-USRLST-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:446.0-505.0 (score: 0.490) ---\nSummary: paragraph INITIALIZE-USER-DATA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: INITIALIZE-USER-DATA (lines 446-505)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       INITIALIZE-USER-DATA.\n\n           EVALUATE WS-IDX\n               WHEN 1\n                   MOVE SPACES TO USRID01I OF COUSR0AI\n                   MOVE SPACES TO FNAME01I OF COUSR0AI\n                   MOVE SPACES TO LNAME01I OF COUSR0AI\n                   MOVE SPACES TO UTYPE01I OF COUSR0AI\n               WHEN 2\n                   MOVE SPACES TO USRID02I OF COUSR0AI\n                   MOVE SPACES TO FNAME02I OF COUSR0AI\n                   MOVE SPACES TO LNAME02I OF COUSR0AI\n                   MOVE SPACES TO UTYPE02I OF COUSR0AI\n               WHEN 3\n                   MOVE SPACES TO USRID03I OF COUSR0AI\n                   MOVE SPACES TO FNAME03I OF COUSR0AI\n                   MOVE SPACES TO LNAME03I OF COUSR0AI\n                   MOVE SPACES TO UTYPE03I OF COUSR0AI\n               WHEN 4\n                   MOVE SPACES TO USRID04I OF COUSR0AI\n                   MOVE SPACES TO FNAME04I OF COUSR0AI\n                   MOVE SPACES TO LNAME04I OF COUSR0AI\n                   MOVE SPACES TO UTYPE04I OF COUSR0AI\n               WHEN 5\n                   MOVE SPACES TO USRID05I OF COUSR0AI\n                   MOVE SPACES TO FNAME05I OF COUSR0AI\n                   MOVE SPACES TO LNAME05I OF COUSR0AI\n                   MOVE SPACES TO UTYPE05I OF COUSR0AI\n               WHEN 6\n                   MOVE SPACES TO USRID06I OF COUSR0AI\n                   MOVE SPACES TO FNAME06I OF COUSR0AI\n                   MOVE SPACES TO LNAME06I OF COUSR0AI\n                   MOVE SPACES TO UTYPE06I OF COUSR0AI\n               WHEN 7\n                   MOVE SPACES TO USRID07I OF COUSR0AI\n                   MOVE SPACES TO FNAME07I OF COUSR0AI\n                   MOVE SPACES TO LNAME07I OF COUSR0AI\n                   MOVE SPACES TO UTYPE07I OF COUSR0AI\n               WHEN 8\n                   MOVE SPACES TO USRID08I OF COUSR0AI\n                   MOVE SPACES TO FNAME08I OF COUSR0AI\n                   MOVE SPACES TO LNAME08I OF COUSR0AI\n                   MOVE SPACES TO UTYPE08I OF COUSR0AI\n               WHEN 9\n                   MOVE SPACES TO USRID09I OF COUSR0AI\n                   MOVE SPACES TO FNAME09I OF COUSR0AI\n                   MOVE SPACES TO LNAME09I OF COUSR0AI\n                   MOVE SPACES TO UTYPE09I OF COUSR0AI\n               WHEN 10\n                   MOVE SPACES TO USRID10I OF COUSR0AI\n                   MOVE SPACES TO FNAME10I OF COUSR0AI\n                   MOVE SPACES TO LNAME10I OF COUSR0AI\n                   MOVE SPACES TO UTYPE10I OF COUSR0AI\n               WHEN OTHER\n                   CONTINUE\n           END-EVALUATE.\n\n      *----------------------------------------------------------------*\n      *                      RETURN-TO-PREV-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:506.0-521.0 (score: 0.484) ---\nSummary: paragraph RETURN-TO-PREV-SCREEN in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: RETURN-TO-PREV-SCREEN (lines 506-521)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       RETURN-TO-PREV-SCREEN.\n\n           IF CDEMO-TO-PROGRAM = LOW-VALUES OR SPACES\n               MOVE 'COSGN00C' TO CDEMO-TO-PROGRAM\n           END-IF\n           MOVE WS-TRANID    TO CDEMO-FROM-TRANID\n           MOVE WS-PGMNAME   TO CDEMO-FROM-PROGRAM\n           MOVE ZEROS        TO CDEMO-PGM-CONTEXT\n           EXEC\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:586.0-618.0 (score: 0.476) ---\nSummary: paragraph STARTBR-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: STARTBR-USER-SEC-FILE (lines 586-618)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRLST-SCREEN\n\n       STARTBR-USER-SEC-FILE.\n\n           EXEC CICS STARTBR\n                DATASET   (WS-USRSEC-FILE)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n      *         GTEQ\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:384.0-445.0 (score: 0.476) ---\nSummary: paragraph POPULATE-USER-DATA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: POPULATE-USER-DATA (lines 384-445)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       POPULATE-USER-DATA.\n\n           EVALUATE WS-IDX\n               WHEN 1\n                   MOVE SEC-USR-ID    TO USRID01I OF COUSR0AI\n                                         CDEMO-CU00-USRID-FIRST\n                   MOVE SEC-USR-FNAME TO FNAME01I OF COUSR0AI\n                   MOVE SEC-USR-LNAME TO LNAME01I OF CO\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:653.0-686.0 (score: 0.475) ---\nSummary: paragraph READPREV-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: READPREV-USER-SEC-FILE (lines 653-686)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRLST-SCREEN\n\n       READPREV-USER-SEC-FILE.\n\n           EXEC CICS READPREV\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                RESP      (WS-RES\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:619.0-652.0 (score: 0.475) ---\nSummary: paragraph READNEXT-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: READNEXT-USER-SEC-FILE (lines 619-652)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRLST-SCREEN\n\n       READNEXT-USER-SEC-FILE.\n\n           EXEC CICS READNEXT\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                RESP      (WS-RES\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:29.0-96.0 (score: 0.467) ---\nSummary: data_division DATA DIVISION in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y....\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nSection: DATA DIVISION (lines 29-96)\n\n       DATA DIVISION.\n      *----------------------------------------------------------------*\n      *                     WORKING STORAGE SECTION\n      *----------------------------------------------------------------*\n       WORKING-STORAGE SECTION.\n\n       01 WS-VARIABLES.\n         05 WS-PGMNAME                 PIC\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:98.0-148.0 (score: 0.464) ---\nSummary: paragraph MAIN-PARA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM PROCESS-ENTER-KEY, PERFORM PROCESS-PF7-KEY, PERFORM PROCESS-PF8-KEY, PERFORM RECEIVE-USRLST-SCREEN....\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: MAIN-PARA (lines 98-148)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM PROCESS-ENTER-KEY, PERFORM PROCESS-PF7-KEY, PERFORM PROCESS-PF8-KEY, PERFORM RECEIVE-USRLST-SCREEN, PERFORM RETURN-TO-PREV-SCREEN, PERFORM SEND-USRLST-SCREEN\n\n       MAIN-PARA.\n\n           SET ERR-FLG-OFF TO TRUE\n           SET USER-SEC-NOT-EOF TO TRUE\n           SET NEXT-PAGE-NO TO TRUE\n           SET SEND-ERASE-YES TO TRUE\n\n           MOVE SPACES TO WS-MESSAGE\n                          ERRMSGO OF COUSR0AO\n\n           MOVE -1       TO USRIDINL OF COUSR0AI\n\n           IF EIB\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "RECEIVE-USRLST-SCREEN",
+          "start_line": 549.0,
+          "end_line": 561.0,
+          "score": 0.5075,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "SEND-USRLST-SCREEN",
+          "start_line": 522.0,
+          "end_line": 548.0,
+          "score": 0.4981,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "INITIALIZE-USER-DATA",
+          "start_line": 446.0,
+          "end_line": 505.0,
+          "score": 0.4899,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "RETURN-TO-PREV-SCREEN",
+          "start_line": 506.0,
+          "end_line": 521.0,
+          "score": 0.4844,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "STARTBR-USER-SEC-FILE",
+          "start_line": 586.0,
+          "end_line": 618.0,
+          "score": 0.4758,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "POPULATE-USER-DATA",
+          "start_line": 384.0,
+          "end_line": 445.0,
+          "score": 0.4758,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "READPREV-USER-SEC-FILE",
+          "start_line": 653.0,
+          "end_line": 686.0,
+          "score": 0.4754,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "READNEXT-USER-SEC-FILE",
+          "start_line": 619.0,
+          "end_line": 652.0,
+          "score": 0.475,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "DATA DIVISION",
+          "start_line": 29.0,
+          "end_line": 96.0,
+          "score": 0.4666,
+          "chunk_type": "data_division"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "MAIN-PARA",
+          "start_line": 98.0,
+          "end_line": 148.0,
+          "score": 0.4637,
+          "chunk_type": "paragraph"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 5.337,
+          "answer": "The user list screen in `COUSR00C` is managed through a series of paragraphs that handle sending and receiving data to and from the screen, as well as populating and initializing the data fields.\n\n1.  **Sending the User List Screen (`SEND-USRLST-SCREEN`)**: This paragraph ([COUSR00C.cbl:522.0-548.0]) is responsible for displaying the user list to the user. It first calls `POPULATE-HEADER-INFO` to set up header details and then moves any error messages to the screen output area (`ERRMSGO OF COUSR0AO`). Based on the `SEND-ERASE-YES` flag, it uses a CICS `SEND` command to transmit the screen map (`COUSR0A`) from mapset (`COUSR00`) to the terminal. The `ERASE` option clears the screen before sending, while `CURSOR` places the cursor on the screen.\n\n2.  **Receiving User Input (`RECEIVE-USRLST-SCREEN`)**: This paragraph ([COUSR00C.cbl:549.0-561.0]) handles input from the user. It uses a CICS `RECEIVE` command to get data from the screen map (`COUSR0A`) in mapset (`COUSR00`) and stores it in the `COUSR0AI` working storage area. It also captures the response codes (`WS-RESP-CD` and `WS-REAS-CD`) to handle any CICS communication errors.\n\n3.  **Initializing User Data (`INITIALIZE-USER-DATA`)**: This paragraph ([COUSR00C.cbl:446.0-505.0]) is used to clear or initialize the fields on the user list screen. It uses an `EVALUATE` statement based on a `WS-IDX` variable to set specific fields for up to 10 user entries (e.g., `USRID01I`, `FNAME01I`, `LNAME01I`, `UTYPE01I`) to spaces. This is likely called to prepare a blank screen before populating it with user data or when a user navigates between pages.\n\n4.  **Populating User Data (`POPULATE-USER-DATA`)**: Although not detailed in the provided snippets, this paragraph ([COUSR00C.cbl:384.0-445.0]) is referenced and is responsible for moving data from the `USRSEC` file (specifically `SEC-USR-ID`, `SEC-USR-FNAME`, `SEC-USR-LNAME`) into the appropriate input fields on the screen map (`COUSR0AI`). It also appears to move data to other fields like `CDEMO-CU00-USRID-FIRST`.\n\nThe main program flow in `MAIN-PARA` ([COUSR00C.cbl:98.0-148.0]) orchestrates these actions by calling paragraphs like `RECEIVE-USRLST-SCREEN`, `SEND-USRLST-SCREEN`, and others to process user interactions and display the user list. The program also interacts with the `USRSEC` file using CICS commands like `STARTBR` ([COUSR00C.cbl:586.0-618.0]), `READNEXT` ([COUSR00C.cbl:619.0-652.0]), and `READPREV` ([COUSR00C.cbl:653.0-686.0]) to retrieve user records sequentially.",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "How does COUSR01C handle user inquiry?",
+      "description": "User Management: How does COUSR01C handle user inquiry?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:549.0-561.0 (score: 0.382) ---\nSummary: paragraph RECEIVE-USRLST-SCREEN in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: RECEIVE-USRLST-SCREEN (lines 549-561)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       RECEIVE-USRLST-SCREEN.\n\n           EXEC CICS RECEIVE\n                     MAP('COUSR0A')\n                     MAPSET('COUSR00')\n                     INTO(COUSR0AI)\n                     RESP(WS-RESP-CD)\n                     RESP2(WS-REAS-CD)\n           END-EXEC.\n\n      *----------------------------------------------------------------*\n      *                      POPULATE-HEADER-INFO\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:522.0-548.0 (score: 0.369) ---\nSummary: paragraph SEND-USRLST-SCREEN in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM POPULATE-HEADER-INFO. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: SEND-USRLST-SCREEN (lines 522-548)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM POPULATE-HEADER-INFO\n\n       SEND-USRLST-SCREEN.\n\n           PERFORM POPULATE-HEADER-INFO\n\n           MOVE WS-MESSAGE TO ERRMSGO OF COUSR0AO\n\n           IF SEND-ERASE-YES\n               EXEC CICS SEND\n                         MAP('COUSR0A')\n                         MAPSET('COUSR00')\n                         FROM(COUSR0AO)\n                         ERASE\n                         CURSOR\n               END-EXEC\n           ELSE\n               EXEC CICS SEND\n                         MAP('COUSR0A')\n                         MAPSET('COUSR00')\n                         FROM(COUSR0AO)\n      *                  ERASE\n                         CURSOR\n               END-EXEC\n           END-IF.\n\n      *----------------------------------------------------------------*\n      *                      RECEIVE-USRLST-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:586.0-618.0 (score: 0.367) ---\nSummary: paragraph STARTBR-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: STARTBR-USER-SEC-FILE (lines 586-618)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRLST-SCREEN\n\n       STARTBR-USER-SEC-FILE.\n\n           EXEC CICS STARTBR\n                DATASET   (WS-USRSEC-FILE)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n      *         GTEQ\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-RESP-CD\n               WHEN DFHRESP(NORMAL)\n                   CONTINUE\n               WHEN DFHRESP(NOTFND)\n                   CONTINUE\n                   SET USER-SEC-EOF TO TRUE\n                   MOVE 'You are at the top of the page...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR0AI\n                   PERFORM SEND-USRLST-SCREEN\n               WHEN OTHER\n                   DISPLAY 'RESP:' WS-RESP-CD 'REAS:' WS-REAS-CD\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Unable to lookup User...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR0AI\n                   PERFORM SEND-USRLST-SCREEN\n           END-EVALUATE.\n\n      *----------------------------------------------------------------*\n      *                      READNEXT-USER-SEC-FILE\n      *----------------------------------------------------------------*\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:98.0-148.0 (score: 0.364) ---\nSummary: paragraph MAIN-PARA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM PROCESS-ENTER-KEY, PERFORM PROCESS-PF7-KEY, PERFORM PROCESS-PF8-KEY, PERFORM RECEIVE-USRLST-SCREEN....\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: MAIN-PARA (lines 98-148)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM PROCESS-ENTER-KEY, PERFORM PROCESS-PF7-KEY, PERFORM PROCESS-PF8-KEY, PERFORM RECEIVE-USRLST-SCREEN, PERFORM RETURN-TO-PREV-SCREEN, PERFORM SEND-USRLST-SCREEN\n\n       MAIN-PARA.\n\n           SET ERR-FLG-OFF TO TRUE\n           SET USER-SEC-NOT-EOF TO TRUE\n           SET NEXT-PAGE-NO TO TRUE\n           SET SEND-ERASE-YES TO TRUE\n\n           MOVE SPACES TO WS-MESSAGE\n                          ERRMSGO OF COUSR0AO\n\n           MOVE -1       TO USRIDINL OF COUSR0AI\n\n           IF EIB\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:336.0-383.0 (score: 0.361) ---\nSummary: paragraph PROCESS-PAGE-BACKWARD in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READPREV-USER-SEC-FILE.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: PROCESS-PAGE-BACKWARD (lines 336-383)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READPREV-USER-SEC-FILE, PERFORM SEND-USRLST-SCREEN, PERFORM STARTBR-USER-SEC-FILE\n\n       PROCESS-PAGE-BACKWARD.\n\n           PERFORM STARTBR-USER-SEC-FILE\n\n           IF NOT ERR-FLG-ON\n\n               IF EIBAID NOT = DFHENTER  AND DFHPF8\n                   PERFORM READPREV-USER-SEC-FILE\n               END-IF\n\n               IF USER-SEC-NOT-EOF AND ERR-FLG-OFF\n               PERFORM VARYING WS-IDX FRO\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:446.0-505.0 (score: 0.356) ---\nSummary: paragraph INITIALIZE-USER-DATA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: INITIALIZE-USER-DATA (lines 446-505)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       INITIALIZE-USER-DATA.\n\n           EVALUATE WS-IDX\n               WHEN 1\n                   MOVE SPACES TO USRID01I OF COUSR0AI\n                   MOVE SPACES TO FNAME01I OF COUSR0AI\n                   MOVE SPACES TO LNAME01I OF COUSR0AI\n                   MOVE SPACES TO UTYPE01I OF COUSR0AI\n               WHEN 2\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:384.0-445.0 (score: 0.356) ---\nSummary: paragraph POPULATE-USER-DATA in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: POPULATE-USER-DATA (lines 384-445)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       POPULATE-USER-DATA.\n\n           EVALUATE WS-IDX\n               WHEN 1\n                   MOVE SEC-USR-ID    TO USRID01I OF COUSR0AI\n                                         CDEMO-CU00-USRID-FIRST\n                   MOVE SEC-USR-FNAME TO FNAME01I OF COUSR0AI\n                   MOVE SEC-USR-LNAME TO LNAME01I OF CO\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:282.0-335.0 (score: 0.355) ---\nSummary: paragraph PROCESS-PAGE-FORWARD in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READNEXT-USER-SEC-FILE.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: PROCESS-PAGE-FORWARD (lines 282-335)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM ENDBR-USER-SEC-FILE, PERFORM INITIALIZE-USER-DATA, PERFORM POPULATE-USER-DATA, PERFORM READNEXT-USER-SEC-FILE, PERFORM SEND-USRLST-SCREEN, PERFORM STARTBR-USER-SEC-FILE\n\n       PROCESS-PAGE-FORWARD.\n\n           PERFORM STARTBR-USER-SEC-FILE\n\n           IF NOT ERR-FLG-ON\n\n               IF EIBAID NOT = DFHENTER AND DFHPF7 AND DFHPF3\n                   PERFORM READNEXT-USER-SEC-FILE\n               END-IF\n\n               IF USER-SEC-NOT-EOF AND ERR-FLG-OFF\n               PERFORM VARYING W\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:201.0-213.0 (score: 0.355) ---\nSummary: paragraph RECEIVE-USRADD-SCREEN in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: RECEIVE-USRADD-SCREEN (lines 201-213)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       RECEIVE-USRADD-SCREEN.\n\n           EXEC CICS RECEIVE\n                     MAP('COUSR1A')\n                     MAPSET('COUSR01')\n                     INTO(COUSR1AI)\n                     RESP(WS-RESP-CD)\n                     RESP2(WS-REAS-CD)\n           END-EXEC.\n\n      *-------------------------------------------\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:29.0-96.0 (score: 0.355) ---\nSummary: data_division DATA DIVISION in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y....\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nSection: DATA DIVISION (lines 29-96)\n\n       DATA DIVISION.\n      *----------------------------------------------------------------*\n      *                     WORKING STORAGE SECTION\n      *----------------------------------------------------------------*\n       WORKING-STORAGE SECTION.\n\n       01 WS-VARIABLES.\n         05 WS-PGMNAME                 PIC\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "RECEIVE-USRLST-SCREEN",
+          "start_line": 549.0,
+          "end_line": 561.0,
+          "score": 0.3819,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "SEND-USRLST-SCREEN",
+          "start_line": 522.0,
+          "end_line": 548.0,
+          "score": 0.3691,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "STARTBR-USER-SEC-FILE",
+          "start_line": 586.0,
+          "end_line": 618.0,
+          "score": 0.3667,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "MAIN-PARA",
+          "start_line": 98.0,
+          "end_line": 148.0,
+          "score": 0.3638,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "PROCESS-PAGE-BACKWARD",
+          "start_line": 336.0,
+          "end_line": 383.0,
+          "score": 0.3613,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "INITIALIZE-USER-DATA",
+          "start_line": 446.0,
+          "end_line": 505.0,
+          "score": 0.3565,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "POPULATE-USER-DATA",
+          "start_line": 384.0,
+          "end_line": 445.0,
+          "score": 0.3556,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "PROCESS-PAGE-FORWARD",
+          "start_line": 282.0,
+          "end_line": 335.0,
+          "score": 0.3554,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "RECEIVE-USRADD-SCREEN",
+          "start_line": 201.0,
+          "end_line": 213.0,
+          "score": 0.3549,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "DATA DIVISION",
+          "start_line": 29.0,
+          "end_line": 96.0,
+          "score": 0.3549,
+          "chunk_type": "data_division"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 1.87,
+          "answer": "The provided code context does not contain information on how `COUSR01C` handles user inquiry. The `COUSR01C` program is described as a \"CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\" [Source 9]. The retrieved snippet for `COUSR01C` focuses on a paragraph named `RECEIVE-USRADD-SCREEN`, which is responsible for receiving data related to adding a new user.\n\nThe `COUSR00C` program, on the other hand, is for listing users from the `USRSEC` file and involves screens for displaying user lists and navigating through them [Source 2, Source 3, Source 4, Source 5, Source 8]. It uses `RECEIVE-USRLST-SCREEN` to receive input related to the user list screen [Source 1]. This program appears to be more involved with user inquiry functionality than `COUSR01C`.",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "Explain the user add logic in COUSR02C",
+      "description": "User Management: Explain the user add logic in COUSR02C",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:238.0-278.0 (score: 0.460) ---\nSummary: paragraph WRITE-USER-SEC-FILE in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM INITIALIZE-ALL-FIELDS, PERFORM SEND-USRADD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: WRITE-USER-SEC-FILE (lines 238-278)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM INITIALIZE-ALL-FIELDS, PERFORM SEND-USRADD-SCREEN\n\n       WRITE-USER-SEC-FILE.\n\n           EXEC CICS WRITE\n                DATASET   (WS-USRSEC-FILE)\n                FROM      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-RESP-CD\n               WHEN DFHRESP(NORMAL)\n                   PERFORM INITIALIZE-ALL-FIELDS\n                   MOVE SPACES             TO WS-MESSAGE\n                   MOVE DFHGREEN           TO ERRMSGC  OF COUSR1AO\n                   STRING 'User '     DELIMITED BY SIZE\n                          SEC-USR-ID  DELIMITED BY SPACE\n                          ' has been added ...' DELIMITED BY SIZE\n                     INTO WS-MESSAGE\n                   PERFORM SEND-USRADD-SCREEN\n               WHEN DFHRESP(DUPKEY)\n               WHEN DFHRESP(DUPREC)\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User ID already exist...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USERIDL OF COUSR1AI\n                   PERFORM SEND-USRADD-SCREEN\n               WHEN OTHER\n      *            DISPLAY 'RESP:' WS-RESP-CD 'REAS:' WS-REAS-CD\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Unable to Add User...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO FNAMEL OF COUSR1AI\n                   PERFORM SEND-USRADD-SCREEN\n           END-EVALUATE.\n\n      *----------------------------------------------------------------*\n      *                      CLEAR-CURRENT-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:184.0-200.0 (score: 0.456) ---\nSummary: paragraph SEND-USRADD-SCREEN in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM POPULATE-HEADER-INFO. comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: SEND-USRADD-SCREEN (lines 184-200)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM POPULATE-HEADER-INFO\n\n       SEND-USRADD-SCREEN.\n\n           PERFORM POPULATE-HEADER-INFO\n\n           MOVE WS-MESSAGE TO ERRMSGO OF COUSR1AO\n\n           EXEC CICS SEND\n                     MAP('COUSR1A')\n                     MAPSET('COUSR01')\n                     FROM(COUSR1AO)\n                     ERASE\n                     CURSOR\n           END-EXEC.\n\n      *----------------------------------------------------------------*\n      *                      RECEIVE-USRADD-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:201.0-213.0 (score: 0.454) ---\nSummary: paragraph RECEIVE-USRADD-SCREEN in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: RECEIVE-USRADD-SCREEN (lines 201-213)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       RECEIVE-USRADD-SCREEN.\n\n           EXEC CICS RECEIVE\n                     MAP('COUSR1A')\n                     MAPSET('COUSR01')\n                     INTO(COUSR1AI)\n                     RESP(WS-RESP-CD)\n                     RESP2(WS-REAS-CD)\n           END-EXEC.\n\n      *----------------------------------------------------------------*\n      *                      POPULATE-HEADER-INFO\n      *----------------------------------------------------------------*\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:279.0-286.0 (score: 0.452) ---\nSummary: paragraph CLEAR-CURRENT-SCREEN in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM INITIALIZE-ALL-FIELDS, PERFORM SEND-USRADD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: CLEAR-CURRENT-SCREEN (lines 279-286)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM INITIALIZE-ALL-FIELDS, PERFORM SEND-USRADD-SCREEN\n\n       CLEAR-CURRENT-SCREEN.\n\n           PERFORM INITIALIZE-ALL-FIELDS.\n           PERFORM SEND-USRADD-SCREEN.\n\n      *----------------------------------------------------------------*\n      *                      INITIALIZE-ALL-FIELDS\n      *----------------------------------------------------------------*\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:71.0-114.0 (score: 0.444) ---\nSummary: paragraph MAIN-PARA in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM CLEAR-CURRENT-SCREEN, PERFORM PROCESS-ENTER-KEY, PERFORM RECEIVE-USRADD-SCREEN, PERFORM RETURN-TO-PREV-SCREEN....\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: MAIN-PARA (lines 71-114)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM CLEAR-CURRENT-SCREEN, PERFORM PROCESS-ENTER-KEY, PERFORM RECEIVE-USRADD-SCREEN, PERFORM RETURN-TO-PREV-SCREEN, PERFORM SEND-USRADD-SCREEN\n\n       MAIN-PARA.\n\n           SET ERR-FLG-OFF TO TRUE\n\n           MOVE SPACES TO WS-MESSAGE\n                          ERRMSGO OF COUSR1AO\n\n           IF EIBCALEN = 0\n               MOVE 'COSGN00C' TO CDEMO-TO-PROGRAM\n               PERFORM RETURN-TO-PREV-SCREEN\n           ELSE\n               MOVE DFHCOMMAREA(1:EIBCALEN\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:165.0-183.0 (score: 0.443) ---\nSummary: paragraph RETURN-TO-PREV-SCREEN in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: RETURN-TO-PREV-SCREEN (lines 165-183)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       RETURN-TO-PREV-SCREEN.\n\n           IF CDEMO-TO-PROGRAM = LOW-VALUES OR SPACES\n               MOVE 'COSGN00C' TO CDEMO-TO-PROGRAM\n           END-IF\n           MOVE WS-TRANID    TO CDEMO-FROM-TRANID\n           MOVE WS-PGMNAME   TO CDEMO-FROM-PROGRAM\n      *    MOVE WS-USER-ID   TO CDEMO-USER-ID\n      *    MOVE SEC\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:115.0-164.0 (score: 0.434) ---\nSummary: paragraph PROCESS-ENTER-KEY in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRADD-SCREEN, PERFORM WRITE-USER-SEC-FILE. comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: PROCESS-ENTER-KEY (lines 115-164)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRADD-SCREEN, PERFORM WRITE-USER-SEC-FILE\n\n       PROCESS-ENTER-KEY.\n\n           EVALUATE TRUE\n               WHEN FNAMEI OF COUSR1AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'First Name can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO FNAMEL OF COUSR1AI\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:29.0-69.0 (score: 0.425) ---\nSummary: data_division DATA DIVISION in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y....\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nSection: DATA DIVISION (lines 29-69)\n\n       DATA DIVISION.\n      *----------------------------------------------------------------*\n      *                     WORKING STORAGE SECTION\n      *----------------------------------------------------------------*\n       WORKING-STORAGE SECTION.\n\n       01 WS-VARIABLES.\n         05 WS-PGMNAME                 PIC\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:358.0-394.0 (score: 0.419) ---\nSummary: paragraph UPDATE-USER-SEC-FILE in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRUPD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: UPDATE-USER-SEC-FILE (lines 358-394)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRUPD-SCREEN\n\n       UPDATE-USER-SEC-FILE.\n\n           EXEC CICS REWRITE\n                DATASET   (WS-USRSEC-FILE)\n                FROM      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-R\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:320.0-357.0 (score: 0.416) ---\nSummary: paragraph READ-USER-SEC-FILE in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRUPD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: READ-USER-SEC-FILE (lines 320-357)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRUPD-SCREEN\n\n       READ-USER-SEC-FILE.\n\n           EXEC CICS READ\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                UPDATE\n                RE\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "WRITE-USER-SEC-FILE",
+          "start_line": 238.0,
+          "end_line": 278.0,
+          "score": 0.4598,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "SEND-USRADD-SCREEN",
+          "start_line": 184.0,
+          "end_line": 200.0,
+          "score": 0.4565,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "RECEIVE-USRADD-SCREEN",
+          "start_line": 201.0,
+          "end_line": 213.0,
+          "score": 0.4539,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "CLEAR-CURRENT-SCREEN",
+          "start_line": 279.0,
+          "end_line": 286.0,
+          "score": 0.4518,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "MAIN-PARA",
+          "start_line": 71.0,
+          "end_line": 114.0,
+          "score": 0.444,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "RETURN-TO-PREV-SCREEN",
+          "start_line": 165.0,
+          "end_line": 183.0,
+          "score": 0.4432,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "PROCESS-ENTER-KEY",
+          "start_line": 115.0,
+          "end_line": 164.0,
+          "score": 0.4341,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "DATA DIVISION",
+          "start_line": 29.0,
+          "end_line": 69.0,
+          "score": 0.4254,
+          "chunk_type": "data_division"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "UPDATE-USER-SEC-FILE",
+          "start_line": 358.0,
+          "end_line": 394.0,
+          "score": 0.4186,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "READ-USER-SEC-FILE",
+          "start_line": 320.0,
+          "end_line": 357.0,
+          "score": 0.416,
+          "chunk_type": "paragraph"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 3.881,
+          "answer": "The provided code context does not contain information about the user add logic in `COUSR02C`. The `COUSR02C` program appears to be responsible for updating an existing user in the `USRSEC` file [COUSR02C:358.0-394.0, COUSR02C:320.0-357.0].\n\nThe user add logic, as described in the context, is handled by the `COUSR01C` program. This program performs the following actions:\n\n1.  **Receiving User Input**: The `RECEIVE-USRADD-SCREEN` paragraph handles the reception of data entered by the user on the add user screen [COUSR01C:201.0-213.0].\n2.  **Processing Enter Key**: The `PROCESS-ENTER-KEY` paragraph validates the input fields. If any required fields like \"First Name\" are empty, it sets an error flag and displays an appropriate message. It then calls `WRITE-USER-SEC-FILE` to attempt to add the user [COUSR01C:115.0-164.0].\n3.  **Writing to User Security File**: The `WRITE-USER-SEC-FILE` paragraph attempts to write the new user's data to the `USRSEC` dataset. It checks the response code (`WS-RESP-CD`) to determine if the write was successful.\n    *   If successful (`DFHRESP(NORMAL)`), it initializes fields, constructs a success message, and displays the add user screen again [COUSR01C:238.0-278.0].\n    *   If a duplicate key error occurs (`DFHRESP(DUPKEY)` or `DFHRESP(DUPREC)`), it sets an error flag, displays a \"User ID already exist\" message, and redisplays the screen [COUSR01C:238.0-278.0].\n    *   For any other errors, it displays a generic \"Unable to Add User\" message and redisplays the screen [COUSR01C:238.0-278.0].\n4.  **Sending User Add Screen**: The `SEND-USRADD-SCREEN` paragraph is responsible for sending the user add screen back to the terminal, displaying any messages or errors [COUSR01C:184.0-200.0].\n5.  **Main Program Flow**: The `MAIN-PARA` paragraph orchestrates the overall flow, calling `RECEIVE-USRADD-SCREEN`, `PROCESS-ENTER-KEY`, and `SEND-USRADD-SCREEN` as needed [COUSR01C:71.0-114.0].",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "How does COUSR03C update user records?",
+      "description": "User Management: How does COUSR03C update user records?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:177.0-249.0 (score: 0.474) ---\nSummary: paragraph UPDATE-USER-INFO in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRUPD-SCREEN, PERFORM UPDATE-USER-SEC-FILE. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: UPDATE-USER-INFO (lines 177-249)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRUPD-SCREEN, PERFORM UPDATE-USER-SEC-FILE\n\n       UPDATE-USER-INFO.\n\n           EVALUATE TRUE\n               WHEN USRIDINI OF COUSR2AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User ID can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR2AI\n                   PERFORM SEND-USRUPD-SCREEN\n               WHEN FNAMEI OF COUSR2AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'First Name can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO FNAMEL OF COUSR2AI\n                   PERFORM SEND-USRUPD-SCREEN\n               WHEN LNAMEI OF COUSR2AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Last Name can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO LNAMEL OF COUSR2AI\n                   PERFORM SEND-USRUPD-SCREEN\n               WHEN PASSWDI OF COUSR2AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Password can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO PASSWDL OF COUSR2AI\n                   PERFORM SEND-USRUPD-SCREEN\n               WHEN USRTYPEI OF COUSR2AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User Type can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRTYPEL OF COUSR2AI\n                   PERFORM SEND-USRUPD-SCREEN\n               WHEN OTHER\n                   MOVE -1       TO FNAMEL OF COUSR2AI\n                   CONTINUE\n           END-EVALUATE\n\n           IF NOT ERR-FLG-ON\n               MOVE USRIDINI  OF COUSR2AI TO SEC-USR-ID\n               PERFORM READ-USER-SEC-FILE\n\n               IF FNAMEI  OF COUSR2AI NOT = SEC-USR-FNAME\n                   MOVE FNAMEI   OF COUSR2AI TO SEC-USR-FNAME\n                   SET USR-MODIFIED-YES TO TRUE\n               END-IF\n               IF LNAMEI  OF COUSR2AI NOT = SEC-USR-LNAME\n                   MOVE LNAMEI   OF COUSR2AI TO SEC-USR-LNAME\n                   SET USR-MODIFIED-YES TO TRUE\n               END-IF\n               IF PASSWDI  OF COUSR2AI NOT = SEC-USR-PWD\n                   MOVE PASSWDI  OF COUSR2AI TO SEC-USR-PWD\n                   SET USR-MODIFIED-YES TO TRUE\n               END-IF\n               IF USRTYPEI  OF COUSR2AI NOT = SEC-USR-TYPE\n                   MOVE USRTYPEI OF COUSR2AI TO SEC-USR-TYPE\n                   SET USR-MODIFIED-YES TO TRUE\n               END-IF\n\n               IF USR-MODIFIED-YES\n                   PERFORM UPDATE-USER-SEC-FILE\n               ELSE\n                   MOVE 'Please modify to update ...' TO\n                                   WS-MESSAGE\n                   MOVE DFHRED       TO ERRMSGC  OF COUSR2AO\n                   PERFORM SEND-USRUPD-SCREEN\n               END-IF\n\n           END-IF.\n\n      *----------------------------------------------------------------*\n      *                      RETURN-TO-PREV-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR03C.cbl:243.0-266.0 (score: 0.450) ---\nSummary: paragraph POPULATE-HEADER-INFO in COUSR03C.cbl. uses COPY refs: COCOM01Y, COUSR03, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR03C.cbl\nProgram: COUSR03C - CICS COBOL Program - Delete a user from USRSEC file\nParagraph: POPULATE-HEADER-INFO (lines 243-266)\nReferences: COPY COCOM01Y, COPY COUSR03, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       POPULATE-HEADER-INFO.\n\n           MOVE FUNCTION CURRENT-DATE  TO WS-CURDATE-DATA\n\n           MOVE CCDA-TITLE01           TO TITLE01O OF COUSR3AO\n           MOVE CCDA-TITLE02           TO TITLE02O OF COUSR3AO\n           MOVE WS-TRANID              TO TRNNAMEO OF COUSR3AO\n           MOVE WS-PGMNAME             TO PGMNAMEO OF COUSR3AO\n\n           MOVE WS-CURDATE-MONTH       TO WS-CURDATE-MM\n           MOVE WS-CURDATE-DAY         TO WS-CURDATE-DD\n           MOVE WS-CURDATE-YEAR(3:2)   TO WS-CURDATE-YY\n\n           MOVE WS-CURDATE-MM-DD-YY    TO CURDATEO OF COUSR3AO\n\n           MOVE WS-CURTIME-HOURS       TO WS-CURTIME-HH\n           MOVE WS-CURTIME-MINUTE      TO WS-CURTIME-MM\n           MOVE WS-CURTIME-SECOND      TO WS-CURTIME-SS\n\n           MOVE WS-CURTIME-HH-MM-SS    TO CURTIMEO OF COUSR3AO.\n\n      *----------------------------------------------------------------*\n      *                      READ-USER-SEC-FILE\n      *----------------------------------------------------------------*\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:296.0-319.0 (score: 0.449) ---\nSummary: paragraph POPULATE-HEADER-INFO in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: POPULATE-HEADER-INFO (lines 296-319)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       POPULATE-HEADER-INFO.\n\n           MOVE FUNCTION CURRENT-DATE  TO WS-CURDATE-DATA\n\n           MOVE CCDA-TITLE01           TO TITLE01O OF COUSR2AO\n           MOVE CCDA-TITLE02           TO TITLE02O OF COUSR2AO\n           MOVE WS-TRANID              TO TRNNAMEO OF COUSR2AO\n           MOVE WS-PGMNAME             TO PGMNAMEO OF COUSR2AO\n\n           MOVE WS-CURDATE-MONTH       TO WS-CURDATE-MM\n           MOVE WS-CURDATE-DAY         TO WS-CURDATE-DD\n           MOVE WS-CURDATE-YEAR(3:2)   TO WS-CURDATE-YY\n\n           MOVE WS-CURDATE-MM-DD-YY    TO CURDATEO OF COUSR2AO\n\n           MOVE WS-CURTIME-HOURS       TO WS-CURTIME-HH\n           MOVE WS-CURTIME-MINUTE      TO WS-CURTIME-MM\n           MOVE WS-CURTIME-SECOND      TO WS-CURTIME-SS\n\n           MOVE WS-CURTIME-HH-MM-SS    TO CURTIMEO OF COUSR2AO.\n\n      *----------------------------------------------------------------*\n      *                      READ-USER-SEC-FILE\n      *----------------------------------------------------------------*\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR03C.cbl:349.0-359.0 (score: 0.443) ---\nSummary: paragraph INITIALIZE-ALL-FIELDS in COUSR03C.cbl. uses COPY refs: COCOM01Y, COUSR03, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR03C.cbl\nProgram: COUSR03C - CICS COBOL Program - Delete a user from USRSEC file\nParagraph: INITIALIZE-ALL-FIELDS (lines 349-359)\nReferences: COPY COCOM01Y, COPY COUSR03, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       INITIALIZE-ALL-FIELDS.\n\n           MOVE -1              TO USRIDINL OF COUSR3AI\n           MOVE SPACES          TO USRIDINI OF COUSR3AI\n                                   FNAMEI   OF COUSR3AI\n                                   LNAMEI   OF COUSR3AI\n                                   USRTYPEI OF COUSR3AI\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:358.0-394.0 (score: 0.441) ---\nSummary: paragraph UPDATE-USER-SEC-FILE in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRUPD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: UPDATE-USER-SEC-FILE (lines 358-394)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRUPD-SCREEN\n\n       UPDATE-USER-SEC-FILE.\n\n           EXEC CICS REWRITE\n                DATASET   (WS-USRSEC-FILE)\n                FROM      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-R\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:403.0-414.0 (score: 0.441) ---\nSummary: paragraph INITIALIZE-ALL-FIELDS in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: INITIALIZE-ALL-FIELDS (lines 403-414)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       INITIALIZE-ALL-FIELDS.\n\n           MOVE -1              TO USRIDINL OF COUSR2AI\n           MOVE SPACES          TO USRIDINI OF COUSR2AI\n                                   FNAMEI   OF COUSR2AI\n                                   LNAMEI   OF COUSR2AI\n                                   PASSWDI  OF COUSR2AI\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR03C.cbl:174.0-196.0 (score: 0.440) ---\nSummary: paragraph DELETE-USER-INFO in COUSR03C.cbl. uses COPY refs: COCOM01Y, COUSR03, COTTL01Y, CSDAT01Y.... invokes: PERFORM DELETE-USER-SEC-FILE, PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRDEL-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR03C.cbl\nProgram: COUSR03C - CICS COBOL Program - Delete a user from USRSEC file\nParagraph: DELETE-USER-INFO (lines 174-196)\nReferences: COPY COCOM01Y, COPY COUSR03, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM DELETE-USER-SEC-FILE, PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRDEL-SCREEN\n\n       DELETE-USER-INFO.\n\n           EVALUATE TRUE\n               WHEN USRIDINI OF COUSR3AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User ID can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR3AI\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:29.0-80.0 (score: 0.440) ---\nSummary: data_division DATA DIVISION in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y....\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nSection: DATA DIVISION (lines 29-80)\n\n       DATA DIVISION.\n      *----------------------------------------------------------------*\n      *                     WORKING STORAGE SECTION\n      *----------------------------------------------------------------*\n       WORKING-STORAGE SECTION.\n\n       01 WS-VARIABLES.\n         05 WS-PGMNAME                 PIC\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:82.0-142.0 (score: 0.439) ---\nSummary: paragraph MAIN-PARA in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM CLEAR-CURRENT-SCREEN, PERFORM PROCESS-ENTER-KEY, PERFORM RECEIVE-USRUPD-SCREEN, PERFORM RETURN-TO-PREV-SCREEN....\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: MAIN-PARA (lines 82-142)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM CLEAR-CURRENT-SCREEN, PERFORM PROCESS-ENTER-KEY, PERFORM RECEIVE-USRUPD-SCREEN, PERFORM RETURN-TO-PREV-SCREEN, PERFORM SEND-USRUPD-SCREEN, PERFORM UPDATE-USER-INFO\n\n       MAIN-PARA.\n\n           SET ERR-FLG-OFF     TO TRUE\n           SET USR-MODIFIED-NO TO TRUE\n\n           MOVE SPACES TO WS-MESSAGE\n                          ERRMSGO OF COUSR2AO\n\n           IF EIBCALEN = 0\n               MOVE 'COSGN00C' TO CDEMO-TO-PROGRAM\n               PERFORM RETURN-TO-PREV-SCREEN\n           ELSE\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR03C.cbl:213.0-229.0 (score: 0.435) ---\nSummary: paragraph SEND-USRDEL-SCREEN in COUSR03C.cbl. uses COPY refs: COCOM01Y, COUSR03, COTTL01Y, CSDAT01Y.... invokes: PERFORM POPULATE-HEADER-INFO. comment hint: ----------------------------------------------------------------*.\nFile: COUSR03C.cbl\nProgram: COUSR03C - CICS COBOL Program - Delete a user from USRSEC file\nParagraph: SEND-USRDEL-SCREEN (lines 213-229)\nReferences: COPY COCOM01Y, COPY COUSR03, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM POPULATE-HEADER-INFO\n\n       SEND-USRDEL-SCREEN.\n\n           PERFORM POPULATE-HEADER-INFO\n\n           MOVE WS-MESSAGE TO ERRMSGO OF COUSR3AO\n\n           EXEC CICS SEND\n                     MAP('COUSR3A')\n                     MAPSET('COUSR03')\n                     FROM(COUSR3AO)\n                     ERASE\n                     CURSOR\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "UPDATE-USER-INFO",
+          "start_line": 177.0,
+          "end_line": 249.0,
+          "score": 0.4738,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR03C.cbl",
+          "name": "POPULATE-HEADER-INFO",
+          "start_line": 243.0,
+          "end_line": 266.0,
+          "score": 0.4504,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "POPULATE-HEADER-INFO",
+          "start_line": 296.0,
+          "end_line": 319.0,
+          "score": 0.4489,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR03C.cbl",
+          "name": "INITIALIZE-ALL-FIELDS",
+          "start_line": 349.0,
+          "end_line": 359.0,
+          "score": 0.4428,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "UPDATE-USER-SEC-FILE",
+          "start_line": 358.0,
+          "end_line": 394.0,
+          "score": 0.441,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "INITIALIZE-ALL-FIELDS",
+          "start_line": 403.0,
+          "end_line": 414.0,
+          "score": 0.4406,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR03C.cbl",
+          "name": "DELETE-USER-INFO",
+          "start_line": 174.0,
+          "end_line": 196.0,
+          "score": 0.4402,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "DATA DIVISION",
+          "start_line": 29.0,
+          "end_line": 80.0,
+          "score": 0.4396,
+          "chunk_type": "data_division"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "MAIN-PARA",
+          "start_line": 82.0,
+          "end_line": 142.0,
+          "score": 0.4385,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR03C.cbl",
+          "name": "SEND-USRDEL-SCREEN",
+          "start_line": 213.0,
+          "end_line": 229.0,
+          "score": 0.4346,
+          "chunk_type": "paragraph"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 3.154,
+          "answer": "The provided code context does not show an explicit \"update\" function within `COUSR03C.cbl`. Instead, `COUSR03C.cbl` is a CICS COBOL program designed for deleting a user from the `USRSEC` file [Source:COUSR03C.cbl:243.0-266.0].\n\nThe program handles user deletion through several paragraphs:\n*   `DELETE-USER-INFO`: This paragraph initiates the deletion process, validating that the User ID is not empty. If validation passes, it calls `READ-USER-SEC-FILE` to retrieve user data, then `DELETE-USER-SEC-FILE` to remove the record, and finally `SEND-USRDEL-SCREEN` to display a confirmation or error message. [Source:COUSR03C.cbl:174.0-196.0]\n*   `POPULATE-HEADER-INFO`: This paragraph is responsible for populating the header fields of the screen, including the program name, transaction ID, and current date/time, before displaying any screen. [Source:COUSR03C.cbl:243.0-266.0]\n*   `SEND-USRDEL-SCREEN`: This paragraph prepares the screen for the user deletion confirmation by first calling `POPULATE-HEADER-INFO` and then sending the `COUSR3A` map. [Source:COUSR03C.cbl:213.0-229.0]\n\nIn contrast, the program `COUSR02C.cbl` is responsible for updating user records in the `USRSEC` file. Its `UPDATE-USER-INFO` paragraph performs validation on input fields (User ID, First Name, Last Name, Password, User Type). If all fields are valid, it reads the existing user record to check for modifications. If changes are detected using the `USR-MODIFIED-YES` flag, it calls `UPDATE-USER-SEC-FILE` to rewrite the record [Source:COUSR02C.cbl:177.0-249.0]. The `UPDATE-USER-SEC-FILE` paragraph itself executes a CICS `REWRITE` command to update the `USRSEC` dataset [Source:COUSR02C.cbl:358.0-394.0].",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "How is the USRSEC user security file accessed?",
+      "description": "User Management: How is the USRSEC user security file accessed?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:586.0-618.0 (score: 0.450) ---\nSummary: paragraph STARTBR-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: STARTBR-USER-SEC-FILE (lines 586-618)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRLST-SCREEN\n\n       STARTBR-USER-SEC-FILE.\n\n           EXEC CICS STARTBR\n                DATASET   (WS-USRSEC-FILE)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n      *         GTEQ\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-RESP-CD\n               WHEN DFHRESP(NORMAL)\n                   CONTINUE\n               WHEN DFHRESP(NOTFND)\n                   CONTINUE\n                   SET USER-SEC-EOF TO TRUE\n                   MOVE 'You are at the top of the page...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR0AI\n                   PERFORM SEND-USRLST-SCREEN\n               WHEN OTHER\n                   DISPLAY 'RESP:' WS-RESP-CD 'REAS:' WS-REAS-CD\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Unable to lookup User...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR0AI\n                   PERFORM SEND-USRLST-SCREEN\n           END-EVALUATE.\n\n      *----------------------------------------------------------------*\n      *                      READNEXT-USER-SEC-FILE\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:619.0-652.0 (score: 0.444) ---\nSummary: paragraph READNEXT-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: READNEXT-USER-SEC-FILE (lines 619-652)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRLST-SCREEN\n\n       READNEXT-USER-SEC-FILE.\n\n           EXEC CICS READNEXT\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-RESP-CD\n               WHEN DFHRESP(NORMAL)\n                   CONTINUE\n               WHEN DFHRESP(ENDFILE)\n                   CONTINUE\n                   SET USER-SEC-EOF TO TRUE\n                   MOVE 'You have reached the bottom of the page...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR0AI\n                   PERFORM SEND-USRLST-SCREEN\n               WHEN OTHER\n                   DISPLAY 'RESP:' WS-RESP-CD 'REAS:' WS-REAS-CD\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Unable to lookup User...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR0AI\n                   PERFORM SEND-USRLST-SCREEN\n           END-EVALUATE.\n\n      *----------------------------------------------------------------*\n      *                      READPREV-USER-SEC-FILE\n      *----------------------------------------------------------------*\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/jcl/DUSRSECJ.jcl:32.0-57.0 (score: 0.442) ---\nSummary: jcl_step STEP01 in DUSRSECJ.jcl.\nFile: DUSRSECJ.jcl\nJCL Step: STEP01 (lines 32-57)\n\n//STEP01  EXEC PGM=IEBGENER\n//*\n//SYSUT1   DD *\nADMIN001MARGARET            GOLD                PASSWORDA\nADMIN002RUSSELL             RUSSELL             PASSWORDA\nADMIN003RAYMOND             WHITMORE            PASSWORDA\nADMIN004EMMANUEL            CASGRAIN            PASSWORDA\nADMIN005GRANVILLE           LACHAPELLE          PASSWORDA\nUSER0001LAWRENCE            THOMAS              PASSWORDU\nUSER0002AJITH               KUMAR               PASSWORDU\nUSER0003LAURITZ             ALME                PASSWORDU\nUSER0004AVERARDO            MAZZI               PASSWORDU\nUSER0005LEE                 TING                PASSWORDU\n/*\n//SYSUT2   DD DSN=AWS.M2.CARDDEMO.USRSEC.PS,\n//            DISP=(NEW,CATLG,DELETE),\n//            DCB=(LRECL=80,RECFM=FB,DSORG=PS,BLKSIZE=0),\n//            UNIT=SYSAD,SPACE=(TRK,(10,5),RLSE)\n//*\n//SYSPRINT DD SYSOUT=*\n//SYSIN    DD DUMMY\n//*\n//*-------------------------------------------------------------------*\n//* DEFINE VSAM FILE FOR USER SECURITY\n//*-------------------------------------------------------------------*\n//*\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:687.0-695.0 (score: 0.434) ---\nSummary: paragraph ENDBR-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: ENDBR-USER-SEC-FILE (lines 687-695)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       ENDBR-USER-SEC-FILE.\n\n           EXEC CICS ENDBR\n                DATASET   (WS-USRSEC-FILE)\n           END-EXEC.\n      \n      *\n      * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:12:34 CDT\n      *\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:653.0-686.0 (score: 0.429) ---\nSummary: paragraph READPREV-USER-SEC-FILE in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRLST-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nParagraph: READPREV-USER-SEC-FILE (lines 653-686)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRLST-SCREEN\n\n       READPREV-USER-SEC-FILE.\n\n           EXEC CICS READPREV\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                RESP      (WS-RES\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:320.0-357.0 (score: 0.428) ---\nSummary: paragraph READ-USER-SEC-FILE in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRUPD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: READ-USER-SEC-FILE (lines 320-357)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRUPD-SCREEN\n\n       READ-USER-SEC-FILE.\n\n           EXEC CICS READ\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                UPDATE\n                RE\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR03C.cbl:267.0-304.0 (score: 0.405) ---\nSummary: paragraph READ-USER-SEC-FILE in COUSR03C.cbl. uses COPY refs: COCOM01Y, COUSR03, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRDEL-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR03C.cbl\nProgram: COUSR03C - CICS COBOL Program - Delete a user from USRSEC file\nParagraph: READ-USER-SEC-FILE (lines 267-304)\nReferences: COPY COCOM01Y, COPY COUSR03, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRDEL-SCREEN\n\n       READ-USER-SEC-FILE.\n\n           EXEC CICS READ\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                UPDATE\n                RE\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR00C.cbl:1.0-25.0 (score: 0.403) ---\nSummary: header COUSR00C Header in COUSR00C.cbl. uses COPY refs: COCOM01Y, COUSR00, COTTL01Y, CSDAT01Y.... comment hint: Program     : COUSR00C.CBL.\nFile: COUSR00C.cbl\nProgram: COUSR00C - CICS COBOL Program - List all users from USRSEC file\nSection: Header and Identification (lines 1-25)\nReferences: COPY COCOM01Y, COPY COUSR00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n      ******************************************************************        \n      * Program     : COUSR00C.CBL\n      * Application : CardDemo\n      * Type        : CICS COBOL Program\n      * Function    : List all users from USRSEC file\n      ******************************************************************\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:358.0-394.0 (score: 0.402) ---\nSummary: paragraph UPDATE-USER-SEC-FILE in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRUPD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: UPDATE-USER-SEC-FILE (lines 358-394)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRUPD-SCREEN\n\n       UPDATE-USER-SEC-FILE.\n\n           EXEC CICS REWRITE\n                DATASET   (WS-USRSEC-FILE)\n                FROM      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-R\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:238.0-278.0 (score: 0.401) ---\nSummary: paragraph WRITE-USER-SEC-FILE in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM INITIALIZE-ALL-FIELDS, PERFORM SEND-USRADD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: WRITE-USER-SEC-FILE (lines 238-278)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM INITIALIZE-ALL-FIELDS, PERFORM SEND-USRADD-SCREEN\n\n       WRITE-USER-SEC-FILE.\n\n           EXEC CICS WRITE\n                DATASET   (WS-USRSEC-FILE)\n                FROM      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (SEC-USR-ID)\n                KEYLENGTH (LENGTH OF SEC-USR-ID)\n                RESP      (WS-RESP-CD)\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "STARTBR-USER-SEC-FILE",
+          "start_line": 586.0,
+          "end_line": 618.0,
+          "score": 0.4499,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "READNEXT-USER-SEC-FILE",
+          "start_line": 619.0,
+          "end_line": 652.0,
+          "score": 0.4441,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "DUSRSECJ.jcl",
+          "name": "STEP01",
+          "start_line": 32.0,
+          "end_line": 57.0,
+          "score": 0.4417,
+          "chunk_type": "jcl_step"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "ENDBR-USER-SEC-FILE",
+          "start_line": 687.0,
+          "end_line": 695.0,
+          "score": 0.4337,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "READPREV-USER-SEC-FILE",
+          "start_line": 653.0,
+          "end_line": 686.0,
+          "score": 0.4294,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "READ-USER-SEC-FILE",
+          "start_line": 320.0,
+          "end_line": 357.0,
+          "score": 0.4283,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR03C.cbl",
+          "name": "READ-USER-SEC-FILE",
+          "start_line": 267.0,
+          "end_line": 304.0,
+          "score": 0.4045,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR00C.cbl",
+          "name": "COUSR00C Header",
+          "start_line": 1.0,
+          "end_line": 25.0,
+          "score": 0.403,
+          "chunk_type": "header"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "UPDATE-USER-SEC-FILE",
+          "start_line": 358.0,
+          "end_line": 394.0,
+          "score": 0.4024,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "WRITE-USER-SEC-FILE",
+          "start_line": 238.0,
+          "end_line": 278.0,
+          "score": 0.4014,
+          "chunk_type": "paragraph"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 3.775,
+          "answer": "The `USRSEC` user security file is accessed using CICS (Customer Information Control System) commands for file input/output operations. Specifically, the COBOL programs `COUSR00C`, `COUSR02C`, and `COUSR03C` interact with this file.\n\nHere's a breakdown of how it's accessed:\n\n*   **Reading and Listing Users:** In program `COUSR00C`, which lists users from the `USRSEC` file, CICS commands like `STARTBR` (Start Browse) are used to initiate a read operation at a specific point. This is followed by `READNEXT` to retrieve subsequent records sequentially [COUSR00C:586-618, COUSR00C:619-652]. There's also a `READPREV` command for moving backwards through the file [COUSR00C:653-686]. The `ENDBR` (End Browse) command is used to terminate the browse operation [COUSR00C:687-695]. The file is identified as `WS-USRSEC-FILE` and uses `SEC-USR-ID` as the key field.\n\n*   **Reading for Update/Delete:** Programs `COUSR02C` (Update user) and `COUSR03C` (Delete user) use the `EXEC CICS READ` command to fetch a specific user record from `WS-USRSEC-FILE` based on `SEC-USR-ID`. The `UPDATE` option is specified when reading for modification, indicating that the record is intended to be updated or deleted [COUSR02C:320-357, COUSR03C:267-304].\n\n*   **Writing/Adding Users:** Program `COUSR01C` uses the `EXEC CICS WRITE` command to add new user records to the `USRSEC` file [COUSR01C:238-278].\n\n*   **Updating Users:** Program `COUSR02C` uses the `EXEC CICS REWRITE` command to update an existing user record in the `USRSEC` file after it has been read and modified [COUSR02C:358-394].\n\nThe `USRSEC` file itself appears to be a VSAM (Virtual Access Method) file, as indicated by the JCL job `DUSRSECJ.jcl` which defines its dataset properties, including `DSORG=PS` (Physical Sequential, often used for VSAM definitions) and `LRECL=80` (Logical Record Length) [DUSRSECJ:32-57].",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "What is the user authentication flow in CardDemo?",
+      "description": "User Management: What is the user authentication flow in CardDemo?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cpy/CSUSR01Y.cpy:1.0-26.0 (score: 0.386) ---\nSummary: copybook CSUSR01Y in CSUSR01Y.cpy. comment hint: Copyright Amazon.com, Inc. or its affiliates..\nFile: CSUSR01Y.cpy\nCopybook: CSUSR01Y (lines 1-26)\n\n      ******************************************************************\n      * Copyright Amazon.com, Inc. or its affiliates.                   \n      * All Rights Reserved.                                            \n      *                                                                 \n      * Licensed under the Apache License, Version 2.0 (the \"License\"). \n      * You may not use this file except in compliance with the License.\n      * You may obtain a copy of the License at                         \n      *                                                                 \n      *    http://www.apache.org/licenses/LICENSE-2.0                   \n      *                                                                 \n      * Unless required by applicable law or agreed to in writing,      \n      * software distributed under the License is distributed on an     \n      * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,    \n      * either express or implied. See the License for the specific     \n      * language governing permissions and limitations under the License\n      ****************************************************************** \n       01 SEC-USER-DATA.\n         05 SEC-USR-ID                 PIC X(08).\n         05 SEC-USR-FNAME              PIC X(20).\n         05 SEC-USR-LNAME              PIC X(20).\n         05 SEC-USR-PWD                PIC X(08).\n         05 SEC-USR-TYPE               PIC X(01).\n         05 SEC-USR-FILLER             PIC X(23).\n      *\n      * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:59 CDT\n      *\n\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COSGN00.bms:1.0-18.0 (score: 0.384) ---\nSummary: bms_map COSGN00 Header in COSGN00.bms.\nFile: COSGN00.bms\nBMS Header: COSGN00 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Login Screen\n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*                                                                 \n* Licensed under the Apache License, Version 2.0 (the \"License\"). \n* You may not use this file except in compliance with the License.\n* You may obtain a copy of the License at                         \n*                                                                 \n*    http://www.apache.org/licenses/LICENSE-2.0                   \n*                                                                 \n* Unless required by applicable law or agreed to in writing,      \n* software distributed under the License is distributed on an     \n* \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,    \n* either express or implied. See the License for the specific     \n* language governing permissions and limitations under the License\n******************************************************************\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cpy/COCOM01Y.cpy:1.0-47.0 (score: 0.377) ---\nSummary: copybook COCOM01Y in COCOM01Y.cpy. comment hint: Communication area for CardDemo application programs.\nFile: COCOM01Y.cpy\nCopybook: COCOM01Y (lines 1-47)\n\n      ******************************************************************\n      * Communication area for CardDemo application programs\n      ******************************************************************\n      * Copyright Amazon.com, Inc. or its affiliates.                   \n      * All Rights Reserved.                                            \n      *                                                                 \n      * Licensed under the Apache License, Version 2.0 (the \"License\"). \n      * You may not use this file except in compliance with the License.\n      * You may obtain a copy of the License at                         \n      *                                                                 \n      *    http://www.apache.org/licenses/LICENSE-2.0                   \n      *                                                                 \n      * Unless required by applicable law or agreed to in writing,      \n      * software distributed under the License is distributed on an     \n      * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,    \n      * either express or implied. See the License for the specific     \n      * language governing permissions and limitations under the License\n      ****************************************************************** \n       01 CARDDEMO-COMMAREA.\n          05 CDEMO-GENERAL-INFO.\n             10 CDEMO-FROM-TRANID             PIC X(04).\n             10 CDEMO-FROM-PROGRAM            PIC X(08).\n             10 CDEMO-TO-TRANID               PIC X(04).\n             10 CDEMO-TO-PROGRAM              PIC X(08).\n             10 CDEMO-USER-ID                 PIC X(08).\n             10 CDEMO-USER-TYPE               PIC X(01).\n                88 CDEMO-USRTYP-ADMIN         VALUE 'A'.\n                88 CDEMO-USRTYP-USER          VALUE 'U'.\n             10 CDEMO-PGM-CONTEXT             PIC 9(01).\n                88 CDEMO-PGM-ENTER            VALUE 0.\n                88 CDEMO-PGM-REENTER          VALUE 1.\n          05 CDEMO-CUSTOMER-INFO.\n             10 CDEMO-CUST-ID                 PIC 9(09).\n             10 CDEMO-CUST-FNAME              PIC X(25).\n             10 CDEMO-CUST-MNAME              PIC X(25).\n             10 CDEMO-CUST-LNAME              PIC X(25).\n          05 CDEMO-ACCOUNT-INFO.\n             10 CDEMO-ACCT-ID                 PIC 9(11).\n             10 CDEMO-ACCT-STATUS             PIC X(01).\n          05 CDEMO-CARD-INFO.\n             10 CDEMO-CARD-NUM                PIC 9(16).\n          05 CDEMO-MORE-INFO.\n             10  CDEMO-LAST-MAP               PIC X(7).\n             10  CDEMO-LAST-MAPSET            PIC X(7).\n      *\n      * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:15:57 CDT\n      *\n\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR01.bms:1.0-18.0 (score: 0.349) ---\nSummary: bms_map COUSR01 Header in COUSR01.bms.\nFile: COUSR01.bms\nBMS Header: COUSR01 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Add User \n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:209.0-260.0 (score: 0.345) ---\nSummary: paragraph READ-USER-SEC-FILE in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-SIGNON-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: READ-USER-SEC-FILE (lines 209-260)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-SIGNON-SCREEN\n\n       READ-USER-SEC-FILE.\n\n           EXEC CICS READ\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (WS-USER-ID)\n                KEYLENGTH (LENGTH OF WS-USER-ID)\n                RESP      (WS-RESP-CD)\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COBIL00.bms:1.0-18.0 (score: 0.340) ---\nSummary: bms_map COBIL00 Header in COBIL00.bms.\nFile: COBIL00.bms\nBMS Header: COBIL00 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Main Menu Screen\n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR00.bms:1.0-18.0 (score: 0.336) ---\nSummary: bms_map COUSR00 Header in COUSR00.bms.\nFile: COUSR00.bms\nBMS Header: COUSR00 (lines 1-18)\n\n******************************************************************\n*    CardDemo - List Users \n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/app-authorization-ims-db2-mq/bms/COPAU00.bms:1.0-18.0 (score: 0.336) ---\nSummary: bms_map COPAU00 Header in COPAU00.bms.\nFile: COPAU00.bms\nBMS Header: COPAU00 (lines 1-18)\n\n***********************************************************************         \n*    CardDemo - Pending Authorization Screen                                    \n***********************************************************************         \n* Copyright Amazon.com, Inc. or its affiliates.\n* All Rights Reserved.\n*\n* Li\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COADM01.bms:1.0-18.0 (score: 0.335) ---\nSummary: bms_map COADM01 Header in COADM01.bms.\nFile: COADM01.bms\nBMS Header: COADM01 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Admin Menu Screen\n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cpy/UNUSED1Y.cpy:1.0-10.0 (score: 0.333) ---\nSummary: copybook UNUSED1Y in UNUSED1Y.cpy.\nFile: UNUSED1Y.cpy\nCopybook: UNUSED1Y (lines 1-10)\n\n       01 UNUSED-DATA.\n         05 UNUSED-ID                 PIC X(08).\n         05 UNUSED-FNAME              PIC X(20).\n         05 UNUSED-LNAME              PIC X(20).\n         05 UNUSED-PWD                PIC X(08).\n         05 UNUSED-TYPE               PIC X(01).\n         05 UNUSED-FILLER             PIC X(23).\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "CSUSR01Y.cpy",
+          "name": "CSUSR01Y",
+          "start_line": 1.0,
+          "end_line": 26.0,
+          "score": 0.3856,
+          "chunk_type": "copybook"
+        },
+        {
+          "file_name": "COSGN00.bms",
+          "name": "COSGN00 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.3837,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COCOM01Y.cpy",
+          "name": "COCOM01Y",
+          "start_line": 1.0,
+          "end_line": 47.0,
+          "score": 0.3773,
+          "chunk_type": "copybook"
+        },
+        {
+          "file_name": "COUSR01.bms",
+          "name": "COUSR01 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.3486,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "READ-USER-SEC-FILE",
+          "start_line": 209.0,
+          "end_line": 260.0,
+          "score": 0.3449,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COBIL00.bms",
+          "name": "COBIL00 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.3398,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COUSR00.bms",
+          "name": "COUSR00 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.3364,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COPAU00.bms",
+          "name": "COPAU00 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.3357,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COADM01.bms",
+          "name": "COADM01 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.335,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "UNUSED1Y.cpy",
+          "name": "UNUSED1Y",
+          "start_line": 1.0,
+          "end_line": 10.0,
+          "score": 0.3329,
+          "chunk_type": "copybook"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 2.649,
+          "answer": "The user authentication flow in the CardDemo application is initiated through the sign-on screen, which is defined by the BMS map `COSGN00` [Source 2]. The program `COSGN00C` handles this process, specifically within the `READ-USER-SEC-FILE` paragraph [Source 5]. This paragraph reads user security data from a dataset named `WS-USRSEC-FILE`, using `SEC-USER-DATA` to store the retrieved information, which includes user ID, first name, last name, password, and user type [Source 5, Source 1]. The `WS-USER-ID` is used as the key to read the specific user record from the dataset. After attempting to read the user's security information using a CICS `READ` operation, the flow proceeds to `PERFORM SEND-SIGNON-SCREEN` [Source 5].\n\nThe communication area for the CardDemo application, `CARDDEMO-COMMAREA`, is defined in `COCOM01Y.cpy` [Source 3]. This area contains fields such as `CDEMO-USER-ID` and `CDEMO-USER-TYPE`, which are likely populated during or after the authentication process. The `CDEMO-USER-TYPE` field can be set to either 'A' for administrator or 'U' for user, as indicated by the level 88 condition names `CDEMO-USRTYP-ADMIN` and `CDEMO-USRTYP-USER` [Source 3]. This suggests that after successful authentication, the application determines and stores the user's role for subsequent operations.",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "How are user roles and permissions managed?",
+      "description": "User Management: How are user roles and permissions managed?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR01.bms:26.0-164.0 (score: 0.118) ---\nSummary: bms_map COUSR1A in COUSR01.bms.\nFile: COUSR01.bms\nBMS Map: COUSR1A (lines 26-164)\n\nCOUSR1A DFHMDI COLUMN=1,                                               -\n               LINE=1,                                                 -\n               SIZE=(24,80)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n               LENGTH=5,                                               -\n               POS=(1,1),                                              -\n               INITIAL='Tran:'\nTRNNAME DFHMDF ATTRB=(ASKIP,FSET,NORM),                                -\n               COLOR=BLUE,                                             -\n               LENGTH=4,                                               -\n               POS=(1,7)\nTITLE01 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                -\n               COLOR=YELLOW,                                           -\n               LENGTH=40,                                              -\n               POS=(1,21)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n               LENGTH=5,                                               -\n               POS=(1,65),                                             -\n               INITIAL='Date:'\nCURDATE DFHMDF ATTRB=(ASKIP,FSET,NORM),                                -\n               COLOR=BLUE,                                             -\n               LENGTH=8,                                               -\n               POS=(1,71),                                             -\n               INITIAL='mm/dd/yy'\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n               LENGTH=5,                                               -\n               POS=(2,1),                                              -\n               INITIAL='Prog:'\nPGMNAME DFHMDF ATTRB=(ASKIP,FSET,NORM),                                -\n               COLOR=BLUE,                                             -\n               LENGTH=8,                                               -\n               POS=(2,7)\nTITLE02 DFHMDF ATTRB=(ASKIP,FSET,NORM),                                -\n               COLOR=YELLOW,                                           -\n               LENGTH=40,                                              -\n               POS=(2,21)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n               LENGTH=5,                                               -\n               POS=(2,65),                                             -\n               INITIAL='Time:'\nCURTIME DFHMDF ATTRB=(ASKIP,FSET,NORM),                                -\n               COLOR=BLUE,                                             -\n               LENGTH=8,                                               -\n               POS=(2,71),                                             -\n               INITIAL='hh:mm:ss'\n        DFHMDF ATTRB=(ASKIP,BRT),                                      -\n               COLOR=NEUTRAL,                                          -\n               LENGTH=9,                                               -\n               POS=(4,35),                                             -\n               INITIAL='Add User'\n        DFHMDF COLOR=TURQUOISE,                                        -\n               LENGTH=11,                                              -\n               POS=(8,6),                                              -\n               INITIAL='First Name:'\nFNAME   DFHMDF ATTRB=(FSET,IC,NORM,UNPROT),                            -\n               COLOR=GREEN,                                            -\n               HILIGHT=UNDERLINE,                                      -\n               LENGTH=20,                                              -\n               POS=(8,18)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               LENGTH=0,                                               -\n               POS=(8,39)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=TURQUOISE,                                        -\n               LENGTH=10,                                              -\n               POS=(8,45),                                             -\n               INITIAL='Last Name:'\nLNAME   DFHMDF ATTRB=(FSET,NORM,UNPROT),                               -\n               COLOR=GREEN,                                            -\n               HILIGHT=UNDERLINE,                                      -\n               LENGTH=20,                                              -\n               POS=(8,56)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=GREEN,                                            -\n               LENGTH=0,                                               -\n               POS=(8,77)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=TURQUOISE,                                        -\n               LENGTH=8,                                               -\n               POS=(11,6),                                             -\n               INITIAL='User ID:'\nUSERID  DFHMDF ATTRB=(FSET,NORM,UNPROT),                               -\n               COLOR=GREEN,                                            -\n               HILIGHT=UNDERLINE,                                      -\n               LENGTH=8,                                               -\n               POS=(11,15)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n               LENGTH=8,                                               -\n               POS=(11,24),                                            -\n               INITIAL='(8 Char)'\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=TURQUOISE,                                        -\n               LENGTH=9,                                               -\n               POS=(11,45),                                            -\n               INITIAL='Password:'\nPASSWD  DFHMDF ATTRB=(DRK,FSET,UNPROT),                                -\n               COLOR=GREEN,                                            -\n               HILIGHT=UNDERLINE,                                      -\n               LENGTH=8,                                               -\n               POS=(11,55)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n               LENGTH=8,                                               -\n               POS=(11,64),                                            -\n               INITIAL='(8 Char)'\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=TURQUOISE,                                        -\n               LENGTH=11,                                              -\n               POS=(14,6),                                             -\n               INITIAL='User Type: '\nUSRTYPE DFHMDF ATTRB=(FSET,NORM,UNPROT),                               -\n               COLOR=GREEN,                                            -\n               HILIGHT=UNDERLINE,                                      -\n               LENGTH=1,                                               -\n               POS=(14,17)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n               LENGTH=17,                                              -\n               POS=(14,19),                                            -\n               INITIAL='(A=Admin, U=User)'\nERRMSG  DFHMDF ATTRB=(ASKIP,BRT,FSET),                                 -\n               COLOR=RED,                                              -\n               LENGTH=78,                                              -\n               POS=(23,1)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=YELLOW,                                           -\n               LENGTH=43,                                              -\n               POS=(24,1),                                             -\n               INITIAL='ENTER=Add User  F3=Back  F4=Clear  F12=Exit'\n        DFHMSD TYPE=FINAL\n        END\n*\n* Ver: CardDemo_v1.0-70-g193b394-123 Date: 2022-08-22 17:02:44 CDT\n*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR01.bms:1.0-18.0 (score: 0.111) ---\nSummary: bms_map COUSR01 Header in COUSR01.bms.\nFile: COUSR01.bms\nBMS Header: COUSR01 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Add User \n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*                                                                 \n* Licensed under the Apache License, Version 2.0 (the \"License\"). \n* You may not use this file except in compliance with the License.\n* You may obtain a copy of the License at                         \n*                                                                 \n*    http://www.apache.org/licenses/LICENSE-2.0                   \n*                                                                 \n* Unless required by applicable law or agreed to in writing,      \n* software distributed under the License is distributed on an     \n* \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,    \n* either express or implied. See the License for the specific     \n* language governing permissions and limitations under the License\n******************************************************************\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR03.bms:1.0-18.0 (score: 0.104) ---\nSummary: bms_map COUSR03 Header in COUSR03.bms.\nFile: COUSR03.bms\nBMS Header: COUSR03 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Delete User \n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*                                                                 \n* Licensed under the Apache License, Version 2.0 (the \"License\"). \n* You may not use this file except in compliance with the License.\n* You may obtain a copy of the License at                         \n*                                                                 \n*    http://www.apache.org/licenses/LICENSE-2.0                   \n*                                                                 \n* Unless required by applicable law or agreed to in writing,      \n* software distributed under the License is distributed on an     \n* \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,    \n* either express or implied. See the License for the specific     \n* language governing permissions and limitations under the License\n******************************************************************\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR02.bms:1.0-18.0 (score: 0.098) ---\nSummary: bms_map COUSR02 Header in COUSR02.bms.\nFile: COUSR02.bms\nBMS Header: COUSR02 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Update User \n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/jcl/DUSRSECJ.jcl:32.0-57.0 (score: 0.097) ---\nSummary: jcl_step STEP01 in DUSRSECJ.jcl.\nFile: DUSRSECJ.jcl\nJCL Step: STEP01 (lines 32-57)\n\n//STEP01  EXEC PGM=IEBGENER\n//*\n//SYSUT1   DD *\nADMIN001MARGARET            GOLD                PASSWORDA\nADMIN002RUSSELL             RUSSELL             PASSWORDA\nADMIN003RAYMOND             WHITMORE            PASSWORDA\nADMIN004EMMANUEL            CASGRAIN            PASSWORDA\nADMIN005GRANVILLE           LACHAPELLE\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR00.bms:1.0-18.0 (score: 0.096) ---\nSummary: bms_map COUSR00 Header in COUSR00.bms.\nFile: COUSR00.bms\nBMS Header: COUSR00 (lines 1-18)\n\n******************************************************************\n*    CardDemo - List Users \n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:1.0-25.0 (score: 0.093) ---\nSummary: header COUSR01C Header in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... comment hint: Program     : COUSR01C.CBL.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nSection: Header and Identification (lines 1-25)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n      ******************************************************************        \n      * Program     : COUSR01C.CBL\n      * Application : CardDemo\n      * Type        : CICS COBOL Program\n      * Function    : Add a new Regular/Admin user to USRSEC file\n      ************************************************************\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR03C.cbl:1.0-25.0 (score: 0.092) ---\nSummary: header COUSR03C Header in COUSR03C.cbl. uses COPY refs: COCOM01Y, COUSR03, COTTL01Y, CSDAT01Y.... comment hint: Program     : COUSR03C.CBL.\nFile: COUSR03C.cbl\nProgram: COUSR03C - CICS COBOL Program - Delete a user from USRSEC file\nSection: Header and Identification (lines 1-25)\nReferences: COPY COCOM01Y, COPY COUSR03, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n      ******************************************************************        \n      * Program     : COUSR03C.CBL\n      * Application : CardDemo\n      * Type        : CICS COBOL Program\n      * Function    : Delete a user from USRSEC file\n      ******************************************************************\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/jcl/ESDSRRDS.jcl:33.0-58.0 (score: 0.090) ---\nSummary: jcl_step STEP01 in ESDSRRDS.jcl.\nFile: ESDSRRDS.jcl\nJCL Step: STEP01 (lines 33-58)\n\n//STEP01  EXEC PGM=IEBGENER\n//*\n//SYSUT1   DD *\nADMIN001MARGARET            GOLD                PASSWORDA\nADMIN002RUSSELL             RUSSELL             PASSWORDA\nADMIN003RAYMOND             WHITMORE            PASSWORDA\nADMIN004EMMANUEL            CASGRAIN            PASSWORDA\nADMIN005GRANVILLE           LACHAPELLE\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:1.0-25.0 (scor\n... [truncated]",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR01.bms",
+          "name": "COUSR1A",
+          "start_line": 26.0,
+          "end_line": 164.0,
+          "score": 0.1182,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COUSR01.bms",
+          "name": "COUSR01 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.1114,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COUSR03.bms",
+          "name": "COUSR03 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.1038,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COUSR02.bms",
+          "name": "COUSR02 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.0977,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "DUSRSECJ.jcl",
+          "name": "STEP01",
+          "start_line": 32.0,
+          "end_line": 57.0,
+          "score": 0.0965,
+          "chunk_type": "jcl_step"
+        },
+        {
+          "file_name": "COUSR00.bms",
+          "name": "COUSR00 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.0956,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "COUSR01C Header",
+          "start_line": 1.0,
+          "end_line": 25.0,
+          "score": 0.0927,
+          "chunk_type": "header"
+        },
+        {
+          "file_name": "COUSR03C.cbl",
+          "name": "COUSR03C Header",
+          "start_line": 1.0,
+          "end_line": 25.0,
+          "score": 0.0916,
+          "chunk_type": "header"
+        },
+        {
+          "file_name": "ESDSRRDS.jcl",
+          "name": "STEP01",
+          "start_line": 33.0,
+          "end_line": 58.0,
+          "score": 0.0901,
+          "chunk_type": "jcl_step"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "COUSR02C Header",
+          "start_line": 1.0,
+          "end_line": 25.0,
+          "score": 0.0854,
+          "chunk_type": "header"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 1.889,
+          "answer": "The provided code snippets do not detail how user roles and permissions are *managed* in terms of creation, modification, or deletion. However, they do indicate how user types are represented and handled within the application.\n\nSpecifically, the `COUSR01.bms` file, which defines the BMS map for adding a user, includes a field for \"User Type\". This field, `USRTYPE`, is a single character input with an initial value of `(A=Admin, U=User)` [COUSR01.bms:14.0-164.0]. This suggests that users are classified as either 'A' for Administrator or 'U' for User. The `COUSR01C.cbl` program is responsible for adding new users to the `USRSEC` file and can handle both Regular and Admin users [COUSR01C.cbl:1.0-25.0]. This implies that the 'A' and 'U' designations likely correspond to these roles.",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "How does the sign-on screen COSGN00C work?",
+      "description": "User Management: How does the sign-on screen COSGN00C work?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:145.0-161.0 (score: 0.417) ---\nSummary: paragraph SEND-SIGNON-SCREEN in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... invokes: PERFORM POPULATE-HEADER-INFO. comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: SEND-SIGNON-SCREEN (lines 145-161)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM POPULATE-HEADER-INFO\n\n       SEND-SIGNON-SCREEN.\n\n           PERFORM POPULATE-HEADER-INFO\n\n           MOVE WS-MESSAGE TO ERRMSGO OF COSGN0AO\n\n           EXEC CICS SEND\n                     MAP('COSGN0A')\n                     MAPSET('COSGN00')\n                     FROM(COSGN0AO)\n                     ERASE\n                     CURSOR\n           END-EXEC.\n\n      *----------------------------------------------------------------*\n      *                      SEND-PLAIN-TEXT\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:29.0-71.0 (score: 0.401) ---\nSummary: data_division DATA DIVISION in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y....\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nSection: DATA DIVISION (lines 29-71)\n\n       DATA DIVISION.\n      *----------------------------------------------------------------*\n      *                     WORKING STORAGE SECTION\n      *----------------------------------------------------------------*\n       WORKING-STORAGE SECTION.\n\n       01 WS-VARIABLES.\n         05 WS-PGMNAME                 PIC X(08) VALUE 'COSGN00C'.\n         05 WS-TRANID                  PIC X(04) VALUE 'CC00'.\n         05 WS-MESSAGE                 PIC X(80) VALUE SPACES.\n         05 WS-USRSEC-FILE             PIC X(08) VALUE 'USRSEC  '.\n         05 WS-ERR-FLG                 PIC X(01) VALUE 'N'.\n           88 ERR-FLG-ON                         VALUE 'Y'.\n           88 ERR-FLG-OFF                        VALUE 'N'.\n         05 WS-RESP-CD                 PIC S9(09) COMP VALUE ZEROS.\n         05 WS-REAS-CD                 PIC S9(09) COMP VALUE ZEROS.\n         05 WS-USER-ID                 PIC X(08).\n         05 WS-USER-PWD                PIC X(08).\n\n       COPY COCOM01Y.\n\n       COPY COSGN00.\n\n       COPY COTTL01Y.\n       COPY CSDAT01Y.\n       COPY CSMSG01Y.\n       COPY CSUSR01Y.\n\n       COPY DFHAID.\n       COPY DFHBMSCA.\n      *COPY DFHATTR.\n\n      *----------------------------------------------------------------*\n      *                        LINKAGE SECTION\n      *----------------------------------------------------------------*\n       LINKAGE SECTION.\n       01  DFHCOMMAREA.\n         05  LK-COMMAREA                           PIC X(01)\n             OCCURS 1 TO 32767 TIMES DEPENDING ON EIBCALEN.\n\n      *----------------------------------------------------------------*\n      *                      PROCEDURE DIVISION\n      *----------------------------------------------------------------*\n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:1.0-25.0 (score: 0.400) ---\nSummary: header COSGN00C Header in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... comment hint: Program     : COSGN00C.CBL.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nSection: Header and Identification (lines 1-25)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n      ******************************************************************        \n      * Program     : COSGN00C.CBL\n      * Application : CardDemo\n      * Type        : CICS COBOL Program\n      * Function    : Signon Screen for the CardDemo Application\n      ******************************************************************\n      * Copyright Amazon.com, Inc. or its affiliates.                   \n      * All Rights Reserved.                                            \n      *                                                                 \n      * Licensed under the Apache License, Version 2.0 (the \"License\"). \n      * You may not use this file except in compliance with the License.\n      * You may obtain a copy of the License at                         \n      *                                                                 \n      *    http://www.apache.org/licenses/LICENSE-2.0                   \n      *                                                                 \n      * Unless required by applicable law or agreed to in writing,      \n      * software distributed under the License is distributed on an     \n      * \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,    \n      * either express or implied. See the License for the specific     \n      * language governing permissions and limitations under the License\n      ****************************************************************** \n       IDENTIFICATION DIVISION.\n       PROGRAM-ID. COSGN00C.\n       AUTHOR.     AWS.\n\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:177.0-208.0 (score: 0.398) ---\nSummary: paragraph POPULATE-HEADER-INFO in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: POPULATE-HEADER-INFO (lines 177-208)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       POPULATE-HEADER-INFO.\n\n           MOVE FUNCTION CURRENT-DATE  TO WS-CURDATE-DATA\n\n           MOVE CCDA-TITLE01           TO TITLE01O OF COSGN0AO\n           MOVE CCDA-TITLE02           TO TITLE02O OF COSGN0AO\n           MOVE WS-TRANID              TO TRNNAMEO OF COSGN0AO\n           MOVE WS-PGMNAME             TO\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:73.0-107.0 (score: 0.395) ---\nSummary: paragraph MAIN-PARA in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... invokes: PERFORM PROCESS-ENTER-KEY, PERFORM SEND-PLAIN-TEXT, PERFORM SEND-SIGNON-SCREEN.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: MAIN-PARA (lines 73-107)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM PROCESS-ENTER-KEY, PERFORM SEND-PLAIN-TEXT, PERFORM SEND-SIGNON-SCREEN\n\n       MAIN-PARA.\n\n           SET ERR-FLG-OFF TO TRUE\n\n           MOVE SPACES TO WS-MESSAGE\n                          ERRMSGO OF COSGN0AO\n\n           IF EIBCALEN = 0\n               MOVE LOW-VALUES TO COSGN0AO\n               MOVE -1       TO USERIDL OF COSGN0AI\n               PERFORM SEND-SIGNON-SCREEN\n           ELSE\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:162.0-176.0 (score: 0.389) ---\nSummary: paragraph SEND-PLAIN-TEXT in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: SEND-PLAIN-TEXT (lines 162-176)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\n\n       SEND-PLAIN-TEXT.\n\n           EXEC CICS SEND TEXT\n                     FROM(WS-MESSAGE)\n                     LENGTH(LENGTH OF WS-MESSAGE)\n                     ERASE\n                     FREEKB\n           END-EXEC.\n\n           EXEC CICS RETURN\n           END-EXEC.\n\n      *------------------------------------------\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:108.0-144.0 (score: 0.381) ---\nSummary: paragraph PROCESS-ENTER-KEY in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... invokes: PERFORM READ-USER-SEC-FILE, PERFORM SEND-SIGNON-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: PROCESS-ENTER-KEY (lines 108-144)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM READ-USER-SEC-FILE, PERFORM SEND-SIGNON-SCREEN\n\n       PROCESS-ENTER-KEY.\n\n           EXEC CICS RECEIVE\n                     MAP('COSGN0A')\n                     MAPSET('COSGN00')\n                     RESP(WS-RESP-CD)\n                     RESP2(WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE TRUE\n               WHEN USERIDI OF COSGN0AI = SPACES OR LOW-VALUES\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:209.0-260.0 (score: 0.373) ---\nSummary: paragraph READ-USER-SEC-FILE in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-SIGNON-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: READ-USER-SEC-FILE (lines 209-260)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-SIGNON-SCREEN\n\n       READ-USER-SEC-FILE.\n\n           EXEC CICS READ\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (WS-USER-ID)\n                KEYLENGTH (LENGTH OF WS-USER-ID)\n                RESP      (WS-RESP-CD)\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COSGN00.bms:1.0-18.0 (score: 0.324) ---\nSummary: bms_map COSGN00 Header in COSGN00.bms.\nFile: COSGN00.bms\nBMS Header: COSGN00 (lines 1-18)\n\n******************************************************************\n*    CardDemo - Login Screen\n***********************************************************************\n* Copyright Amazon.com, Inc. or its affiliates.                   \n* All Rights Reserved.                                            \n*\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COSGN00.bms:19.0-25.0 (score: 0.322) ---\nSummary: bms_map COSGN00 in COSGN00.bms.\nFile: COSGN00.bms\nBMS Map: COSGN00 (lines 19-25)\n\nCOSGN00 DFHMSD CTRL=(ALARM,FREEKB),                                    -\n               EXTATT=YES,                                             -\n               LANG=COBOL,                                             -\n               MODE=INOUT,                                             -\n               STORAGE=AUTO,\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "SEND-SIGNON-SCREEN",
+          "start_line": 145.0,
+          "end_line": 161.0,
+          "score": 0.4172,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "DATA DIVISION",
+          "start_line": 29.0,
+          "end_line": 71.0,
+          "score": 0.401,
+          "chunk_type": "data_division"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "COSGN00C Header",
+          "start_line": 1.0,
+          "end_line": 25.0,
+          "score": 0.4004,
+          "chunk_type": "header"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "POPULATE-HEADER-INFO",
+          "start_line": 177.0,
+          "end_line": 208.0,
+          "score": 0.3976,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "MAIN-PARA",
+          "start_line": 73.0,
+          "end_line": 107.0,
+          "score": 0.3953,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "SEND-PLAIN-TEXT",
+          "start_line": 162.0,
+          "end_line": 176.0,
+          "score": 0.389,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "PROCESS-ENTER-KEY",
+          "start_line": 108.0,
+          "end_line": 144.0,
+          "score": 0.3806,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "READ-USER-SEC-FILE",
+          "start_line": 209.0,
+          "end_line": 260.0,
+          "score": 0.3728,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00.bms",
+          "name": "COSGN00 Header",
+          "start_line": 1.0,
+          "end_line": 18.0,
+          "score": 0.3238,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COSGN00.bms",
+          "name": "COSGN00",
+          "start_line": 19.0,
+          "end_line": 25.0,
+          "score": 0.3223,
+          "chunk_type": "bms_map"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 4.072,
+          "answer": "The `COSGN00C` program handles the sign-on screen for the CardDemo application. It's a CICS COBOL program designed to display a login interface and process user credentials.\n\nHere's a breakdown of its functionality based on the provided code:\n\n*   **Initialization:** When the program is initiated (specifically when `EIBCALEN` is 0, indicating the first time the transaction is run), it performs the `SEND-SIGNON-SCREEN` paragraph [COSGN00C:145-161]. This action clears the screen and displays the initial sign-on form.\n*   **Screen Display:** The `SEND-SIGNON-SCREEN` paragraph first calls `POPULATE-HEADER-INFO` [COSGN00C:177-208] to set up header fields like the program name and transaction ID. Then, it uses a CICS `SEND MAP` command to display the sign-on map (defined in `COSGN00.bms` [COSGN00.bms:19-25]) from the `COSGN00` mapset. The `ERASE` option ensures any previous screen content is cleared, and `CURSOR` places the cursor at the default input field.\n*   **User Input Processing:** When the user interacts with the sign-on screen and presses Enter, the `MAIN-PARA` paragraph [COSGN00C:73-107] is executed. It then calls `PROCESS-ENTER-KEY` [COSGN00C:108-144]. This paragraph receives the user's input from the screen.\n*   **User Validation:** `PROCESS-ENTER-KEY` then proceeds to call `READ-USER-SEC-FILE` [COSGN00C:209-260]. This paragraph attempts to read user security data from a dataset named `USRSEC` [COSGN00C:29-71]. It uses the entered `USERID` to search for a matching record. The response codes from the read operation are stored in `WS-RESP-CD` and `WS-REAS-CD` for error handling.\n*   **Error Handling and Redirection:** Depending on the outcome of the user validation (e.g., if the user ID is not found or fields are left blank), the program might display error messages. In case of an error or if further processing is needed, it can call `SEND-SIGNON-SCREEN` again to re-display the form, possibly with error indicators. If the input is not valid or needs to be sent as plain text, `SEND-PLAIN-TEXT` [COSGN00C:162-176] is used, which sends a message and then returns.\n\nThe program also includes a `DATA DIVISION` [COSGN00C:29-71] where variables like `WS-PGMNAME`, `WS-TRANID`, and `WS-MESSAGE` are defined, along with copied in modules (like `COCOM01Y`, `COSGN00`, `DFHAID`, etc.) that provide common routines and CICS definitions.",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    },
+    {
+      "query": "What validation happens during user login?",
+      "description": "User Management: What validation happens during user login?",
+      "formatted_context": "--- Source 1: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:115.0-164.0 (score: 0.198) ---\nSummary: paragraph PROCESS-ENTER-KEY in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-USRADD-SCREEN, PERFORM WRITE-USER-SEC-FILE. comment hint: ----------------------------------------------------------------*.\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: PROCESS-ENTER-KEY (lines 115-164)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-USRADD-SCREEN, PERFORM WRITE-USER-SEC-FILE\n\n       PROCESS-ENTER-KEY.\n\n           EVALUATE TRUE\n               WHEN FNAMEI OF COUSR1AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'First Name can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO FNAMEL OF COUSR1AI\n                   PERFORM SEND-USRADD-SCREEN\n               WHEN LNAMEI OF COUSR1AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Last Name can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO LNAMEL OF COUSR1AI\n                   PERFORM SEND-USRADD-SCREEN\n               WHEN USERIDI OF COUSR1AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User ID can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USERIDL OF COUSR1AI\n                   PERFORM SEND-USRADD-SCREEN\n               WHEN PASSWDI OF COUSR1AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'Password can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO PASSWDL OF COUSR1AI\n                   PERFORM SEND-USRADD-SCREEN\n               WHEN USRTYPEI OF COUSR1AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User Type can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRTYPEL OF COUSR1AI\n                   PERFORM SEND-USRADD-SCREEN\n               WHEN OTHER\n                   MOVE -1       TO FNAMEL OF COUSR1AI\n                   CONTINUE\n           END-EVALUATE\n\n           IF NOT ERR-FLG-ON\n               MOVE USERIDI  OF COUSR1AI TO SEC-USR-ID\n               MOVE FNAMEI   OF COUSR1AI TO SEC-USR-FNAME\n               MOVE LNAMEI   OF COUSR1AI TO SEC-USR-LNAME\n               MOVE PASSWDI  OF COUSR1AI TO SEC-USR-PWD\n               MOVE USRTYPEI OF COUSR1AI TO SEC-USR-TYPE\n               PERFORM WRITE-USER-SEC-FILE\n           END-IF.\n\n      *----------------------------------------------------------------*\n      *                      RETURN-TO-PREV-SCREEN\n      *----------------------------------------------------------------*\n\n--- Source 2: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/CBTRN02C.cbl:370.0-379.0 (score: 0.197) ---\nSummary: paragraph 1500-VALIDATE-TRAN in CBTRN02C.cbl. uses COPY refs: CVTRA06Y, CVTRA05Y, CVACT03Y, CVACT01Y.... invokes: PERFORM 1500-A-LOOKUP-XREF, PERFORM 1500-B-LOOKUP-ACCT.\nFile: CBTRN02C.cbl\nProgram: CBTRN02C - BATCH COBOL Program - Post the records from daily transaction file.\nParagraph: 1500-VALIDATE-TRAN (lines 370-379)\nReferences: COPY CVTRA06Y, COPY CVTRA05Y, COPY CVACT03Y, COPY CVACT01Y, COPY CVTRA01Y\nCalls: PERFORM 1500-A-LOOKUP-XREF, PERFORM 1500-B-LOOKUP-ACCT\n\n       1500-VALIDATE-TRAN.                                                      \n           PERFORM 1500-A-LOOKUP-XREF.                                          \n           IF WS-VALIDATION-FAIL-REASON = 0                                     \n              PERFORM 1500-B-LOOKUP-ACCT                                        \n           ELSE                                                                 \n              CONTINUE                                                          \n           END-IF                                                               \n      * ADD MORE VALIDATIONS HERE                                               \n           EXIT.                                                                \n                                                                                \n\n--- Source 3: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:209.0-260.0 (score: 0.193) ---\nSummary: paragraph READ-USER-SEC-FILE in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... invokes: PERFORM SEND-SIGNON-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: READ-USER-SEC-FILE (lines 209-260)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM SEND-SIGNON-SCREEN\n\n       READ-USER-SEC-FILE.\n\n           EXEC CICS READ\n                DATASET   (WS-USRSEC-FILE)\n                INTO      (SEC-USER-DATA)\n                LENGTH    (LENGTH OF SEC-USER-DATA)\n                RIDFLD    (WS-USER-ID)\n                KEYLENGTH (LENGTH OF WS-USER-ID)\n                RESP      (WS-RESP-CD)\n                RESP2     (WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE WS-RESP-CD\n               WHEN 0\n                   IF SEC-USR-PWD = WS-USER-PWD\n                       MOVE WS-TRANID    TO CDEMO-FROM-TRANID\n                       MOVE WS-PGMNAME   TO CDEMO-FROM-PROGRAM\n                       MOVE WS-USER-ID   TO CDEMO-USER-ID\n                       MOVE SEC-USR-TYPE TO CDEMO-USER-TYPE\n                       MOVE ZEROS        TO CDEMO-PGM-CONTEXT\n\n                       IF CDEMO-USRTYP-ADMIN\n                            EXEC CICS XCTL\n                              PROGRAM ('COADM01C')\n                              COMMAREA(CARDDEMO-COMMAREA)\n                            END-EXEC\n                       ELSE\n                            EXEC CICS XCTL\n                              PROGRAM ('COMEN01C')\n                              COMMAREA(CARDDEMO-COMMAREA)\n                            END-EXEC\n                       END-IF\n                   ELSE\n                       MOVE 'Wrong Password. Try again ...' TO\n                                                          WS-MESSAGE\n                       MOVE -1       TO PASSWDL OF COSGN0AI\n                       PERFORM SEND-SIGNON-SCREEN\n                   END-IF\n               WHEN 13\n                   MOVE 'Y'      TO WS-ERR-FLG\n                   MOVE 'User not found. Try again ...' TO WS-MESSAGE\n                   MOVE -1       TO USERIDL OF COSGN0AI\n                   PERFORM SEND-SIGNON-SCREEN\n               WHEN OTHER\n                   MOVE 'Y'      TO WS-ERR-FLG\n                   MOVE 'Unable to verify the User ...' TO WS-MESSAGE\n                   MOVE -1       TO USERIDL OF COSGN0AI\n                   PERFORM SEND-SIGNON-SCREEN\n           END-EVALUATE.\n      *\n      * Ver: CardDemo_v1.0-15-g27d6c6f-68 Date: 2022-07-19 23:12:33 CDT\n      *\n\n--- Source 4: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:108.0-144.0 (score: 0.187) ---\nSummary: paragraph PROCESS-ENTER-KEY in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y.... invokes: PERFORM READ-USER-SEC-FILE, PERFORM SEND-SIGNON-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nParagraph: PROCESS-ENTER-KEY (lines 108-144)\nReferences: COPY COCOM01Y, COPY COSGN00, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM READ-USER-SEC-FILE, PERFORM SEND-SIGNON-SCREEN\n\n       PROCESS-ENTER-KEY.\n\n           EXEC CICS RECEIVE\n                     MAP('COSGN0A')\n                     MAPSET('COSGN00')\n                     RESP(WS-RESP-CD)\n                     RESP2(WS-REAS-CD)\n           END-EXEC.\n\n           EVALUATE TRUE\n               WHEN USERIDI OF COSGN0AI = SPACES OR LOW-VALUES\n... [truncated]\n\n--- Source 5: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:177.0-249.0 (score: 0.180) ---\nSummary: paragraph UPDATE-USER-INFO in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRUPD-SCREEN, PERFORM UPDATE-USER-SEC-FILE. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: UPDATE-USER-INFO (lines 177-249)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRUPD-SCREEN, PERFORM UPDATE-USER-SEC-FILE\n\n       UPDATE-USER-INFO.\n\n           EVALUATE TRUE\n               WHEN USRIDINI OF COUSR2AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User ID can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR2AI\n... [truncated]\n\n--- Source 6: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR02C.cbl:143.0-176.0 (score: 0.166) ---\nSummary: paragraph PROCESS-ENTER-KEY in COUSR02C.cbl. uses COPY refs: COCOM01Y, COUSR02, COTTL01Y, CSDAT01Y.... invokes: PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRUPD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COUSR02C.cbl\nProgram: COUSR02C - CICS COBOL Program - Update a user in USRSEC file\nParagraph: PROCESS-ENTER-KEY (lines 143-176)\nReferences: COPY COCOM01Y, COPY COUSR02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM READ-USER-SEC-FILE, PERFORM SEND-USRUPD-SCREEN\n\n       PROCESS-ENTER-KEY.\n\n           EVALUATE TRUE\n               WHEN USRIDINI OF COUSR2AI = SPACES OR LOW-VALUES\n                   MOVE 'Y'     TO WS-ERR-FLG\n                   MOVE 'User ID can NOT be empty...' TO\n                                   WS-MESSAGE\n                   MOVE -1       TO USRIDINL OF COUSR2A\n... [truncated]\n\n--- Source 7: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COTRN02C.cbl:193.0-234.0 (score: 0.165) ---\nSummary: paragraph VALIDATE-INPUT-KEY-FIELDS in COTRN02C.cbl. uses COPY refs: COCOM01Y, COTRN02, COTTL01Y, CSDAT01Y.... invokes: PERFORM READ-CCXREF-FILE, PERFORM READ-CXACAIX-FILE, PERFORM SEND-TRNADD-SCREEN. comment hint: ----------------------------------------------------------------*.\nFile: COTRN02C.cbl\nProgram: COTRN02C - CICS COBOL Program - Add a new Transaction to TRANSACT file\nParagraph: VALIDATE-INPUT-KEY-FIELDS (lines 193-234)\nReferences: COPY COCOM01Y, COPY COTRN02, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CVTRA05Y, COPY CVACT01Y, COPY CVACT03Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM READ-CCXREF-FILE, PERFORM READ-CXACAIX-FILE, PERFORM SEND-TRNADD-SCREEN\n\n       VALIDATE-INPUT-KEY-FIELDS.\n\n           EVALUATE TRUE\n               WHEN ACTIDINI OF COTRN2AI NOT = SPACES AND LOW-VALUES\n                   IF ACTIDINI OF COTRN2AI IS NOT NUMERIC\n                       MOVE 'Y'     TO WS-ERR-FLG\n                       MOVE 'Account ID must be Numeric...' TO\n... [truncated]\n\n--- Source 8: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/bms/COUSR01.bms:26.0-164.0 (score: 0.156) ---\nSummary: bms_map COUSR1A in COUSR01.bms.\nFile: COUSR01.bms\nBMS Map: COUSR1A (lines 26-164)\n\nCOUSR1A DFHMDI COLUMN=1,                                               -\n               LINE=1,                                                 -\n               SIZE=(24,80)\n        DFHMDF ATTRB=(ASKIP,NORM),                                     -\n               COLOR=BLUE,                                             -\n... [truncated]\n\n--- Source 9: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COSGN00C.cbl:29.0-71.0 (score: 0.153) ---\nSummary: data_division DATA DIVISION in COSGN00C.cbl. uses COPY refs: COCOM01Y, COSGN00, COTTL01Y, CSDAT01Y....\nFile: COSGN00C.cbl\nProgram: COSGN00C - CICS COBOL Program - Signon Screen for the CardDemo Application\nSection: DATA DIVISION (lines 29-71)\n\n       DATA DIVISION.\n      *----------------------------------------------------------------*\n      *                     WORKING STORAGE SECTION\n      *----------------------------------------------------------------*\n       WORKING-STORAGE SECTION.\n\n       01 WS-VARIABLES.\n         05 WS-PGMNAME                 PIC\n... [truncated]\n\n--- Source 10: /Users/ianzepp/github/gauntlet/gauntlet-week-3/aws-mainframe-modernization-carddemo/app/cbl/COUSR01C.cbl:71.0-114.0 (score: 0.152) ---\nSummary: paragraph MAIN-PARA in COUSR01C.cbl. uses COPY refs: COCOM01Y, COUSR01, COTTL01Y, CSDAT01Y.... invokes: PERFORM CLEAR-CURRENT-SCREEN, PERFORM PROCESS-ENTER-KEY, PERFORM RECEIVE-USRADD-SCREEN, PERFORM RETURN-TO-PREV-SCREEN....\nFile: COUSR01C.cbl\nProgram: COUSR01C - CICS COBOL Program - Add a new Regular/Admin user to USRSEC file\nParagraph: MAIN-PARA (lines 71-114)\nReferences: COPY COCOM01Y, COPY COUSR01, COPY COTTL01Y, COPY CSDAT01Y, COPY CSMSG01Y, COPY CSUSR01Y, COPY DFHAID, COPY DFHBMSCA\nCalls: PERFORM CLEAR-CURRENT-SCREEN, PERFORM PROCESS-ENTER-KEY, PERFORM RECEIVE-USRADD-SCREEN, PERFORM RETURN-TO-PREV-SCREEN, PERFORM SEND-USRADD-SCREEN\n\n       MAIN-PARA.\n\n           SET ERR-FLG-OFF TO TRUE\n\n           MOVE SPACES TO WS-MESSAGE\n                          ERRMSGO OF COUSR1AO\n\n           IF EIBCALEN = 0\n               MOVE 'COSGN00C' TO CDEMO-TO-PROGRAM\n               PERFORM RETURN-TO-PREV-SCREEN\n           ELSE\n               MOVE DFHCOMMAREA(1:EIBCALEN\n... [truncated]\n",
+      "chunk_summaries": [
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "PROCESS-ENTER-KEY",
+          "start_line": 115.0,
+          "end_line": 164.0,
+          "score": 0.1979,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "CBTRN02C.cbl",
+          "name": "1500-VALIDATE-TRAN",
+          "start_line": 370.0,
+          "end_line": 379.0,
+          "score": 0.1971,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "READ-USER-SEC-FILE",
+          "start_line": 209.0,
+          "end_line": 260.0,
+          "score": 0.1933,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "PROCESS-ENTER-KEY",
+          "start_line": 108.0,
+          "end_line": 144.0,
+          "score": 0.1869,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "UPDATE-USER-INFO",
+          "start_line": 177.0,
+          "end_line": 249.0,
+          "score": 0.1797,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR02C.cbl",
+          "name": "PROCESS-ENTER-KEY",
+          "start_line": 143.0,
+          "end_line": 176.0,
+          "score": 0.1659,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COTRN02C.cbl",
+          "name": "VALIDATE-INPUT-KEY-FIELDS",
+          "start_line": 193.0,
+          "end_line": 234.0,
+          "score": 0.1654,
+          "chunk_type": "paragraph"
+        },
+        {
+          "file_name": "COUSR01.bms",
+          "name": "COUSR1A",
+          "start_line": 26.0,
+          "end_line": 164.0,
+          "score": 0.1559,
+          "chunk_type": "bms_map"
+        },
+        {
+          "file_name": "COSGN00C.cbl",
+          "name": "DATA DIVISION",
+          "start_line": 29.0,
+          "end_line": 71.0,
+          "score": 0.1528,
+          "chunk_type": "data_division"
+        },
+        {
+          "file_name": "COUSR01C.cbl",
+          "name": "MAIN-PARA",
+          "start_line": 71.0,
+          "end_line": 114.0,
+          "score": 0.1525,
+          "chunk_type": "paragraph"
+        }
+      ],
+      "responses": [
+        {
+          "model": "google/gemini-2.5-flash-lite",
+          "provider": "openrouter",
+          "model_id": "google/gemini-2.5-flash-lite",
+          "latency_s": 1.76,
+          "answer": "During user login, the system validates several fields to ensure they are not empty. Specifically, it checks if the User ID, Password, First Name, Last Name, and User Type are provided. If any of these fields are left blank, an error message is displayed, and the user is prompted to re-enter the information on the sign-on screen [COUSR01C:115-164].\n\nIf all required fields are present, the system then proceeds to read the user's security information from the USRSEC file using the provided User ID [COSGN00C:209-260]. It compares the entered password with the one stored in the security file. If the passwords do not match, an \"Wrong Password. Try again ...\" message is displayed [COSGN00C:209-260]. If the User ID is not found in the USRSEC file, a \"User not found. Try again ...\" message is shown [COSGN00C:209-260]. In cases where the system is unable to verify the user for other reasons, a general message \"Unable to verify the User ...\" is presented [COSGN00C:209-260].",
+          "error": null
+        }
+      ],
+      "benchmark_verbosity": "detailed"
+    }
+  ]
+}

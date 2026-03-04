@@ -1,0 +1,4 @@
+config,embedding_provider,embedding_model,embedding_dimensions,chunking_strategy,files,total_loc,chunks,discover_time_s,chunk_time_s,index_create_time_s,embed_upsert_time_s,pipeline_time_s,loc_per_s,chunks_per_s,meets_target,status
+small-1024-paragraph,openai,text-embedding-3-small,1024,paragraph,206,48327,1018,0.005,0.097,5.765,52.332,52.433,921.7,19.4,True,PASS
+e5-1024-paragraph,pinecone,multilingual-e5-large,1024,paragraph,206,48327,1018,0.005,0.097,5.776,17.043,17.144,2818.8,59.4,True,PASS
+llama-1024-paragraph,pinecone,llama-text-embed-v2,1024,paragraph,206,48327,1018,0.005,0.097,5.77,40.716,40.817,1184.0,24.9,True,PASS

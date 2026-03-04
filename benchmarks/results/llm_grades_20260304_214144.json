@@ -1,0 +1,170 @@
+{
+  "metadata": {
+    "timestamp": "2026-03-04T21:41:44.916529+00:00",
+    "grader_model": "anthropic/claude-opus-4-6",
+    "source_file": "llm_responses_20260304_213419.json",
+    "total_graded": 10
+  },
+  "grades": [
+    {
+      "query": "What does COUSR00C do?",
+      "description": "User Management: What does COUSR00C do?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 5,
+        "completeness": 4,
+        "citation_quality": 2,
+        "clarity": 5,
+        "conciseness": 4,
+        "overall": 4
+      },
+      "justification": "The response accurately describes COUSR00C's purpose and functionality based on the retrieved context - listing users from the USRSEC file with screen send/receive, pagination, and data population. It covers all major paragraphs and their roles well. However, the citation format is poor - it uses 'Source 2, Source 3' etc. rather than the expected [FileName:StartLine-EndLine] format, and bundles nearly all sources into a single citation rather than attributing specific claims to specific sources. The explanation is clear and well-organized for a general overview question.",
+      "error": null,
+      "grader_latency_s": 7.512
+    },
+    {
+      "query": "How does the user list screen work in COUSR00C?",
+      "description": "User Management: How does the user list screen work in COUSR00C?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 4,
+        "completeness": 4,
+        "citation_quality": 2,
+        "clarity": 4,
+        "conciseness": 4,
+        "overall": 3
+      },
+      "justification": "The response accurately describes the overall flow of the user list screen, covering send/receive, initialization, file browsing, and navigation. However, citations use 'Source N' format rather than the required [FileName:StartLine-EndLine] format. The response also misses details from MAIN-PARA (Source 10) about key handling (PF7/PF8/Enter) and the initial EIBCALEN check logic, which are important to understanding how the screen works. The term 'Business Machine Systems' for BMS is incorrect\u2014it stands for 'Basic Mapping Support.'",
+      "error": null,
+      "grader_latency_s": 6.813
+    },
+    {
+      "query": "How does COUSR01C handle user inquiry?",
+      "description": "User Management: How does COUSR01C handle user inquiry?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 5,
+        "completeness": 3,
+        "citation_quality": 4,
+        "clarity": 5,
+        "conciseness": 5,
+        "overall": 4
+      },
+      "justification": "The response is accurate in identifying that the retrieved context does not contain sufficient information about COUSR01C handling user inquiry, correctly noting that COUSR01C is for adding users and that the inquiry-related code belongs to COUSR00C. The citation to [COUSR01C:201.0-213.0] is appropriate. However, it could have been slightly more complete by noting that COUSR01C appears to be an 'add user' program rather than an inquiry program, and suggesting the user may be looking for a different program (perhaps COUSR02C or COUSR03C for inquiry). The honesty about lacking context is commendable rather than hallucinating an answer.",
+      "error": null,
+      "grader_latency_s": 6.846
+    },
+    {
+      "query": "Explain the user add logic in COUSR02C",
+      "description": "User Management: Explain the user add logic in COUSR02C",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 5,
+        "completeness": 4,
+        "citation_quality": 3,
+        "clarity": 5,
+        "conciseness": 5,
+        "overall": 5
+      },
+      "justification": "The AI correctly identifies that COUSR02C is a user update program, not a user add program, and accurately redirects to COUSR01C where the add logic resides. This is factually correct based on the context provided. The response appropriately notes the distinction rather than fabricating an answer about non-existent add logic in COUSR02C. Citations reference source numbers rather than the preferred [FileName:StartLine-EndLine] format, but are otherwise accurate. The response could have briefly summarized the COUSR01C add logic since it was available in the context, which would have been more helpful.",
+      "error": null,
+      "grader_latency_s": 5.563
+    },
+    {
+      "query": "How does COUSR03C update user records?",
+      "description": "User Management: How does COUSR03C update user records?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 5,
+        "completeness": 4,
+        "citation_quality": 4,
+        "clarity": 5,
+        "conciseness": 5,
+        "overall": 5
+      },
+      "justification": "The response correctly identifies that COUSR03C is a delete program, not an update program, which is the most important and accurate answer to the question. It appropriately redirects to COUSR02C for the actual update logic and accurately describes the validation, change-detection, and CICS REWRITE flow with proper citations. The citations are accurate though could be more granular. The response is clear, well-organized, and appropriately concise.",
+      "error": null,
+      "grader_latency_s": 4.843
+    },
+    {
+      "query": "How is the USRSEC user security file accessed?",
+      "description": "User Management: How is the USRSEC user security file accessed?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 4,
+        "completeness": 5,
+        "citation_quality": 5,
+        "clarity": 5,
+        "conciseness": 4,
+        "overall": 5
+      },
+      "justification": "The response accurately covers all CICS access patterns (STARTBR, READNEXT, READPREV, ENDBR, READ, WRITE, REWRITE) with correct citations to the source code. It correctly identifies the key field (SEC-USR-ID) and the programs involved. The only minor accuracy issue is the somewhat ambiguous statement about the JCL showing it 'might be a VSAM file internally managed by CICS' \u2014 the JCL actually creates a flat PS file first, then the comment hints at defining a VSAM file, but the response's phrasing is slightly imprecise rather than wrong. Overall excellent coverage and organization.",
+      "error": null,
+      "grader_latency_s": 6.819
+    },
+    {
+      "query": "What is the user authentication flow in CardDemo?",
+      "description": "User Management: What is the user authentication flow in CardDemo?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 4,
+        "completeness": 3,
+        "citation_quality": 4,
+        "clarity": 4,
+        "conciseness": 4,
+        "overall": 3
+      },
+      "justification": "The response accurately describes the login screen (COSGN00), the signon program (COSGN00C), and the credential lookup via READ-USER-SEC-FILE, with correct citations. However, it misses important details visible in the context: the password validation logic in COSGN00C (lines 209-260 show response code handling and error paths), the user type distinction (Admin 'A' vs User 'U' from COCOM01Y), the COMMAREA flow that propagates authenticated user info (CDEMO-USER-ID, CDEMO-USER-TYPE), and the routing to either the Admin Menu (COADM01) or Main Menu (COBIL00) based on user type. The phrase 'likely proceeds to validate' is vague when the context actually shows validation logic.",
+      "error": null,
+      "grader_latency_s": 6.941
+    },
+    {
+      "query": "How are user roles and permissions managed?",
+      "description": "User Management: How are user roles and permissions managed?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 4,
+        "completeness": 3,
+        "citation_quality": 3,
+        "clarity": 5,
+        "conciseness": 5,
+        "overall": 4
+      },
+      "justification": "The response accurately identifies the key 'User Type' field (A=Admin, U=User) from the BMS map and the USRSEC file structure from JCL, which are the main indicators of role management in the provided context. It correctly notes the lack of detailed RBAC logic in the retrieved snippets. The citation format is slightly off (using line ranges like 14.0-164.0 rather than precise start-end lines), and the response could have mentioned the full CRUD lifecycle (COUSR00-List, COUSR01-Add, COUSR02-Update, COUSR03-Delete) for user management more explicitly, but overall it provides a clear and honest assessment of what can be determined from the context.",
+      "error": null,
+      "grader_latency_s": 6.746
+    },
+    {
+      "query": "How does the sign-on screen COSGN00C work?",
+      "description": "User Management: How does the sign-on screen COSGN00C work?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 4,
+        "completeness": 4,
+        "citation_quality": 4,
+        "clarity": 5,
+        "conciseness": 5,
+        "overall": 4
+      },
+      "justification": "The response accurately describes the program's flow based on the provided context, including the initial screen display, ENTER key processing, user security file reading, and screen sending. Citations are present and correctly reference line ranges. One minor accuracy concern: the response says 'data has been sent from the terminal' when EIBCALEN is non-zero, but EIBCALEN actually indicates the length of the COMMAREA passed from a previous CICS RETURN, not directly terminal input. The response could have been slightly more complete by mentioning the EVALUATE for different AID keys in MAIN-PARA and the SEND-PLAIN-TEXT paragraph's role, but overall it covers the key flow well.",
+      "error": null,
+      "grader_latency_s": 7.705
+    },
+    {
+      "query": "What validation happens during user login?",
+      "description": "User Management: What validation happens during user login?",
+      "model": "google/gemini-2.5-flash-lite",
+      "scores": {
+        "accuracy": 5,
+        "completeness": 5,
+        "citation_quality": 4,
+        "clarity": 5,
+        "conciseness": 5,
+        "overall": 5
+      },
+      "justification": "The response accurately describes all login validation steps from COSGN00C.cbl, including empty field checks in PROCESS-ENTER-KEY and the user lookup/password verification in READ-USER-SEC-FILE. All claims are directly supported by the provided context. Citations reference the correct sources (3 and 4) though they use generic 'Source N' format rather than precise file:line references. The response is well-organized, clear, and appropriately concise.",
+      "error": null,
+      "grader_latency_s": 5.01
+    }
+  ]
+}
