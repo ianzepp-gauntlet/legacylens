@@ -115,6 +115,7 @@ uvicorn web.app:app --port 8000
 ```
 
 Single-page interface with query input, file type filter, LLM-generated answers, and collapsible source citations with relevance scores. Supports loading full file context from source links.
+Streaming uses WebSockets (`/ws/ask`) with JSONL events. In production (for example Railway), ensure `websockets` is installed in the runtime environment.
 
 ### API
 
