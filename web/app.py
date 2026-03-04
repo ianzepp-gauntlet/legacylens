@@ -12,26 +12,11 @@ from fastapi.templating import Jinja2Templates
 
 load_dotenv()
 
-LAYER_2_CACHE = os.environ.get("LAYER_2_CACHE", "true").lower() == "true"
-
 app = FastAPI(title="LegacyLens", description="Query legacy COBOL codebases")
 static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
-
-# In-memory LLM answer cache, keyed by request settings that can change RAG context.
-_ask_cache: dict[tuple[str, str, int, str | None], dict] = {}
-
-
-def _make_ask_cache_key(
-    question: str,
-    model: str,
-    top_k: int,
-    file_type: str | None,
-) -> tuple[str, str, int, str | None]:
-    """Build a stable L2 cache key for answer requests."""
-    return (question, model, int(top_k), file_type)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -46,30 +31,15 @@ async def api_ask(request: Request):
     top_k = body.get("top_k", 10)
     file_type = body.get("file_type") or None
     model = body.get("model") or None
-    use_l2 = body.get("l2_cache", LAYER_2_CACHE)
 
     if not question.strip():
         return {"error": "Question is required"}
-
-    # Check LLM answer cache (keyed by question + model)
-    from legacylens.config import settings
-    effective_model = model or settings.chat_model
-    cache_key = _make_ask_cache_key(question, effective_model, top_k, file_type)
-    if use_l2 and cache_key in _ask_cache and not file_type:
-        cached = _ask_cache[cache_key]
-        cached_stats = dict(cached.get("stats", {}))
-        cached_stats["l2_cached"] = True
-        return {**cached, "stats": cached_stats}
 
     from legacylens.chain import ask
     try:
         result = await asyncio.to_thread(ask, question, top_k, file_type, model)
     except Exception as exc:
         return {"error": str(exc), "sources": []}
-
-    # Cache the LLM answer for future requests
-    if use_l2 and not file_type:
-        _ask_cache[cache_key] = result
 
     return result
 
@@ -81,30 +51,11 @@ async def api_ask_stream(request: Request):
     top_k = body.get("top_k", 10)
     file_type = body.get("file_type") or None
     model = body.get("model") or None
-    use_l2 = body.get("l2_cache", LAYER_2_CACHE)
 
     if not question.strip():
         async def error_stream():
             yield f"event: error\ndata: {json.dumps('Question is required')}\n\n"
         return StreamingResponse(error_stream(), media_type="text/event-stream")
-
-    from legacylens.config import settings
-    effective_model = model or settings.chat_model
-    cache_key = _make_ask_cache_key(question, effective_model, top_k, file_type)
-
-    # Check Layer 2 cache — stream cached answer as single chunk
-    if use_l2 and cache_key in _ask_cache and not file_type:
-        cached = _ask_cache[cache_key]
-
-        async def cached_stream():
-            yield f"data: {json.dumps(cached['answer'])}\n\n"
-            yield f"event: sources\ndata: {json.dumps(cached['sources'])}\n\n"
-            cached_stats = cached.get('stats', {})
-            cached_stats['l2_cached'] = True
-            yield f"event: stats\ndata: {json.dumps(cached_stats)}\n\n"
-            yield "event: done\ndata: \n\n"
-
-        return StreamingResponse(cached_stream(), media_type="text/event-stream")
 
     # Stream from LLM
     from legacylens.chain import ask_stream
@@ -120,7 +71,6 @@ async def api_ask_stream(request: Request):
         return next(gen, _sentinel)
 
     async def event_stream():
-        full_answer = []
         sources = []
         stats = {}
         try:
@@ -132,7 +82,6 @@ async def api_ask_stream(request: Request):
                     break
                 typ, data = result
                 if typ == "token":
-                    full_answer.append(data)
                     yield f"data: {json.dumps(data)}\n\n"
                 elif typ == "sources":
                     sources = data
@@ -146,10 +95,6 @@ async def api_ask_stream(request: Request):
         yield f"event: sources\ndata: {json.dumps(sources)}\n\n"
         yield f"event: stats\ndata: {json.dumps(stats)}\n\n"
         yield "event: done\ndata: \n\n"
-
-        # Cache the complete answer
-        if use_l2 and not file_type:
-            _ask_cache[cache_key] = {"answer": "".join(full_answer), "sources": sources, "stats": stats}
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
 
@@ -186,14 +131,6 @@ async def api_search(request: Request):
             }
             for r in results
         ]
-    }
-
-
-@app.get("/api/cache-status")
-async def cache_status():
-    return {
-        "layer_2_enabled": LAYER_2_CACHE,
-        "cached_answers": len(_ask_cache),
     }
 
 

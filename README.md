@@ -82,7 +82,6 @@ cp .env.example .env
 | `CARDDEMO_PATH` | For ingestion | Path to CardDemo `app/` directory |
 | `USE_OLLAMA` | No | Set `true` to use Ollama for local embeddings |
 | `LAYER_1_CACHE` | No | Enable search result cache (default: `true`) |
-| `LAYER_2_CACHE` | No | Enable LLM answer cache (default: `true`) |
 
 ## Usage
 
@@ -141,9 +140,7 @@ curl -X POST http://localhost:8000/api/file \
   -d '{"file_path": "/path/to/COCRDUPC.cbl"}'
 ```
 
-Both `/api/ask` and `/api/ask/stream` accept the same request body (`question`, `top_k`, `file_type`, `model`, `l1_cache`, `l2_cache`). The non-streaming endpoint returns JSON `{"answer": "...", "sources": [...]}`. The streaming endpoint returns SSE with `data:` lines for answer tokens, an `event: sources` with the sources JSON, and `event: done` to signal completion. Cached answers stream as a single chunk (instant). The web UI uses the streaming endpoint by default.
-
-The optional `l1_cache` and `l2_cache` boolean fields override the server-side cache settings for that request. When omitted, the server defaults (`LAYER_1_CACHE`/`LAYER_2_CACHE` env vars) apply.
+Both `/api/ask` and `/api/ask/stream` accept the same request body (`question`, `top_k`, `file_type`, `model`). The non-streaming endpoint returns JSON `{"answer": "...", "sources": [...]}`. The streaming endpoint returns SSE with `data:` lines for answer tokens, an `event: sources` with the sources JSON, and `event: done` to signal completion. The web UI uses the streaming endpoint by default.
 
 ## Testing
 
@@ -155,11 +152,11 @@ CARDDEMO_PATH=/path/to/carddemo/app pytest tests/ -v
 CARDDEMO_PATH=/path/to/carddemo/app LEGACYLENS_RUN_LIVE_TESTS=1 pytest tests/ -v
 ```
 
-146 tests covering parser, chunker, ingestion, vector store, chain formatting, live retrieval quality, and benchmark infrastructure.
+Tests cover parser, chunker, ingestion, vector store, chain formatting, live retrieval quality, and benchmark infrastructure.
 
 ## Caching
 
-A two-layer cache eliminates redundant API calls for the 209 pre-defined suggestion queries that users can click in the UI.
+Caching eliminates redundant API calls for the 209 pre-defined suggestion queries that users can click in the UI.
 
 ### Layer 1: Search Results (pre-computed, persistent)
 
@@ -170,40 +167,21 @@ All 209 suggestion queries are pre-run against Pinecone and saved as `web/cache/
 python scripts/warmup_cache.py
 ```
 
-### Layer 2: LLM Answers (in-memory, per-model)
-
-LLM responses are cached in-memory keyed by `(question, model)`. The first time a question is asked with a given model, the LLM runs live and the result is cached. Subsequent identical requests return instantly. Switching models (e.g., GPT-4o-mini → GPT-4o) creates separate cache entries, so you can compare model responses without re-running previously seen ones.
-
-The LLM cache resets on app restart (it is not persisted to disk).
-
 ### Cache Controls
 
-Both layers are enabled by default. They can be controlled in two ways:
-
-**UI toggles:** The web interface has L1 Cache and L2 Cache toggle switches in the config row. These are per-request overrides — toggling off skips cache reads and writes for that query without affecting previously cached entries.
-
-**Environment variables:** Disable at the server level (affects all requests unless overridden per-request):
+Layer 1 can be disabled at the server level:
 
 ```bash
 LAYER_1_CACHE=false uvicorn web.app:app  # skip search cache, always hit Pinecone
-LAYER_2_CACHE=false uvicorn web.app:app  # skip LLM cache, always run the model
-```
-
-Cache status is available at `GET /api/cache-status`:
-```json
-{"layer_1_enabled": true, "layer_2_enabled": true, "cached_queries": 209, "cached_answers": 12}
 ```
 
 ### Cache Behavior by Request Type
 
-| Request | Layer 1 (search) | Layer 2 (LLM) | Latency |
-|---|---|---|---|
-| Suggestion click (search only) | Hit | — | ~0ms |
-| Suggestion click (ask, first time) | Hit | Miss → cached | ~3s (LLM only) |
-| Suggestion click (ask, repeat) | Hit | Hit | ~0ms |
-| Same question, different model | Hit | Miss → cached | ~3s (LLM only) |
-| Custom query (not in suggestions) | Miss | Miss → cached | ~3-5s (full pipeline) |
-| Any query with file_type filter | Bypass | Bypass | ~3-5s (full pipeline) |
+| Request | Layer 1 (search) | Latency |
+|---|---|---|
+| Suggestion click (search only) | Hit | ~0ms |
+| Any ask query | Hit or Miss (depends on suggestion match) | ~3-5s |
+| Any query with file_type filter | Bypass | ~3-5s (full pipeline) |
 
 ## Benchmarking
 

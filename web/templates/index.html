@@ -460,9 +460,6 @@
         .perf-bar .perf-value {
             color: var(--accent-green);
         }
-        .perf-bar .perf-cached {
-            color: var(--border-accent);
-        }
 
         .answer-label {
             position: absolute;
@@ -798,13 +795,6 @@
                         <option value="15">15</option>
                         <option value="20">20</option>
                     </select>
-                </div>
-                <div class="config-group">
-                    <label class="config-label">L2 Cache</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="cfg-l2cache" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
                 </div>
                 <div class="config-group">
                     <label class="config-label">Stream</label>
@@ -1156,9 +1146,6 @@
             if (stats.model) {
                 items.push('<span class="perf-item"><span class="perf-label">Model</span><span class="perf-value">' + escapeHtml(stats.model) + '</span></span>');
             }
-            if (stats.l2_cached) {
-                items.push('<span class="perf-item"><span class="perf-cached">L2 CACHED</span></span>');
-            }
             bar.innerHTML = items.join('');
             bar.classList.add('visible');
         }
@@ -1214,7 +1201,6 @@
             const fileType = document.getElementById('cfg-filetype').value;
             const topK = parseInt(document.getElementById('cfg-topk').value, 10);
             const model = document.getElementById('cfg-model').value;
-            const l2Cache = document.getElementById('cfg-l2cache').checked;
             const useStream = document.getElementById('cfg-stream').checked;
 
             const btn = document.getElementById('btn-submit');
@@ -1230,7 +1216,6 @@
                 file_type: fileType || null,
                 top_k: topK,
                 model: model,
-                l2_cache: l2Cache,
             };
 
             try {
