@@ -145,15 +145,17 @@ async def api_ask(request: Request):
     from legacylens.models import QueryResult
     try:
         cached = _get_cached_results(question, top_k, file_type) if use_l1 else None
+        ask_kwargs = {
+            "top_k": top_k,
+            "file_type": file_type,
+            "model": model,
+            "verbosity": verbosity,
+        }
         if cached is not None:
-            results = [QueryResult(**r) for r in cached]
-            result = await asyncio.to_thread(
-                ask, question, top_k, file_type, model, results, verbosity=verbosity
-            )
+            ask_kwargs["results"] = [QueryResult(**r) for r in cached]
+            result = await asyncio.to_thread(ask, question, **ask_kwargs)
         else:
-            result = await asyncio.to_thread(
-                ask, question, top_k, file_type, model, verbosity=verbosity
-            )
+            result = await asyncio.to_thread(ask, question, **ask_kwargs)
     except Exception as exc:
         return {"error": str(exc), "sources": []}
 
