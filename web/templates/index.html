@@ -800,13 +800,6 @@
                     </select>
                 </div>
                 <div class="config-group">
-                    <label class="config-label">L1 Cache</label>
-                    <label class="toggle-switch">
-                        <input type="checkbox" id="cfg-l1cache" checked>
-                        <span class="toggle-slider"></span>
-                    </label>
-                </div>
-                <div class="config-group">
                     <label class="config-label">L2 Cache</label>
                     <label class="toggle-switch">
                         <input type="checkbox" id="cfg-l2cache" checked>
@@ -1221,7 +1214,6 @@
             const fileType = document.getElementById('cfg-filetype').value;
             const topK = parseInt(document.getElementById('cfg-topk').value, 10);
             const model = document.getElementById('cfg-model').value;
-            const l1Cache = document.getElementById('cfg-l1cache').checked;
             const l2Cache = document.getElementById('cfg-l2cache').checked;
             const useStream = document.getElementById('cfg-stream').checked;
 
@@ -1238,7 +1230,6 @@
                 file_type: fileType || null,
                 top_k: topK,
                 model: model,
-                l1_cache: l1Cache,
                 l2_cache: l2Cache,
             };
 
@@ -1258,54 +1249,72 @@
                     const decoder = new TextDecoder();
                     let answerText = '';
                     let buffer = '';
-                    let sourcesEvent = false;
 
                     document.getElementById('answer-content').innerHTML = '<span class="stream-cursor">Thinking\u2026</span>';
                     document.getElementById('answer-box').style.display = 'block';
                     document.getElementById('loading').style.display = 'none';
 
-                    let pendingEvent = null;
+                    function processSseBlock(block) {
+                        const cleaned = block.replace(/\r/g, '');
+                        if (!cleaned.trim()) return;
+
+                        let eventName = 'message';
+                        const dataLines = [];
+                        const lines = cleaned.split('\n');
+                        for (const line of lines) {
+                            if (line.startsWith('event:')) {
+                                eventName = line.slice(6).trim();
+                            } else if (line.startsWith('data:')) {
+                                dataLines.push(line.slice(5).trimStart());
+                            }
+                        }
+                        const raw = dataLines.join('\n');
+
+                        if (eventName === 'done') return;
+                        if (eventName === 'error') {
+                            try { answerText = 'Error: ' + JSON.parse(raw); } catch (_) { answerText = 'Error: ' + raw; }
+                            document.getElementById('answer-content').textContent = answerText;
+                            return;
+                        }
+                        if (eventName === 'sources') {
+                            try {
+                                const parsed = JSON.parse(raw);
+                                renderSources(Array.isArray(parsed) ? parsed : []);
+                            } catch (_) {
+                                renderSources([]);
+                            }
+                            return;
+                        }
+                        if (eventName === 'stats') {
+                            try { renderPerfBar(JSON.parse(raw)); } catch (_) {}
+                            return;
+                        }
+
+                        try {
+                            const token = JSON.parse(raw);
+                            answerText += token;
+                        } catch (_) {
+                            answerText += raw;
+                        }
+                        document.getElementById('answer-content').innerHTML = marked.parse(answerText);
+                    }
+
                     while (true) {
                         const { done, value } = await reader.read();
                         if (done) break;
                         buffer += decoder.decode(value, { stream: true });
 
-                        const lines = buffer.split('\n');
-                        buffer = lines.pop();
-
-                        for (const line of lines) {
-                            if (line.startsWith('event: ')) {
-                                pendingEvent = line.slice(7).trim();
-                            } else if (line.startsWith('data: ')) {
-                                const raw = line.slice(6);
-                                if (pendingEvent === 'done') {
-                                    pendingEvent = null;
-                                    continue;
-                                }
-                                if (pendingEvent === 'error') {
-                                    try { answerText = 'Error: ' + JSON.parse(raw); } catch(_) { answerText = 'Error: ' + raw; }
-                                    document.getElementById('answer-content').textContent = answerText;
-                                    pendingEvent = null;
-                                    continue;
-                                }
-                                if (pendingEvent === 'sources') {
-                                    try { renderSources(JSON.parse(raw)); } catch(_) {}
-                                    pendingEvent = null;
-                                    continue;
-                                }
-                                if (pendingEvent === 'stats') {
-                                    try { renderPerfBar(JSON.parse(raw)); } catch(_) {}
-                                    pendingEvent = null;
-                                    continue;
-                                }
-                                pendingEvent = null;
-                                try {
-                                    const token = JSON.parse(raw);
-                                    answerText += token;
-                                    document.getElementById('answer-content').innerHTML = marked.parse(answerText);
-                                } catch(_) {}
-                            }
+                        let sep = buffer.indexOf('\n\n');
+                        while (sep !== -1) {
+                            const block = buffer.slice(0, sep);
+                            buffer = buffer.slice(sep + 2);
+                            processSseBlock(block);
+                            sep = buffer.indexOf('\n\n');
                         }
+                    }
+
+                    if (buffer.trim()) {
+                        processSseBlock(buffer);
                     }
                 } else {
                     const resp = await fetch('/api/ask', {
