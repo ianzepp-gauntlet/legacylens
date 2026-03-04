@@ -1318,6 +1318,8 @@
                 let settled = false;
                 let answerText = '';
                 let streamedSources = [];
+                let sawAnyEvent = false;
+                let sawDoneEvent = false;
 
                 function finish(ok, err) {
                     if (settled) return;
@@ -1339,6 +1341,7 @@
 
                 ws.onmessage = function(event) {
                     processWsJsonlFrame(event.data, function(msg) {
+                        sawAnyEvent = true;
                         const typ = msg.type || 'error';
                         const data = msg.data;
 
@@ -1373,7 +1376,7 @@
                             return;
                         }
                         if (typ === 'done') {
-                            ws.close();
+                            sawDoneEvent = true;
                             finish(true);
                         }
                     });
@@ -1384,8 +1387,16 @@
                     finish(false, new Error('WebSocket connection error'));
                 };
 
-                ws.onclose = function() {
-                    appendWsLog('state', 'close');
+                ws.onclose = function(event) {
+                    appendWsLog('state', 'close code=' + event.code + ' reason=' + (event.reason || ''));
+                    if (sawDoneEvent) {
+                        finish(true);
+                        return;
+                    }
+                    if (sawAnyEvent && (event.code === 1000 || event.code === 1001)) {
+                        finish(true);
+                        return;
+                    }
                     if (!settled) {
                         finish(false, new Error('WebSocket closed unexpectedly'));
                     }
