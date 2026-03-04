@@ -145,6 +145,32 @@
             margin-bottom: 1.25rem;
         }
 
+        .ws-agg-bar {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem 0.85rem;
+            align-items: center;
+            margin-bottom: 0.55rem;
+            padding: 0.45rem 0.6rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 4px;
+            font-family: var(--font-display);
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .ws-agg-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .ws-agg-label { color: var(--text-label); }
+        .ws-agg-value { color: var(--text-primary); }
+
         .search-input {
             flex: 1;
             background: var(--bg-panel);
@@ -817,6 +843,13 @@
 
         <!-- Search -->
         <form id="query-form" onsubmit="return handleSubmit(event)">
+            <div class="ws-agg-bar" id="ws-agg-bar">
+                <span class="ws-agg-item"><span class="ws-agg-label">WS Queries</span><span class="ws-agg-value" id="wsq-count">0</span></span>
+                <span class="ws-agg-item"><span class="ws-agg-label">Min</span><span class="ws-agg-value" id="wsq-min">n/a</span></span>
+                <span class="ws-agg-item"><span class="ws-agg-label">Max</span><span class="ws-agg-value" id="wsq-max">n/a</span></span>
+                <span class="ws-agg-item"><span class="ws-agg-label">P50</span><span class="ws-agg-value" id="wsq-p50">n/a</span></span>
+                <span class="ws-agg-item"><span class="ws-agg-label">P95</span><span class="ws-agg-value" id="wsq-p95">n/a</span></span>
+            </div>
             <div class="search-row">
                 <button type="button" class="btn-suggest" onclick="toggleSuggestions()">Suggest</button>
                 <input
@@ -958,6 +991,46 @@
         marked.setOptions({ breaks: true });
         const MAX_WS_LOG_LINES = 2000;
         let wsLogSeq = 0;
+        const wsAgg = { queryCount: 0, totals: [] };
+
+        function percentile(values, p) {
+            if (!values || values.length === 0) return null;
+            const sorted = values.slice().sort((a, b) => a - b);
+            if (sorted.length === 1) return sorted[0];
+            const idx = (p / 100) * (sorted.length - 1);
+            const lo = Math.floor(idx);
+            const hi = Math.ceil(idx);
+            if (lo === hi) return sorted[lo];
+            const frac = idx - lo;
+            return sorted[lo] + (sorted[hi] - sorted[lo]) * frac;
+        }
+
+        function fmtSecs(v) {
+            return (typeof v === 'number' && Number.isFinite(v)) ? (v.toFixed(2) + 's') : 'n/a';
+        }
+
+        function renderWsAggBar() {
+            const totals = wsAgg.totals;
+            const min = totals.length ? Math.min.apply(null, totals) : null;
+            const max = totals.length ? Math.max.apply(null, totals) : null;
+            const p50 = percentile(totals, 50);
+            const p95 = percentile(totals, 95);
+
+            document.getElementById('wsq-count').textContent = String(wsAgg.queryCount);
+            document.getElementById('wsq-min').textContent = fmtSecs(min);
+            document.getElementById('wsq-max').textContent = fmtSecs(max);
+            document.getElementById('wsq-p50').textContent = fmtSecs(p50);
+            document.getElementById('wsq-p95').textContent = fmtSecs(p95);
+        }
+
+        function addAggSample(totalS) {
+            wsAgg.queryCount += 1;
+            if (typeof totalS === 'number' && Number.isFinite(totalS)) {
+                wsAgg.totals.push(totalS);
+            }
+            renderWsAggBar();
+        }
+        renderWsAggBar();
 
         const SUGGESTIONS = [
             // ── User Management ──
@@ -1407,6 +1480,7 @@
                 let settled = false;
                 let answerText = '';
                 let streamedSources = [];
+                let latestTotalS = null;
                 let sawAnyEvent = false;
                 let sawDoneEvent = false;
                 let sawErrorEvent = false;
@@ -1455,6 +1529,9 @@
                             return;
                         }
                         if (typ === 'stats') {
+                            if (data && typeof data.total_s === 'number') {
+                                latestTotalS = data.total_s;
+                            }
                             renderPerfBar(data || {});
                             return;
                         }
@@ -1468,6 +1545,7 @@
                         }
                         if (typ === 'done') {
                             sawDoneEvent = true;
+                            addAggSample(latestTotalS);
                             try {
                                 const ack = JSON.stringify({ type: 'ack_done' });
                                 appendWsLog('send', ack);
@@ -1567,6 +1645,7 @@
 
                     renderSources(data.sources || []);
                     renderPerfBar(data.stats || {});
+                    addAggSample(data && data.stats ? data.stats.total_s : null);
                     document.getElementById('answer-box').style.display = 'block';
                 }
 
