@@ -2,7 +2,9 @@
 
 import asyncio
 import json
+import logging
 import os
+import threading
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
@@ -17,6 +19,55 @@ static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
+logger = logging.getLogger(__name__)
+
+_warmup_started = False
+_warmup_lock = threading.Lock()
+
+
+def _claim_warmup_slot() -> bool:
+    global _warmup_started
+    with _warmup_lock:
+        if _warmup_started:
+            return False
+        _warmup_started = True
+        return True
+
+
+def _run_llm_warmup():
+    """Warm the chat model with the existing system prompt and a synthetic user message."""
+    from legacylens.chain import ask
+    from legacylens.models import QueryResult
+
+    warmup_result = QueryResult(
+        content="WARMUP-CONTEXT.",
+        file_path="warmup://synthetic",
+        file_name="WARMUP.cbl",
+        file_type="cbl",
+        chunk_type="paragraph",
+        name="WARMUP",
+        start_line=1,
+        end_line=1,
+        score=1.0,
+        preamble="File: WARMUP.cbl\nParagraph: WARMUP (lines 1-1)",
+    )
+
+    try:
+        ask(
+            "Warmup ping. Ignore this request and respond briefly.",
+            top_k=1,
+            results=[warmup_result],
+        )
+    except Exception as exc:
+        # Warmup is opportunistic and should never fail the user request path.
+        logger.debug("LLM warmup skipped/failed: %s", exc)
+
+
+def _trigger_llm_warmup_once():
+    if not _claim_warmup_slot():
+        return
+    loop = asyncio.get_running_loop()
+    loop.create_task(asyncio.to_thread(_run_llm_warmup))
 
 
 async def _send_ws_jsonl_event(websocket: WebSocket, event_type: str, data):
@@ -26,6 +77,7 @@ async def _send_ws_jsonl_event(websocket: WebSocket, event_type: str, data):
 
 @app.get("/", response_class=HTMLResponse)
 async def index(request: Request):
+    _trigger_llm_warmup_once()
     return templates.TemplateResponse("index.html", {"request": request})
 
 
