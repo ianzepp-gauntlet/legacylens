@@ -1,6 +1,7 @@
 """Pinecone vector store operations."""
 
 import hashlib
+from collections.abc import Callable
 
 from pinecone import Pinecone, SearchQuery, ServerlessSpec
 
@@ -12,8 +13,18 @@ METADATA_CONTENT_LIMIT = 10000  # Pinecone 40KB metadata limit
 TEXT_FIELD = "chunk_text"  # field name for Pinecone integrated indexes
 
 
-def _is_pinecone_integrated() -> bool:
-    return settings.embedding_provider == "pinecone"
+def _build_filter_dict(
+    file_type_filter: str | None = None,
+    metadata_filters: dict[str, str] | None = None,
+) -> dict | None:
+    filter_dict: dict[str, dict[str, str]] = {}
+    if file_type_filter:
+        filter_dict["file_type"] = {"$eq": file_type_filter}
+    if metadata_filters:
+        for key, value in metadata_filters.items():
+            if value:
+                filter_dict[key] = {"$eq": value}
+    return filter_dict or None
 
 
 def _is_not_found_error(exc: Exception) -> bool:
@@ -50,40 +61,47 @@ def _chunk_metadata(chunk: CodeChunk) -> dict:
     }
 
 
-def get_index():
+def get_index(
+    *,
+    settings_obj=settings,
+    pinecone_factory: Callable[..., Pinecone] = Pinecone,
+):
     """Get or create the Pinecone index."""
-    pc = Pinecone(api_key=settings.pinecone_api_key)
+    pc = pinecone_factory(api_key=settings_obj.pinecone_api_key)
 
     existing = [idx.name for idx in pc.list_indexes()]
-    if settings.pinecone_index_name not in existing:
-        if _is_pinecone_integrated():
+    if settings_obj.pinecone_index_name not in existing:
+        if settings_obj.embedding_provider == "pinecone":
             pc.create_index_for_model(
-                name=settings.pinecone_index_name,
+                name=settings_obj.pinecone_index_name,
                 cloud="aws",
                 region="us-east-1",
                 embed={
-                    "model": settings.pinecone_model,
+                    "model": settings_obj.pinecone_model,
                     "field_map": {"text": TEXT_FIELD},
                 },
             )
         else:
             pc.create_index(
-                name=settings.pinecone_index_name,
-                dimension=settings.embedding_dimensions,
+                name=settings_obj.pinecone_index_name,
+                dimension=settings_obj.embedding_dimensions,
                 metric="cosine",
                 spec=ServerlessSpec(cloud="aws", region="us-east-1"),
             )
 
-    return pc.Index(settings.pinecone_index_name)
+    return pc.Index(settings_obj.pinecone_index_name)
 
 
 def upsert_chunks(
     chunks: list[CodeChunk],
     embeddings: list[list[float]],
     batch_size: int = 100,
+    *,
+    index=None,
+    settings_obj=settings,
 ) -> int:
     """Upsert chunk embeddings into Pinecone (OpenAI provider)."""
-    index = get_index()
+    active_index = index or get_index(settings_obj=settings_obj)
     total = 0
 
     for i in range(0, len(chunks), batch_size):
@@ -96,7 +114,7 @@ def upsert_chunks(
             metadata = _chunk_metadata(chunk)
             vectors.append({"id": vec_id, "values": embedding, "metadata": metadata})
 
-        index.upsert(vectors=vectors, namespace=settings.pinecone_namespace)
+        active_index.upsert(vectors=vectors, namespace=settings_obj.pinecone_namespace)
         total += len(vectors)
 
     return total
@@ -106,9 +124,12 @@ def upsert_records(
     chunks: list[CodeChunk],
     embed_texts: list[str],
     batch_size: int = 96,
+    *,
+    index=None,
+    settings_obj=settings,
 ) -> int:
     """Upsert records for Pinecone integrated embedding (server-side)."""
-    index = get_index()
+    active_index = index or get_index(settings_obj=settings_obj)
     total = 0
 
     for i in range(0, len(chunks), batch_size):
@@ -122,7 +143,7 @@ def upsert_records(
             record[TEXT_FIELD] = text
             records.append(record)
 
-        index.upsert_records(settings.pinecone_namespace, records)
+        active_index.upsert_records(settings_obj.pinecone_namespace, records)
         total += len(batch_chunks)
 
     return total
@@ -133,25 +154,20 @@ def query_vectors(
     top_k: int | None = None,
     file_type_filter: str | None = None,
     metadata_filters: dict[str, str] | None = None,
+    *,
+    index=None,
+    settings_obj=settings,
 ) -> list[dict]:
     """Query Pinecone for similar vectors (OpenAI provider)."""
-    index = get_index()
-    k = top_k or settings.top_k
+    active_index = index or get_index(settings_obj=settings_obj)
+    k = top_k or settings_obj.top_k
 
-    filter_dict = {}
-    if file_type_filter:
-        filter_dict["file_type"] = {"$eq": file_type_filter}
-    if metadata_filters:
-        for key, value in metadata_filters.items():
-            if value:
-                filter_dict[key] = {"$eq": value}
-
-    results = index.query(
+    results = active_index.query(
         vector=embedding,
         top_k=k,
         include_metadata=True,
-        namespace=settings.pinecone_namespace,
-        filter=filter_dict if filter_dict else None,
+        namespace=settings_obj.pinecone_namespace,
+        filter=_build_filter_dict(file_type_filter, metadata_filters),
     )
 
     return [
@@ -169,25 +185,20 @@ def search_records(
     top_k: int | None = None,
     file_type_filter: str | None = None,
     metadata_filters: dict[str, str] | None = None,
+    *,
+    index=None,
+    settings_obj=settings,
 ) -> list[dict]:
     """Search Pinecone integrated index with text query (server-side embedding)."""
-    index = get_index()
-    k = top_k or settings.top_k
+    active_index = index or get_index(settings_obj=settings_obj)
+    k = top_k or settings_obj.top_k
 
-    filter_dict = {}
-    if file_type_filter:
-        filter_dict["file_type"] = {"$eq": file_type_filter}
-    if metadata_filters:
-        for key, value in metadata_filters.items():
-            if value:
-                filter_dict[key] = {"$eq": value}
-
-    response = index.search_records(
-        namespace=settings.pinecone_namespace,
+    response = active_index.search_records(
+        namespace=settings_obj.pinecone_namespace,
         query=SearchQuery(
             inputs={"text": query},
             top_k=k,
-            filter=filter_dict if filter_dict else None,
+            filter=_build_filter_dict(file_type_filter, metadata_filters),
         ),
     )
 
@@ -201,11 +212,11 @@ def search_records(
     ]
 
 
-def delete_namespace():
+def delete_namespace(*, index=None, settings_obj=settings):
     """Delete all vectors in the namespace."""
-    index = get_index()
+    active_index = index or get_index(settings_obj=settings_obj)
     try:
-        index.delete(delete_all=True, namespace=settings.pinecone_namespace)
+        active_index.delete(delete_all=True, namespace=settings_obj.pinecone_namespace)
     except Exception as exc:
         if not _is_not_found_error(exc):
             raise

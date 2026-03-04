@@ -1,8 +1,30 @@
 """Query embedding and Pinecone search."""
 
+from collections.abc import Callable
+from dataclasses import dataclass
+
 from .config import settings
 from .models import QueryResult
 from .vectorstore import query_vectors, search_records
+
+
+@dataclass(frozen=True)
+class RetrieverDependencies:
+    """Dependency bundle for retrieval execution."""
+
+    search_records_fn: Callable[..., list[dict]]
+    query_vectors_fn: Callable[..., list[dict]]
+    get_query_embedding_fn: Callable[[str], list[float]]
+
+
+def _default_dependencies() -> RetrieverDependencies:
+    from .embeddings import get_query_embedding
+
+    return RetrieverDependencies(
+        search_records_fn=search_records,
+        query_vectors_fn=query_vectors,
+        get_query_embedding_fn=get_query_embedding,
+    )
 
 
 def _parse_result(r: dict) -> QueryResult:
@@ -26,29 +48,49 @@ def _parse_result(r: dict) -> QueryResult:
     )
 
 
-def retrieve(
+def _run_retrieval(
     query: str,
-    top_k: int | None = None,
-    file_type: str | None = None,
-    metadata_filters: dict[str, str] | None = None,
-) -> list[QueryResult]:
-    """Embed a query and retrieve matching code chunks."""
-    if settings.embedding_provider == "pinecone":
-        raw_results = search_records(
+    *,
+    top_k: int | None,
+    file_type: str | None,
+    metadata_filters: dict[str, str] | None,
+    embedding_provider: str,
+    deps: RetrieverDependencies,
+) -> list[dict]:
+    if embedding_provider == "pinecone":
+        return deps.search_records_fn(
             query,
             top_k=top_k,
             file_type_filter=file_type,
             metadata_filters=metadata_filters,
         )
-    else:
-        from .embeddings import get_query_embedding
 
-        embedding = get_query_embedding(query)
-        raw_results = query_vectors(
-            embedding,
-            top_k=top_k,
-            file_type_filter=file_type,
-            metadata_filters=metadata_filters,
-        )
+    embedding = deps.get_query_embedding_fn(query)
+    return deps.query_vectors_fn(
+        embedding,
+        top_k=top_k,
+        file_type_filter=file_type,
+        metadata_filters=metadata_filters,
+    )
+
+
+def retrieve(
+    query: str,
+    top_k: int | None = None,
+    file_type: str | None = None,
+    metadata_filters: dict[str, str] | None = None,
+    *,
+    embedding_provider: str | None = None,
+    deps: RetrieverDependencies | None = None,
+) -> list[QueryResult]:
+    """Embed a query and retrieve matching code chunks."""
+    raw_results = _run_retrieval(
+        query,
+        top_k=top_k,
+        file_type=file_type,
+        metadata_filters=metadata_filters,
+        embedding_provider=embedding_provider or settings.embedding_provider,
+        deps=deps or _default_dependencies(),
+    )
 
     return [_parse_result(r) for r in raw_results]

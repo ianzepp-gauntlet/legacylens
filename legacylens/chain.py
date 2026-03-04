@@ -1,7 +1,8 @@
 """LangChain RAG chain for answering questions about COBOL code."""
 
-import os
 import time
+from collections.abc import Callable
+from dataclasses import dataclass
 
 import tiktoken
 from langchain_core.output_parsers import StrOutputParser
@@ -42,6 +43,25 @@ Retrieved context:
 """
 
 USER_PROMPT = "{question}"
+
+
+@dataclass(frozen=True)
+class ChainDependencies:
+    """Dependency bundle for ask/ask_stream execution."""
+
+    retrieve_fn: Callable[..., list]
+    build_llm_fn: Callable[[str, bool], ChatOpenAI]
+    count_tokens_fn: Callable[[str], int]
+    clock_fn: Callable[[], float]
+
+
+def _default_dependencies() -> ChainDependencies:
+    return ChainDependencies(
+        retrieve_fn=retrieve,
+        build_llm_fn=_build_llm,
+        count_tokens_fn=_count_tokens,
+        clock_fn=time.perf_counter,
+    )
 
 
 def _format_context(results: list) -> str:
@@ -97,12 +117,92 @@ def _serialize_source(result) -> dict:
     }
 
 
+def _build_prompt() -> ChatPromptTemplate:
+    return ChatPromptTemplate.from_messages([
+        ("system", SYSTEM_PROMPT),
+        ("human", USER_PROMPT),
+    ])
+
+
+def _resolve_results(
+    question: str,
+    *,
+    top_k: int | None,
+    file_type: str | None,
+    results: list | None,
+    retrieve_fn: Callable[..., list],
+) -> tuple[list, bool]:
+    if results is not None:
+        return results, True
+    return retrieve_fn(question, top_k=top_k, file_type=file_type), False
+
+
+def _prepare_common(
+    question: str,
+    *,
+    top_k: int | None,
+    file_type: str | None,
+    model: str | None,
+    results: list | None,
+    deps: ChainDependencies,
+) -> dict:
+    t_start = deps.clock_fn()
+    resolved_results, rag_cached = _resolve_results(
+        question,
+        top_k=top_k,
+        file_type=file_type,
+        results=results,
+        retrieve_fn=deps.retrieve_fn,
+    )
+    t_rag = deps.clock_fn()
+    context = _format_context(resolved_results)
+    effective_model = model or settings.chat_model
+    input_text = SYSTEM_PROMPT.replace("{context}", context) + question
+    tokens_in = deps.count_tokens_fn(input_text)
+    return {
+        "t_start": t_start,
+        "t_rag": t_rag,
+        "context": context,
+        "effective_model": effective_model,
+        "tokens_in": tokens_in,
+        "results": resolved_results,
+        "rag_cached": rag_cached,
+    }
+
+
+def _build_stats(
+    *,
+    t_start: float,
+    t_rag: float,
+    t_llm_first: float,
+    t_llm_end: float,
+    tokens_in: int,
+    tokens_out: int,
+    chunk_count: int,
+    model: str,
+    rag_cached: bool,
+) -> dict:
+    return {
+        "rag_s": round(t_rag - t_start, 3),
+        "llm_first_token_s": round(t_llm_first - t_rag, 3),
+        "llm_total_s": round(t_llm_end - t_rag, 3),
+        "total_s": round(t_llm_end - t_start, 3),
+        "tokens_in": tokens_in,
+        "tokens_out": tokens_out,
+        "chunks": chunk_count,
+        "model": model,
+        "rag_cached": rag_cached,
+    }
+
+
 def ask_stream(
     question: str,
     top_k: int | None = None,
     file_type: str | None = None,
     model: str | None = None,
     results: list | None = None,
+    *,
+    deps: ChainDependencies | None = None,
 ):
     """Stream answer tokens, then yield sources.
 
@@ -110,51 +210,44 @@ def ask_stream(
       ("token", str)   — an answer chunk
       ("sources", list) — serialized sources list (final item)
     """
-    t_start = time.perf_counter()
-    rag_cached = results is not None
-    if results is None:
-        results = retrieve(question, top_k=top_k, file_type=file_type)
-    t_rag = time.perf_counter()
-    context = _format_context(results)
+    active_deps = deps or _default_dependencies()
+    shared = _prepare_common(
+        question,
+        top_k=top_k,
+        file_type=file_type,
+        model=model,
+        results=results,
+        deps=active_deps,
+    )
+    llm = active_deps.build_llm_fn(shared["effective_model"], True)
+    chain = _build_prompt() | llm | StrOutputParser()
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", SYSTEM_PROMPT),
-        ("human", USER_PROMPT),
-    ])
-
-    effective_model = model or settings.chat_model
-    input_text = SYSTEM_PROMPT.replace("{context}", context) + question
-    tokens_in = _count_tokens(input_text)
-
-    llm = _build_llm(effective_model, streaming=True)
-
-    chain = prompt | llm | StrOutputParser()
     answer_chunks = []
     t_llm_first = None
-    for chunk in chain.stream({"context": context, "question": question}):
+    for chunk in chain.stream({"context": shared["context"], "question": question}):
         if t_llm_first is None:
-            t_llm_first = time.perf_counter()
+            t_llm_first = active_deps.clock_fn()
         answer_chunks.append(chunk)
         yield ("token", chunk)
-    t_llm = time.perf_counter()
+    t_llm = active_deps.clock_fn()
     if t_llm_first is None:
         t_llm_first = t_llm
 
     answer_text = "".join(answer_chunks)
-    tokens_out = _count_tokens(answer_text)
+    tokens_out = active_deps.count_tokens_fn(answer_text)
 
-    yield ("sources", [_serialize_source(r) for r in results])
-    yield ("stats", {
-        "rag_s": round(t_rag - t_start, 3),
-        "llm_first_token_s": round(t_llm_first - t_rag, 3),
-        "llm_total_s": round(t_llm - t_rag, 3),
-        "total_s": round(t_llm - t_start, 3),
-        "tokens_in": tokens_in,
-        "tokens_out": tokens_out,
-        "chunks": len(results),
-        "model": effective_model,
-        "rag_cached": rag_cached,
-    })
+    yield ("sources", [_serialize_source(r) for r in shared["results"]])
+    yield ("stats", _build_stats(
+        t_start=shared["t_start"],
+        t_rag=shared["t_rag"],
+        t_llm_first=t_llm_first,
+        t_llm_end=t_llm,
+        tokens_in=shared["tokens_in"],
+        tokens_out=tokens_out,
+        chunk_count=len(shared["results"]),
+        model=shared["effective_model"],
+        rag_cached=shared["rag_cached"],
+    ))
 
 
 def ask(
@@ -163,44 +256,38 @@ def ask(
     file_type: str | None = None,
     model: str | None = None,
     results: list | None = None,
+    *,
+    deps: ChainDependencies | None = None,
 ) -> dict:
     """Ask a question about the codebase and get an answer with sources."""
-    t_start = time.perf_counter()
-    rag_cached = results is not None
-    if results is None:
-        results = retrieve(question, top_k=top_k, file_type=file_type)
-    t_rag = time.perf_counter()
-    context = _format_context(results)
+    active_deps = deps or _default_dependencies()
+    shared = _prepare_common(
+        question,
+        top_k=top_k,
+        file_type=file_type,
+        model=model,
+        results=results,
+        deps=active_deps,
+    )
+    llm = active_deps.build_llm_fn(shared["effective_model"], False)
+    chain = _build_prompt() | llm | StrOutputParser()
 
-    prompt = ChatPromptTemplate.from_messages([
-        ("system", SYSTEM_PROMPT),
-        ("human", USER_PROMPT),
-    ])
-
-    effective_model = model or settings.chat_model
-    input_text = SYSTEM_PROMPT.replace("{context}", context) + question
-    tokens_in = _count_tokens(input_text)
-
-    llm = _build_llm(effective_model)
-
-    chain = prompt | llm | StrOutputParser()
-    answer = chain.invoke({"context": context, "question": question})
-    t_llm = time.perf_counter()
-
-    tokens_out = _count_tokens(answer)
+    answer = chain.invoke({"context": shared["context"], "question": question})
+    t_llm = active_deps.clock_fn()
+    tokens_out = active_deps.count_tokens_fn(answer)
 
     return {
         "answer": answer,
-        "sources": [_serialize_source(r) for r in results],
-        "stats": {
-            "rag_s": round(t_rag - t_start, 3),
-            "llm_first_token_s": round(t_llm - t_rag, 3),
-            "llm_total_s": round(t_llm - t_rag, 3),
-            "total_s": round(t_llm - t_start, 3),
-            "tokens_in": tokens_in,
-            "tokens_out": tokens_out,
-            "chunks": len(results),
-            "model": effective_model,
-            "rag_cached": rag_cached,
-        },
+        "sources": [_serialize_source(r) for r in shared["results"]],
+        "stats": _build_stats(
+            t_start=shared["t_start"],
+            t_rag=shared["t_rag"],
+            t_llm_first=t_llm,
+            t_llm_end=t_llm,
+            tokens_in=shared["tokens_in"],
+            tokens_out=tokens_out,
+            chunk_count=len(shared["results"]),
+            model=shared["effective_model"],
+            rag_cached=shared["rag_cached"],
+        ),
     }
