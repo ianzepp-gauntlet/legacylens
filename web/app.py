@@ -5,7 +5,7 @@ import json
 import os
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -17,6 +17,11 @@ static_dir = os.path.join(os.path.dirname(__file__), "static")
 if os.path.isdir(static_dir):
     app.mount("/static", StaticFiles(directory=static_dir), name="static")
 templates = Jinja2Templates(directory=os.path.join(os.path.dirname(__file__), "templates"))
+
+
+async def _send_ws_jsonl_event(websocket: WebSocket, event_type: str, data):
+    payload = {"type": event_type, "data": data}
+    await websocket.send_text(json.dumps(payload) + "\n")
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -97,6 +102,68 @@ async def api_ask_stream(request: Request):
         yield "event: done\ndata: \n\n"
 
     return StreamingResponse(event_stream(), media_type="text/event-stream")
+
+
+@app.websocket("/ws/ask")
+async def ws_ask(websocket: WebSocket):
+    await websocket.accept()
+
+    try:
+        body = await websocket.receive_json()
+    except Exception:
+        await _send_ws_jsonl_event(websocket, "error", "Invalid JSON payload")
+        await _send_ws_jsonl_event(websocket, "done", None)
+        await websocket.close()
+        return
+
+    question = body.get("question", "")
+    top_k = body.get("top_k", 10)
+    file_type = body.get("file_type") or None
+    model = body.get("model") or None
+
+    if not question.strip():
+        await _send_ws_jsonl_event(websocket, "error", "Question is required")
+        await _send_ws_jsonl_event(websocket, "done", None)
+        await websocket.close()
+        return
+
+    from legacylens.chain import ask_stream
+
+    _sentinel = object()
+
+    def _next_chunk(gen):
+        return next(gen, _sentinel)
+
+    try:
+        gen = ask_stream(question, top_k=top_k, file_type=file_type, model=model)
+
+        while True:
+            result = await asyncio.to_thread(_next_chunk, gen)
+            if result is _sentinel:
+                break
+
+            typ, data = result
+            if typ == "token":
+                await _send_ws_jsonl_event(websocket, "token", data)
+            elif typ == "sources":
+                await _send_ws_jsonl_event(websocket, "sources", data)
+            elif typ == "stats":
+                await _send_ws_jsonl_event(websocket, "stats", data)
+
+        await _send_ws_jsonl_event(websocket, "done", None)
+    except WebSocketDisconnect:
+        return
+    except Exception as exc:
+        try:
+            await _send_ws_jsonl_event(websocket, "error", str(exc))
+            await _send_ws_jsonl_event(websocket, "done", None)
+        except Exception:
+            pass
+    finally:
+        try:
+            await websocket.close()
+        except Exception:
+            pass
 
 
 @app.post("/api/search")

@@ -207,8 +207,8 @@ def ask_stream(
     """Stream answer tokens, then yield sources.
 
     Yields (type, data) tuples:
+      ("sources", list) — serialized sources list (first item)
       ("token", str)   — an answer chunk
-      ("sources", list) — serialized sources list (final item)
     """
     active_deps = deps or _default_dependencies()
     shared = _prepare_common(
@@ -219,6 +219,8 @@ def ask_stream(
         results=results,
         deps=active_deps,
     )
+    yield ("sources", [_serialize_source(r) for r in shared["results"]])
+
     llm = active_deps.build_llm_fn(shared["effective_model"], True)
     chain = _build_prompt() | llm | StrOutputParser()
 
@@ -236,7 +238,6 @@ def ask_stream(
     answer_text = "".join(answer_chunks)
     tokens_out = active_deps.count_tokens_fn(answer_text)
 
-    yield ("sources", [_serialize_source(r) for r in shared["results"]])
     yield ("stats", _build_stats(
         t_start=shared["t_start"],
         t_rag=shared["t_rag"],

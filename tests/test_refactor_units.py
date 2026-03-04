@@ -83,9 +83,9 @@ class TestChainDependencySeams:
         )
 
         events = list(ask_stream("what", results=[_sample_result()], deps=deps))
-        assert events[0] == ("token", "A")
-        assert events[1] == ("token", "B")
-        assert events[2][0] == "sources"
+        assert events[0][0] == "sources"
+        assert events[1] == ("token", "A")
+        assert events[2] == ("token", "B")
         assert events[3][0] == "stats"
         assert events[3][1]["rag_cached"] is True
 

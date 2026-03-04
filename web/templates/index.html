@@ -1193,6 +1193,90 @@
             document.getElementById('sources-section').classList.remove('collapsed');
         }
 
+        function wsUrl(path) {
+            const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
+            return proto + '://' + window.location.host + path;
+        }
+
+        function processWsJsonlFrame(frameText, onEvent) {
+            const lines = String(frameText || '').split('\n');
+            for (const rawLine of lines) {
+                const line = rawLine.trim();
+                if (!line) continue;
+                try {
+                    const evt = JSON.parse(line);
+                    onEvent(evt);
+                } catch (_) {
+                    onEvent({ type: 'error', data: 'Invalid JSONL event from server' });
+                }
+            }
+        }
+
+        async function streamAskViaWebSocket(payload) {
+            return new Promise((resolve, reject) => {
+                let settled = false;
+                let answerText = '';
+
+                function finish(ok, err) {
+                    if (settled) return;
+                    settled = true;
+                    if (ok) resolve();
+                    else reject(err || new Error('WebSocket stream failed'));
+                }
+
+                const ws = new WebSocket(wsUrl('/ws/ask'));
+
+                ws.onopen = function() {
+                    document.getElementById('answer-content').innerHTML = '<span class="stream-cursor">Thinking\u2026</span>';
+                    document.getElementById('answer-box').style.display = 'block';
+                    document.getElementById('loading').style.display = 'none';
+                    ws.send(JSON.stringify(payload));
+                };
+
+                ws.onmessage = function(event) {
+                    processWsJsonlFrame(event.data, function(msg) {
+                        const typ = msg.type || 'error';
+                        const data = msg.data;
+
+                        if (typ === 'token') {
+                            answerText += String(data || '');
+                            document.getElementById('answer-content').innerHTML = marked.parse(answerText);
+                            return;
+                        }
+                        if (typ === 'sources') {
+                            renderSources(Array.isArray(data) ? data : []);
+                            return;
+                        }
+                        if (typ === 'stats') {
+                            renderPerfBar(data || {});
+                            return;
+                        }
+                        if (typ === 'error') {
+                            document.getElementById('answer-content').innerHTML =
+                                '<span class="error">Error: ' + escapeHtml(String(data || 'Unknown error')) + '</span>';
+                            ws.close();
+                            finish(true);
+                            return;
+                        }
+                        if (typ === 'done') {
+                            ws.close();
+                            finish(true);
+                        }
+                    });
+                };
+
+                ws.onerror = function() {
+                    finish(false, new Error('WebSocket connection error'));
+                };
+
+                ws.onclose = function() {
+                    if (!settled) {
+                        finish(false, new Error('WebSocket closed unexpectedly'));
+                    }
+                };
+            });
+        }
+
         async function handleSubmit(e) {
             e.preventDefault();
             const question = document.getElementById('question').value.trim();
@@ -1220,87 +1304,7 @@
 
             try {
                 if (useStream) {
-                    const resp = await fetch('/api/ask/stream', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload),
-                    });
-
-                    if (!resp.ok) {
-                        throw new Error('Server returned ' + resp.status);
-                    }
-
-                    const reader = resp.body.getReader();
-                    const decoder = new TextDecoder();
-                    let answerText = '';
-                    let buffer = '';
-
-                    document.getElementById('answer-content').innerHTML = '<span class="stream-cursor">Thinking\u2026</span>';
-                    document.getElementById('answer-box').style.display = 'block';
-                    document.getElementById('loading').style.display = 'none';
-
-                    function processSseBlock(block) {
-                        const cleaned = block.replace(/\r/g, '');
-                        if (!cleaned.trim()) return;
-
-                        let eventName = 'message';
-                        const dataLines = [];
-                        const lines = cleaned.split('\n');
-                        for (const line of lines) {
-                            if (line.startsWith('event:')) {
-                                eventName = line.slice(6).trim();
-                            } else if (line.startsWith('data:')) {
-                                dataLines.push(line.slice(5).trimStart());
-                            }
-                        }
-                        const raw = dataLines.join('\n');
-
-                        if (eventName === 'done') return;
-                        if (eventName === 'error') {
-                            try { answerText = 'Error: ' + JSON.parse(raw); } catch (_) { answerText = 'Error: ' + raw; }
-                            document.getElementById('answer-content').textContent = answerText;
-                            return;
-                        }
-                        if (eventName === 'sources') {
-                            try {
-                                const parsed = JSON.parse(raw);
-                                renderSources(Array.isArray(parsed) ? parsed : []);
-                            } catch (_) {
-                                renderSources([]);
-                            }
-                            return;
-                        }
-                        if (eventName === 'stats') {
-                            try { renderPerfBar(JSON.parse(raw)); } catch (_) {}
-                            return;
-                        }
-
-                        try {
-                            const token = JSON.parse(raw);
-                            answerText += token;
-                        } catch (_) {
-                            answerText += raw;
-                        }
-                        document.getElementById('answer-content').innerHTML = marked.parse(answerText);
-                    }
-
-                    while (true) {
-                        const { done, value } = await reader.read();
-                        if (done) break;
-                        buffer += decoder.decode(value, { stream: true });
-
-                        let sep = buffer.indexOf('\n\n');
-                        while (sep !== -1) {
-                            const block = buffer.slice(0, sep);
-                            buffer = buffer.slice(sep + 2);
-                            processSseBlock(block);
-                            sep = buffer.indexOf('\n\n');
-                        }
-                    }
-
-                    if (buffer.trim()) {
-                        processSseBlock(buffer);
-                    }
+                    await streamAskViaWebSocket(payload);
                 } else {
                     const resp = await fetch('/api/ask', {
                         method: 'POST',
